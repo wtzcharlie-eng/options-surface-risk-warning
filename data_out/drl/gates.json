@@ -1,0 +1,303 @@
+{
+  "n_pass": 15,
+  "n_total": 15,
+  "quick": false,
+  "risk_mode": "跨月连续",
+  "n_features": 32,
+  "drl_dir": "drl",
+  "gates": [
+    {
+      "name": "G0 标签复现与 anchor 存档一致",
+      "passed": true,
+      "message": "[连续口径] 幕内自洽；幕首死区已消除（前 72 根内风险起点 1092/7185，逐月口径下恒为 0）；跨幕标签 464 处"
+    },
+    {
+      "name": "G1 状态不含未来信息",
+      "passed": true,
+      "message": "探针 [1, 168, 253, 501] 全部通过"
+    },
+    {
+      "name": "G2 指标实现与 quant_metrics 一致",
+      "passed": true,
+      "message": "随机等级序列对比 9 幕，精确率/召回率/提前时间逐位一致"
+    },
+    {
+      "name": "G3 环境奖励会计与赛题指标一致",
+      "passed": true,
+      "message": "rule/const2/random 三策略三项不变量全部成立"
+    },
+    {
+      "name": "G4 奖励不可被平凡策略套利",
+      "passed": true,
+      "message": "规则基线 -5122 高于全部平凡策略 {'const0': -17670, 'const2': -6454, 'const3': -17526, 'random': -6880}"
+    },
+    {
+      "name": "G5 归一化统计量只来自训练集",
+      "passed": true,
+      "message": "改动测试集不影响训练集统计量"
+    },
+    {
+      "name": "G6 训练可复现（同 seed 同结果）",
+      "passed": true,
+      "message": "两次独立训练验证集累计奖励均为 229.47（12 幕训练/6 幕验证、1 epoch 的小规模复现跑，量级与主结果不可比）"
+    },
+    {
+      "name": "G7 打乱风险起点后判别力塌陷",
+      "passed": true,
+      "message": "真实判别力 +15.87% → 打乱后 +2.39%（塌陷至 15%；口径：40 幕训练/12 幕验证子集、单 seed、3 epoch，在**验证集**上评估，故数值与主结果表的测试集判别力不可直接比较）"
+    },
+    {
+      "name": "G8 DRL 须优于「盲节奏」策略且具备真实判别力",
+      "passed": true,
+      "message": "DRL 1432 > 最佳盲节奏(每3步) -127；判别力 DRL +15.35% vs 盲节奏 +1.03%（基础率 24.4%；口径：测试集全集、15 个 seed 均值）"
+    },
+    {
+      "name": "G9 断点续训与一次跑完逐位等价",
+      "passed": true,
+      "message": "续跑 = 直跑，权重逐位相同，验证奖励序列一致（4 个 checkpoint）"
+    },
+    {
+      "name": "G10 新口径的达标不得来自口径退化",
+      "passed": true,
+      "message": "DRL 精确率 64.6% vs 最强平凡策略「只在开头报一次」47.5%，判别力 +17.1pp；已确认平凡策略召回达98.9%（口径退化事实已落盘并披露）"
+    },
+    {
+      "name": "G11 CVaR 口径的改善率不得来自仓位饱和",
+      "passed": true,
+      "message": "口径在预登记参数下**已退化**：DRL improve +49.9% 与恒报警 +50.0% 几乎相同、excess 均 ≈0；落盘已如实记为「未通过」，未被当作达标证据"
+    },
+    {
+      "name": "G12 死区过滤的休市阈值须落在真实间隔分布的空隙里",
+      "passed": true,
+      "message": "阈值 255min 落在 [135, 375] 的空隙里（下余量 120min / 上余量 120min）；全量 263 幕，阈值下方 10280 处均未标记、上方 8646 处均已标记"
+    },
+    {
+      "name": "G13 否决式融合：不启用时逐位不变，启用时与交付脚本一致",
+      "passed": true,
+      "message": "金标准 600 例逐位一致（指纹 5bdfca49a70541df）；只给一半参数不生效；启用时与 rule_ml.fuse 语义在 400 个截面上逐位一致"
+    },
+    {
+      "name": "G14 异常分与批大小无关，且交付模型未退化为常数",
+      "passed": true,
+      "message": "506 截面逐样本 vs 整批最大差 0.0e+00；7 个交付模型分散度最低者 lc；端到端 7 个品种四级全部可达（144 个取值、极差 0.29）"
+    }
+  ],
+  "details": {
+    "G0": {
+      "n_risk": 7185,
+      "n_risk_in_first72": 1092,
+      "n_cross_episode_labels": 464
+    },
+    "G7": {
+      "real_lift": 0.15866723023032142,
+      "shuffled_lift": 0.023940927948844837,
+      "ratio": 0.15088766542462595
+    },
+    "G8": {
+      "drl_mean_reward": 1432.4293333333337,
+      "drl_mean_lift": 0.15353697641455874,
+      "blind_period": 3,
+      "blind_reward": -127.2500000000003,
+      "blind_lift": 0.01029843876109765,
+      "hit_base_rate": 0.244140625
+    },
+    "G9": {
+      "weights_identical": true,
+      "history_identical": true,
+      "val_rewards": [
+        138.5,
+        126.3,
+        40.0,
+        -29.2
+      ]
+    },
+    "G10": {
+      "drl_precision": 0.6457564575645757,
+      "best_trivial": 0.4745762711864407,
+      "discrimination_pp": 17.1180186378135,
+      "trivial_max_recall": 0.9886813808715337,
+      "pass3": true
+    },
+    "G11": {
+      "drl_excess": 0.0025633909722462267,
+      "const_excess": 0.0,
+      "drl_improve": 0.4991999339233294,
+      "const_improve": 0.5,
+      "degenerate": true,
+      "verdict": {
+        "criterion": "excess_mean > 0 且 n_positive >= 4/7",
+        "excess_mean": 0.0025633909722462267,
+        "n_positive": 3,
+        "n_symbol": 7,
+        "passed": false
+      }
+    },
+    "G12": {
+      "break_min": 255.0,
+      "bars": 3,
+      "nearest_below_min": 135.0,
+      "nearest_above_min": 375.0,
+      "margin_below_min": 120.0,
+      "margin_above_min": 120.0,
+      "n_episodes_scanned": 263,
+      "n_checked_below": 10280,
+      "n_checked_above": 8646,
+      "distinct_gaps": [
+        30,
+        135,
+        375,
+        405,
+        495,
+        525,
+        615,
+        1095,
+        2535,
+        3450,
+        3495,
+        3975,
+        5415,
+        6855,
+        14055,
+        15495,
+        25770
+      ]
+    },
+    "G13": {
+      "n_checked": 400,
+      "n_golden": 600,
+      "golden_sha16": "5bdfca49a70541df",
+      "unchanged_when_off": true,
+      "matches_delivery_script": true,
+      "veto_thr_probe": 0.35
+    },
+    "G14": {
+      "n_slices": 506,
+      "max_batch_diff": 0.0,
+      "n_models": 7,
+      "per_symbol": {
+        "ag": {
+          "n_unique": 253,
+          "range": 0.6523476523476524,
+          "mean": 0.706108121127884,
+          "monotone_violations": 0
+        },
+        "au": {
+          "n_unique": 314,
+          "range": 0.855144855144855,
+          "mean": 0.5351387742692091,
+          "monotone_violations": 0
+        },
+        "cu": {
+          "n_unique": 299,
+          "range": 0.8421578421578422,
+          "mean": 0.6303558101977074,
+          "monotone_violations": 0
+        },
+        "lc": {
+          "n_unique": 144,
+          "range": 0.2927072927072928,
+          "mean": 0.8036291771469637,
+          "monotone_violations": 0
+        },
+        "rb": {
+          "n_unique": 339,
+          "range": 0.9130869130869131,
+          "mean": 0.5545126809948944,
+          "monotone_violations": 0
+        },
+        "sc": {
+          "n_unique": 168,
+          "range": 0.3836163836163836,
+          "mean": 0.8021602903025828,
+          "monotone_violations": 0
+        },
+        "si": {
+          "n_unique": 248,
+          "range": 0.7202797202797203,
+          "mean": 0.7586287230556005,
+          "monotone_violations": 0
+        }
+      },
+      "worst_symbol": "lc",
+      "end_to_end": {
+        "ag": {
+          "levels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "n": 376,
+          "score_min": 0.0009990009990009652,
+          "score_max": 1.0
+        },
+        "au": {
+          "levels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "n": 373,
+          "score_min": 0.0009990009990009652,
+          "score_max": 1.0
+        },
+        "cu": {
+          "levels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "n": 296,
+          "score_min": 0.0009990009990009652,
+          "score_max": 1.0
+        },
+        "lc": {
+          "levels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "n": 410,
+          "score_min": 0.0009990009990009652,
+          "score_max": 1.0
+        },
+        "rb": {
+          "levels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "n": 248,
+          "score_min": 0.0009990009990009652,
+          "score_max": 1.0
+        },
+        "sc": {
+          "levels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "n": 369,
+          "score_min": 0.0009990009990009652,
+          "score_max": 1.0
+        },
+        "si": {
+          "levels": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "n": 407,
+          "score_min": 0.0009990009990009652,
+          "score_max": 1.0
+        }
+      }
+    }
+  }
+}

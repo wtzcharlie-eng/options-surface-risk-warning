@@ -1,0 +1,466 @@
+{
+ "preregistration": "data_out/cvar_workpoint_preregistration.md",
+ "note": "本研究只改工作点，不改 CVaR 口径参数；前一份预登记的『未通过』结论（hold_days=5 @ lean=0.3）不被修改",
+ "params": {
+  "hold_days": 5,
+  "cut_to": 0.5,
+  "n_random": 200,
+  "seed": 0,
+  "min_recall_v2": 0.6,
+  "min_precision_v2": 0.5
+ },
+ "selection": {
+  "drl": {
+   "grid": [
+    {
+     "knob": 0.3,
+     "val_precision_v2": 0.5405172413793103,
+     "val_recall_v2": 0.9796819787985865,
+     "val_excess": -0.1417836744662043,
+     "val_avg_position": 0.9221848865238034,
+     "val_alert_day_frac": 0.6813186813186813,
+     "meets_constraint": true
+    },
+    {
+     "knob": 1.0,
+     "val_precision_v2": 0.5747863247863247,
+     "val_recall_v2": 0.9726148409893993,
+     "val_excess": -0.11640732062638011,
+     "val_avg_position": 0.9249833688980243,
+     "val_alert_day_frac": 0.5763125763125763,
+     "meets_constraint": true
+    },
+    {
+     "knob": 2.5,
+     "val_precision_v2": 0.6542207792207793,
+     "val_recall_v2": 0.9602473498233216,
+     "val_excess": -0.08115900260613466,
+     "val_avg_position": 0.9319942341636941,
+     "val_alert_day_frac": 0.431013431013431,
+     "meets_constraint": true
+    },
+    {
+     "knob": 5.0,
+     "val_precision_v2": 0.76,
+     "val_recall_v2": 0.8374558303886925,
+     "val_excess": -0.03337672608373412,
+     "val_avg_position": 0.9501702332066284,
+     "val_alert_day_frac": 0.22954822954822957,
+     "meets_constraint": true
+    },
+    {
+     "knob": 7.0,
+     "val_precision_v2": 0.8440366972477065,
+     "val_recall_v2": 0.6280918727915195,
+     "val_excess": -0.013667235435412647,
+     "val_avg_position": 0.9706263492160082,
+     "val_alert_day_frac": 0.10989010989010992,
+     "meets_constraint": true
+    },
+    {
+     "knob": 10.0,
+     "val_precision_v2": 0.8695652173913043,
+     "val_recall_v2": 0.3083038869257951,
+     "val_excess": 0.001617025367914082,
+     "val_avg_position": 0.9908900595443851,
+     "val_alert_day_frac": 0.02686202686202686,
+     "meets_constraint": false
+    },
+    {
+     "knob": 15.0,
+     "val_precision_v2": 1.0,
+     "val_recall_v2": 0.030918727915194347,
+     "val_excess": 0.0011844033140791029,
+     "val_avg_position": 0.999548491963157,
+     "val_alert_day_frac": 0.0012210012210012212,
+     "meets_constraint": false
+    },
+    {
+     "knob": 20.0,
+     "val_precision_v2": 0.0,
+     "val_recall_v2": 0.0,
+     "val_excess": 0.0,
+     "val_avg_position": 1.0,
+     "val_alert_day_frac": 0.0,
+     "meets_constraint": false
+    }
+   ],
+   "picked": {
+    "knob": 7.0,
+    "val_precision_v2": 0.8440366972477065,
+    "val_recall_v2": 0.6280918727915195,
+    "val_excess": -0.013667235435412647,
+    "val_avg_position": 0.9706263492160082,
+    "val_alert_day_frac": 0.10989010989010992,
+    "meets_constraint": true
+   }
+  },
+  "rule": {
+   "grid": [
+    {
+     "knob": 1.0,
+     "val_precision_v2": 0.49220103986135183,
+     "val_recall_v2": 0.9628975265017667,
+     "val_excess": -0.10271773864722954,
+     "val_avg_position": 0.9240298634108849,
+     "val_alert_day_frac": 0.5115995115995116,
+     "meets_constraint": false
+    },
+    {
+     "knob": 1.3,
+     "val_precision_v2": 0.5355191256830601,
+     "val_recall_v2": 0.9469964664310954,
+     "val_excess": -0.0652783511145305,
+     "val_avg_position": 0.9304004186338524,
+     "val_alert_day_frac": 0.36385836385836384,
+     "meets_constraint": true
+    },
+    {
+     "knob": 1.6,
+     "val_precision_v2": 0.6051502145922747,
+     "val_recall_v2": 0.8568904593639576,
+     "val_excess": -0.04197556652611652,
+     "val_avg_position": 0.9427048934983967,
+     "val_alert_day_frac": 0.24908424908424906,
+     "meets_constraint": true
+    },
+    {
+     "knob": 2.0,
+     "val_precision_v2": 0.6573426573426573,
+     "val_recall_v2": 0.773851590106007,
+     "val_excess": -0.021944741998659364,
+     "val_avg_position": 0.958094668551675,
+     "val_alert_day_frac": 0.15506715506715504,
+     "meets_constraint": true
+    },
+    {
+     "knob": 2.5,
+     "val_precision_v2": 0.6021505376344086,
+     "val_recall_v2": 0.666077738515901,
+     "val_excess": -0.015552985817882139,
+     "val_avg_position": 0.9667326761962088,
+     "val_alert_day_frac": 0.10866910866910866,
+     "meets_constraint": true
+    },
+    {
+     "knob": 3.0,
+     "val_precision_v2": 0.5588235294117647,
+     "val_recall_v2": 0.47791519434628976,
+     "val_excess": -0.013091121049596286,
+     "val_avg_position": 0.9752758754079647,
+     "val_alert_day_frac": 0.08058608058608059,
+     "meets_constraint": false
+    },
+    {
+     "knob": 4.0,
+     "val_precision_v2": 0.49019607843137253,
+     "val_recall_v2": 0.33127208480565373,
+     "val_excess": -0.00807127518692303,
+     "val_avg_position": 0.9811606191209169,
+     "val_alert_day_frac": 0.06227106227106227,
+     "meets_constraint": false
+    },
+    {
+     "knob": 5.0,
+     "val_precision_v2": 0.44680851063829785,
+     "val_recall_v2": 0.31007067137809186,
+     "val_excess": -0.006701572631535575,
+     "val_avg_position": 0.9826324882889381,
+     "val_alert_day_frac": 0.05738705738705739,
+     "meets_constraint": false
+    }
+   ],
+   "picked": {
+    "knob": 2.5,
+    "val_precision_v2": 0.6021505376344086,
+    "val_recall_v2": 0.666077738515901,
+    "val_excess": -0.015552985817882139,
+    "val_avg_position": 0.9667326761962088,
+    "val_alert_day_frac": 0.10866910866910866,
+    "meets_constraint": true
+   }
+  }
+ },
+ "test": {
+  "drl": {
+   "knob": 7.0,
+   "per_symbol": {
+    "ag": {
+     "improve": 0.2498628674168129,
+     "random_improve": 0.08876230622535326,
+     "excess": 0.16110056119145966,
+     "avg_position": 0.9409499358151476
+    },
+    "au": {
+     "improve": 0.11311319119540225,
+     "random_improve": 0.0555596290177999,
+     "excess": 0.05755356217760235,
+     "avg_position": 0.9524739583333334
+    },
+    "cu": {
+     "improve": 0.1381593375782039,
+     "random_improve": 0.05683829801692078,
+     "excess": 0.08132103956128311,
+     "avg_position": 0.9618008185538881
+    },
+    "lc": {
+     "improve": 0.2389192274065924,
+     "random_improve": 0.09582513652290987,
+     "excess": 0.14309409088368252,
+     "avg_position": 0.9389312977099237
+    },
+    "rb": {
+     "improve": 0.025209476784278706,
+     "random_improve": 0.05064480717786485,
+     "excess": -0.025435330393586142,
+     "avg_position": 0.9505347593582888
+    },
+    "sc": {
+     "improve": 0.12612759731506834,
+     "random_improve": 0.06777389185681287,
+     "excess": 0.05835370545825547,
+     "avg_position": 0.9443742098609356
+    },
+    "si": {
+     "improve": 0.0430653288399653,
+     "random_improve": 0.015659754783775834,
+     "excess": 0.027405574056189465,
+     "avg_position": 0.988822652757079
+    }
+   },
+   "excess_mean": 0.07191331470498377,
+   "improve_mean": 0.13349386093376053,
+   "random_improve_mean": 0.061580546228776775,
+   "avg_position_mean": 0.9539839474840851,
+   "n_positive": 6,
+   "n_symbol": 7,
+   "test_precision_v2": 0.7291666666666666,
+   "test_recall_v2": 0.6479909451046972,
+   "test_alert_day_frac": 0.15865300727761136
+  },
+  "rule": {
+   "knob": 2.5,
+   "per_symbol": {
+    "ag": {
+     "improve": 0.4263831808420504,
+     "random_improve": 0.2634417941596983,
+     "excess": 0.16294138668235209,
+     "avg_position": 0.9075738125802311
+    },
+    "au": {
+     "improve": 0.17713891264950843,
+     "random_improve": 0.08559283611814833,
+     "excess": 0.0915460765313601,
+     "avg_position": 0.9342447916666666
+    },
+    "cu": {
+     "improve": 0.1018477094899612,
+     "random_improve": 0.03600113032000745,
+     "excess": 0.06584657916995376,
+     "avg_position": 0.9686221009549796
+    },
+    "lc": {
+     "improve": 0.2527551226679463,
+     "random_improve": 0.08663177276090278,
+     "excess": 0.16612334990704353,
+     "avg_position": 0.9358778625954198
+    },
+    "rb": {
+     "improve": 0.018420253863302368,
+     "random_improve": 0.04697307912311875,
+     "excess": -0.028552825259816384,
+     "avg_position": 0.94451871657754
+    },
+    "sc": {
+     "improve": 0.1686806651898581,
+     "random_improve": 0.1069732328276816,
+     "excess": 0.061707432362176504,
+     "avg_position": 0.9355246523388117
+    },
+    "si": {
+     "improve": 0.06892256666967322,
+     "random_improve": 0.01993298082878914,
+     "excess": 0.04898958584088409,
+     "avg_position": 0.9821162444113264
+    }
+   },
+   "excess_mean": 0.08122879789056481,
+   "improve_mean": 0.1734497730531857,
+   "random_improve_mean": 0.09222097516262091,
+   "avg_position_mean": 0.9440683115892821,
+   "n_positive": 6,
+   "n_symbol": 7,
+   "test_precision_v2": 0.4769874476987448,
+   "test_recall_v2": 0.6728919071873232,
+   "test_alert_day_frac": 0.23855871508588164
+  }
+ },
+ "trivial": {
+  "恒报警": {
+   "per_symbol": {
+    "ag": {
+     "improve": 0.42658648982352787,
+     "random_improve": 0.3564939038658018,
+     "excess": 0.07009258595772605,
+     "avg_position": 0.886392811296534
+    },
+    "au": {
+     "improve": 0.20583292293847877,
+     "random_improve": 0.30840712162511497,
+     "excess": -0.1025741986866362,
+     "avg_position": 0.8919270833333334
+    },
+    "cu": {
+     "improve": 0.18722426333540337,
+     "random_improve": 0.2775602676767786,
+     "excess": -0.09033600434137523,
+     "avg_position": 0.9051841746248295
+    },
+    "lc": {
+     "improve": 0.3263838158764544,
+     "random_improve": 0.38085225579022297,
+     "excess": -0.054468439913768596,
+     "avg_position": 0.8580152671755725
+    },
+    "rb": {
+     "improve": 0.025209476784278706,
+     "random_improve": 0.2777755205846131,
+     "excess": -0.25256604380033437,
+     "avg_position": 0.9024064171122995
+    },
+    "sc": {
+     "improve": 0.18183497445428123,
+     "random_improve": 0.3298044154607896,
+     "excess": -0.14796944100650836,
+     "avg_position": 0.8805309734513275
+    },
+    "si": {
+     "improve": 0.12827139800918913,
+     "random_improve": 0.16233149969378058,
+     "excess": -0.03406010168459145,
+     "avg_position": 0.9485842026825634
+    }
+   },
+   "excess_mean": -0.08741166335364116,
+   "improve_mean": 0.21162047731737338,
+   "random_improve_mean": 0.2990321406710145,
+   "avg_position_mean": 0.8961487042394943,
+   "n_positive": 1,
+   "n_symbol": 7
+  },
+  "每8步机械报警": {
+   "per_symbol": {
+    "ag": {
+     "improve": 0.42658648982352787,
+     "random_improve": 0.3564939038658018,
+     "excess": 0.07009258595772605,
+     "avg_position": 0.886392811296534
+    },
+    "au": {
+     "improve": 0.20583292293847877,
+     "random_improve": 0.30840712162511497,
+     "excess": -0.1025741986866362,
+     "avg_position": 0.8919270833333334
+    },
+    "cu": {
+     "improve": 0.18722426333540337,
+     "random_improve": 0.2775602676767786,
+     "excess": -0.09033600434137523,
+     "avg_position": 0.9051841746248295
+    },
+    "lc": {
+     "improve": 0.3263838158764544,
+     "random_improve": 0.38085225579022297,
+     "excess": -0.054468439913768596,
+     "avg_position": 0.8580152671755725
+    },
+    "rb": {
+     "improve": 0.025209476784278706,
+     "random_improve": 0.2777755205846131,
+     "excess": -0.25256604380033437,
+     "avg_position": 0.9024064171122995
+    },
+    "sc": {
+     "improve": 0.18183497445428123,
+     "random_improve": 0.3298044154607896,
+     "excess": -0.14796944100650836,
+     "avg_position": 0.8805309734513275
+    },
+    "si": {
+     "improve": 0.12827139800918913,
+     "random_improve": 0.16233149969378058,
+     "excess": -0.03406010168459145,
+     "avg_position": 0.9485842026825634
+    }
+   },
+   "excess_mean": -0.08741166335364116,
+   "improve_mean": 0.21162047731737338,
+   "random_improve_mean": 0.2990321406710145,
+   "avg_position_mean": 0.8961487042394943,
+   "n_positive": 1,
+   "n_symbol": 7
+  },
+  "只在开头报一次": {
+   "per_symbol": {
+    "ag": {
+     "improve": 0.15316578182674412,
+     "random_improve": 0.028571673054900618,
+     "excess": 0.1245941087718435,
+     "avg_position": 0.9711168164313222
+    },
+    "au": {
+     "improve": 0.047505628305513824,
+     "random_improve": 0.02339638579754043,
+     "excess": 0.024109242507973392,
+     "avg_position": 0.970703125
+    },
+    "cu": {
+     "improve": 0.064396856801573,
+     "random_improve": 0.016730766114313064,
+     "excess": 0.04766609068725994,
+     "avg_position": 0.9747612551159618
+    },
+    "lc": {
+     "improve": 0.07454944617436451,
+     "random_improve": 0.02854120418393732,
+     "excess": 0.04600824199042719,
+     "avg_position": 0.9625954198473282
+    },
+    "rb": {
+     "improve": 0.00017210644292662574,
+     "random_improve": 0.01731173914633552,
+     "excess": -0.017139632703408895,
+     "avg_position": 0.9725935828877005
+    },
+    "sc": {
+     "improve": 0.05986084382722661,
+     "random_improve": 0.02333762591155153,
+     "excess": 0.03652321791567508,
+     "avg_position": 0.9683944374209861
+    },
+    "si": {
+     "improve": 0.029563962421028968,
+     "random_improve": 0.010619675655898206,
+     "excess": 0.018944286765130762,
+     "avg_position": 0.9865871833084948
+    }
+   },
+   "excess_mean": 0.04010079370498586,
+   "improve_mean": 0.06131637511419681,
+   "random_improve_mean": 0.021215581409210958,
+   "avg_position_mean": 0.9723931171445418,
+   "n_positive": 6,
+   "n_symbol": 7
+  }
+ },
+ "preregistered_verdict": {
+  "passed": true,
+  "excess_mean": 0.07191331470498377,
+  "n_positive": 6,
+  "n_symbol": 7,
+  "rule_excess_mean": 0.08122879789056481,
+  "rule_not_worse_than_drl": true,
+  "escaped_saturation": true,
+  "text": "**通过**：为 CVaR 目标单独选点后，DRL 的 excess 均值 > 0 且 ≥4/7 品种为正。　⚠ 且**规则引擎的 excess 不低于 DRL**，须与 DRL 数字并列报出。"
+ }
+}

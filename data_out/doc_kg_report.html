@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>问题2 · 知识图谱报告 · 期权波动率曲面风控预警系统</title>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0e1621; --panel:#151f2b; --rule:#22303f;
+  --fg:#e3eaf1; --fg2:#8fa0b2; --fg3:#5d6f82;
+  --calm:#4fb79c; --stress:#e8695e; --caveat:#d8a24a;
+  /* 与 index.html 完全一致：西文族在前走 Times，汉字回退到黑体 */
+  --sans:"Times New Roman",Times,"PingFang SC","Hiragino Sans GB",
+         "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --mono:"Times New Roman",Times,ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--calm);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--calm);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:9;background:rgba(14,22,33,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;
+  align-items:baseline;gap:16px}
+.bar .home{color:var(--fg2);font-size:13px}
+.bar h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.01em}
+.bar .sub{color:var(--fg3);font-size:12.5px;margin-left:auto}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;
+  grid-template-columns:1fr 236px;gap:44px;align-items:start}
+main{min-width:0;padding:34px 0 96px}
+
+nav.toc{position:sticky;top:66px;padding:34px 0;max-height:calc(100vh - 76px);
+  overflow:auto}
+nav.toc .h{font-size:11px;letter-spacing:.14em;color:var(--fg3);
+  margin-bottom:10px;font-family:var(--mono)}
+nav.toc a{display:block;color:var(--fg2);font-size:12.5px;line-height:1.55;
+  padding:3px 0 3px 10px;border-left:1px solid var(--rule);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--calm)}
+nav.toc a.l3{padding-left:22px;color:var(--fg3);font-size:12px}
+
+h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.35;letter-spacing:.01em}
+main h1{font-size:27px;margin:6px 0 22px}
+main h2{font-size:21px;margin:44px 0 14px;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+main h3{font-size:17px;margin:30px 0 10px;color:#f0f5fa}
+main h4{font-size:15px;margin:22px 0 8px;color:var(--fg2)}
+p{margin:13px 0}
+strong{color:#f4f8fc;font-weight:700}
+code{font-family:var(--mono);font-size:13.5px;background:#1b2735;
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:#cfe0ee}
+pre{background:var(--panel);border:1px solid var(--rule);padding:15px 17px;
+  overflow:auto;margin:16px 0}
+pre code{background:none;border:0;padding:0;font-size:13px;line-height:1.65;
+  color:#cfe0ee}
+blockquote{margin:16px 0;padding:2px 18px;border-left:3px solid var(--caveat);
+  background:#141d29;color:var(--fg2)}
+blockquote strong{color:var(--caveat)}
+blockquote p{margin:10px 0}
+ul,ol{margin:13px 0;padding-left:24px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:34px 0}
+.tw{overflow-x:auto;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--rule);padding:8px 11px;text-align:left;
+  vertical-align:top}
+th{background:#1a2532;color:var(--fg);font-weight:700;white-space:nowrap}
+td{color:var(--fg2)}
+tbody tr:nth-child(even) td{background:#121b26}
+td code,th code{font-size:12.5px}
+
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--fg3);line-height:1.9}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:0 0 20px}
+}
+</style></head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="../index.html">← 交付入口</a>
+  <h1>问题2 · 知识图谱报告</h1>
+  <span class="sub">边权标定、解释样本、验证门与自评记录。由 report_kg.py 生成。</span>
+</div></div>
+<div class="shell">
+  <main><h1 id="问题2-基于知识图谱的风险传导路径推理与可解释性-技术报告">问题2：基于知识图谱的风险传导路径推理与可解释性 —— 技术报告</h1>
+<blockquote><p>由 <code>scripts/report_kg.py</code> 生成。全部统计数字来自 <code>data_out/kg/</code> 下的 <code>kg_edges.json</code> / <code>kg_cross.json</code> / <code>gates.json</code>，重跑 <code>scripts/build_kg.py</code> 后 重新执行本脚本即可刷新。</p></blockquote>
+<h2 id="1-这版要解决的核心问题">1. 这版要解决的核心问题</h2>
+<p>知识图谱最容易滑向的失败模式，是把作者拍脑袋写的因果关系包装成「推理」。本项目的 v1 骨架（已归档到 <code>kg/_legacy/</code>）正落在这里：主推理骨架 AMPLIFIES 的边权是「启发式 0.6–0.8」的先验，跨品种回退权重直接写死 <code>1.0</code>（等于断言「同板块必然传导」），其 schema 文档自己也注明「后续可用 anchor 数据估计」——而这一步一直没做。</p>
+<p>因此 v2 的设计原则是<strong>把实测层与诠释层分开，并在图里显式标注</strong>：</p>
+<div class='tw'><table><thead><tr><th>层</th><th>内容</th><th>权重来源</th><th>是否参与推理打分</th></tr></thead><tbody><tr><td>measured 实测层</td><td><code>ANOM→CONSEQ</code> 主干边、<code>XSYM→XSYM</code> 跨品种边</td><td>87,517 个<strong>训练期</strong>真实截面实测的提升度 lift</td><td>是</td></tr><tr><td>interpretive 诠释层</td><td><code>MECH</code> 机制节点、<code>CONSTRAINT</code> 无套利约束、边上的 <code>how</code> 文本</td><td>业务先验，<strong>无权重</strong></td><td>否</td></tr></tbody></table></div>
+<p>评审因此可以清楚区分：哪些是数据说的，哪些是人说的。</p>
+<h2 id="2-图谱规模">2. 图谱规模</h2>
+<ul>
+<li>节点 82 个：{&#x27;ANOM&#x27;: 8, &#x27;CONSEQ&#x27;: 5, &#x27;CONSTRAINT&#x27;: 3, &#x27;MECH&#x27;: 6, &#x27;SECTOR&#x27;: 5, &#x27;SYM&#x27;: 7, &#x27;XSYM&#x27;: 48}</li>
+<li>边 152 条：{&#x27;AMPLIFIES&#x27;: 21, &#x27;VIOLATES&#x27;: 3, &#x27;EXPLAINS&#x27;: 11, &#x27;MEMBER_OF&#x27;: 7, &#x27;PROPAGATES_TO&#x27;: 110}</li>
+<li>主干边候选 40 条 → <strong>通过检验 21 条</strong>（52%），其中测试期可复现 19 条</li>
+<li>跨品种候选 280 条 → 通过 110 条</li>
+<li>诠释层覆盖率：21 条实测主干边中只有 <strong>9 条</strong>配有机制说明，其余 12 条是「数据观测到、但尚未归纳出机制」。这类边在解释文本中会明说这一点，不硬凑机制。</li>
+</ul>
+<h2 id="3-边是怎么测出来的">3. 边是怎么测出来的</h2>
+<p>对每个「异常 A → 后果 C」组合，在训练期（2023-01..2024-12，162 幕 / 87,517 截面）上统计：</p>
+<ul>
+<li><strong>提升度</strong> <code>lift = P(C 在未来 8 个截面内发生 | A 当前发生) / P(C)</code>，lift≈1 即这条边没有信息量；</li>
+<li><strong>95% Wilson 置信下界</strong>：用保守下界而非点估计作为边权，避免小样本虚高；</li>
+<li><strong>分块置换检验</strong>（200 次）：金融时序自相关强，朴素检验会把 p 值压到几乎条条边都「显著」。这里按<strong>整日为块做循环平移</strong>，只打乱 A 与 C 的时间对齐、保留 A 自身的自相关结构；</li>
+<li><strong>测试期独立复算</strong>（2025-07..2026-04）：只在训练期显著、测试期塌掉的边会被标出。</li>
+</ul>
+<p>保留标准（三条同时满足）：支撑度 ≥ 200、置换检验 p ≤ 0.05、lift 置信下界 &gt; 1.1。未通过的候选边<strong>不进入推理图</strong>，但全部保留在 <code>kg_edges.json</code> 中供审计。</p>
+<h3 id="通过检验的主干边">通过检验的主干边</h3>
+<div class='tw'><table><thead><tr><th>根因</th><th>后果</th><th>lift</th><th>95%下界</th><th>P(C\</th><th>A)</th><th>基础率</th><th>支撑度</th><th>p 值</th><th>测试期复现</th><th>备注</th></tr></thead><tbody><tr><td>无套利条件违反</td><td>无套利违反持续</td><td>4.17</td><td>4.13</td><td>82.1%</td><td>19.7%</td><td>6,861</td><td>0.0050</td><td>✓</td><td>同源特征</td></tr><tr><td>ATM IV 异常偏离</td><td>波动率水平跳升</td><td>4.04</td><td>3.96</td><td>54.0%</td><td>13.4%</td><td>8,780</td><td>0.0050</td><td>✓</td><td>同源特征</td></tr><tr><td>曲面凸性违反</td><td>曲面凸性破坏</td><td>4.00</td><td>3.94</td><td>73.4%</td><td>18.4%</td><td>6,172</td><td>0.0050</td><td>✓</td><td>同源特征</td></tr><tr><td>流动性退化</td><td>流动性进一步塌陷</td><td>2.80</td><td>2.76</td><td>70.8%</td><td>25.2%</td><td>6,234</td><td>0.0050</td><td>✓</td><td>同源特征</td></tr><tr><td>无套利条件违反</td><td>曲面凸性破坏</td><td>2.39</td><td>2.32</td><td>43.8%</td><td>18.4%</td><td>6,861</td><td>0.0050</td><td>✓</td><td>—</td></tr><tr><td>曲面凸性违反</td><td>无套利违反持续</td><td>2.37</td><td>2.31</td><td>46.6%</td><td>19.7%</td><td>6,172</td><td>0.0050</td><td>✓</td><td>—</td></tr><tr><td>IV/凸性加速度异常</td><td>曲面凸性破坏</td><td>2.36</td><td>2.30</td><td>43.4%</td><td>18.4%</td><td>7,910</td><td>0.0050</td><td>✓</td><td>—</td></tr><tr><td>IV/凸性加速度异常</td><td>波动率水平跳升</td><td>2.04</td><td>1.97</td><td>27.2%</td><td>13.4%</td><td>7,910</td><td>0.0050</td><td>✓</td><td>—</td></tr><tr><td>Gamma/Vega 截面集中</td><td>无套利违反持续</td><td>1.95</td><td>1.90</td><td>38.3%</td><td>19.7%</td><td>9,716</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>短期 IV 急升</td><td>波动率水平跳升</td><td>1.72</td><td>1.57</td><td>23.0%</td><td>13.4%</td><td>1,548</td><td>0.0050</td><td>✓</td><td>—</td></tr><tr><td>曲面凸性违反</td><td>波动率水平跳升</td><td>1.65</td><td>1.57</td><td>22.1%</td><td>13.4%</td><td>6,172</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>ATM IV 异常偏离</td><td>曲面凸性破坏</td><td>1.53</td><td>1.48</td><td>28.0%</td><td>18.4%</td><td>8,780</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>IV/凸性加速度异常</td><td>无套利违反持续</td><td>1.52</td><td>1.47</td><td>29.8%</td><td>19.7%</td><td>7,910</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>期限结构斜率急变</td><td>曲面凸性破坏</td><td>1.37</td><td>1.16</td><td>25.2%</td><td>18.4%</td><td>409</td><td>0.0299</td><td>✗</td><td>无机制说明</td></tr><tr><td>短期 IV 急升</td><td>曲面凸性破坏</td><td>1.36</td><td>1.24</td><td>24.9%</td><td>18.4%</td><td>1,548</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>ATM IV 异常偏离</td><td>偏度走向极端</td><td>1.31</td><td>1.29</td><td>55.5%</td><td>42.2%</td><td>8,780</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>无套利条件违反</td><td>偏度走向极端</td><td>1.31</td><td>1.28</td><td>55.2%</td><td>42.2%</td><td>6,861</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>曲面凸性违反</td><td>偏度走向极端</td><td>1.28</td><td>1.25</td><td>54.0%</td><td>42.2%</td><td>6,172</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>ATM IV 异常偏离</td><td>无套利违反持续</td><td>1.27</td><td>1.22</td><td>25.0%</td><td>19.7%</td><td>8,780</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>IV/凸性加速度异常</td><td>偏度走向极端</td><td>1.24</td><td>1.21</td><td>52.2%</td><td>42.2%</td><td>7,910</td><td>0.0050</td><td>✓</td><td>无机制说明</td></tr><tr><td>Gamma/Vega 截面集中</td><td>曲面凸性破坏</td><td>1.18</td><td>1.14</td><td>21.7%</td><td>18.4%</td><td>9,716</td><td>0.0050</td><td>✗</td><td>无机制说明</td></tr></tbody></table></div>
+<blockquote><p><strong>「同源特征」提示</strong>：4 条边的根因与后果判定共用同一底层指标（例如「曲面凸性违反」与「曲面凸性破坏」都基于 <code>convexity_violation</code>）。这类边的高 lift 有相当部分来自同一指标的时间自相关，<strong>不是独立证据</strong>。图中已打 <code>self_feature</code> 标记，解释文本也会逐条提示，不让读者误读。</p></blockquote>
+<h2 id="4-被数据否掉的先验">4. 被数据否掉的先验</h2>
+<p>这部分比通过的边更值得看——它们是「如果只靠人写，很可能会被写进图里」的关系。</p>
+<div class='tw'><table><thead><tr><th>先验关系</th><th>机制说法</th><th>实测 lift</th><th>p 值</th><th>结论</th></tr></thead><tbody><tr><td>期限结构斜率急变 → 无套利违反持续</td><td>期限结构倒挂</td><td>0.76</td><td>0.9801</td><td>未通过，已剔除</td></tr><tr><td>Gamma/Vega 截面集中 → 波动率水平跳升</td><td>做市商 Gamma 对冲压力</td><td>0.82</td><td>0.9254</td><td>未通过，已剔除</td></tr><tr><td>流动性退化 → 曲面凸性破坏</td><td>流动性螺旋</td><td>0.90</td><td>1.0000</td><td>未通过，已剔除</td></tr><tr><td>Gamma/Vega 截面集中 → 偏度走向极端</td><td>做市商 Gamma 对冲压力</td><td>1.01</td><td>0.2090</td><td>未通过，已剔除</td></tr><tr><td>短期 IV 急升 → 偏度走向极端</td><td>临到期敞口集中</td><td>1.10</td><td>0.0199</td><td>未通过，已剔除</td></tr><tr><td>期限结构斜率急变 → 波动率水平跳升</td><td>期限结构倒挂</td><td>1.23</td><td>0.0547</td><td>未通过，已剔除</td></tr></tbody></table></div>
+<blockquote><p>其中最值得一提的是「<strong>Gamma/Vega 截面集中 → 波动率水平跳升</strong>」——即教科书式的「做市商 Gamma 对冲压力推高波动」。这是几乎所有期权风险图谱都会写进去的一条边，但在本数据集上实测 lift 仅 0.82（p=0.9254），<strong>不足以支持</strong>，已从推理图中剔除。</p></blockquote>
+<h2 id="5-跨品种-一个差点写进报告的假结论">5. 跨品种：一个差点写进报告的假结论</h2>
+<p>用全时段平均作基线时，「流动性退化」在 ag/au/sc 之间的跨品种提升度高达 3.22 倍，看起来是一条极强的传导链。但进一步核查发现：</p>
+<ul>
+<li>ag/au/cu/rb/sc 的流动性异常有 <strong>55% 以上集中在夜盘时段</strong>；</li>
+<li>lc 不交易夜盘（夜盘占比 0.0%），其异常集中在 11 点（48%）、14 点（28%）、10 点（15%）；</li>
+<li>si 不交易夜盘（夜盘占比 0.0%），其异常集中在 11 点（37%）、14 点（35%）、10 点（18%）；</li>
+<li>交易时段呈<strong>二分结构</strong>：ag/au/cu/rb/sc 交易夜盘，lc/si 不交易。<strong>组内</strong>品种对的交易小时集合 Jaccard 相似度为 0.75~1.00（均值 0.89），而<strong>跨组</strong>仅 0.50~0.67（均值 0.54）。这正是跨品种共现必须<strong>先按日内时段匹配</strong>的原因——不匹配的话，跨组品种会因为「根本不在同一时间交易」而被算成不共现，同组品种则会因为「总在同一时间交易」而被算成强共现。</li>
+</ul>
+<blockquote><p>以上数字来自 <code>data_out/kg/kg_session.json</code>（由 <code>scripts/build_kg.py</code> 在标定时一并落盘），非人工填写。</p></blockquote>
+<p>也就是说，这条「传导」几乎完全是<strong>「大家都在夜盘、夜盘流动性本来就薄」</strong>造成的日内季节性。因此改用<strong>按小时匹配的基线</strong>（用源品种触发时刻的小时分布重新加权目标品种的基础率）后：</p>
+<div class='tw'><table><thead><tr><th>关系</th><th>朴素 lift</th><th>小时匹配后 lift</th><th>结论</th></tr></thead><tbody><tr><td>ag→au 流动性退化</td><td>3.22</td><td>1.10</td><td><strong>剔除</strong></td></tr><tr><td>au→ag 流动性退化</td><td>3.19</td><td>1.09</td><td><strong>剔除</strong></td></tr><tr><td>sc→ag 流动性退化</td><td>3.02</td><td>1.06</td><td><strong>剔除</strong></td></tr><tr><td>sc→au 流动性退化</td><td>2.97</td><td>1.04</td><td><strong>剔除</strong></td></tr></tbody></table></div>
+<blockquote><p>反过来也一样：<code>si→ag</code> 的朴素 lift 只有 0.07（看似强烈负相关），小时匹配后是 2.27——朴素口径在这里把方向都搞反了。</p></blockquote>
+<p>经此修正，跨品种边从朴素口径的一大片收敛到 110 条。即便如此，<strong>留下来的边也只按「同步共现」表述，不写「A 导致 B」</strong>——统计上无法区分传导与共同暴露于同一宏观冲击。</p>
+<h3 id="跨板块传导">跨板块传导</h3>
+<p>本版覆盖 7 个品种、5 个板块。通过检验的 110 条跨品种边中，<strong>跨板块 86 条</strong>、同板块 24 条。</p>
+<blockquote><p>早期版本只有 4 个品种 3 个板块（且 ag/au 同属贵金属、sc 与 si 各自单独），跨板块传导实际上没有验证条件——通过的边几乎都是贵金属内部的 ag↔au。扩样到 7 个品种后这一块才真正可测。</p></blockquote>
+<p>跨板块边中提升度最高的若干条（均已做日内时段匹配）：</p>
+<div class='tw'><table><thead><tr><th>源</th><th>目标</th><th>异常类型</th><th>朴素 lift</th><th>时段匹配后</th><th>支撑度</th><th>p 值</th></tr></thead><tbody><tr><td>黑色系·螺纹钢</td><td>贵金属·白银</td><td>期限结构斜率急变</td><td>11.03</td><td><strong>7.47</strong></td><td>135</td><td>0.0050</td></tr><tr><td>贵金属·白银</td><td>黑色系·螺纹钢</td><td>Gamma/Vega 截面集中</td><td>6.10</td><td><strong>5.96</strong></td><td>819</td><td>0.0050</td></tr><tr><td>黑色系·螺纹钢</td><td>贵金属·白银</td><td>Gamma/Vega 截面集中</td><td>5.65</td><td><strong>5.49</strong></td><td>527</td><td>0.0050</td></tr><tr><td>有色金属·铜</td><td>贵金属·白银</td><td>短期 IV 急升</td><td>4.99</td><td><strong>4.11</strong></td><td>199</td><td>0.0050</td></tr><tr><td>贵金属·白银</td><td>有色金属·铜</td><td>短期 IV 急升</td><td>4.04</td><td><strong>3.31</strong></td><td>117</td><td>0.0050</td></tr><tr><td>新能源材料·碳酸锂</td><td>贵金属·白银</td><td>流动性退化</td><td>0.10</td><td><strong>3.15</strong></td><td>264</td><td>0.0050</td></tr><tr><td>贵金属·黄金</td><td>黑色系·螺纹钢</td><td>Gamma/Vega 截面集中</td><td>2.86</td><td><strong>2.82</strong></td><td>527</td><td>0.0398</td></tr><tr><td>新能源材料·碳酸锂</td><td>能源·原油</td><td>无套利条件违反</td><td>1.59</td><td><strong>2.73</strong></td><td>191</td><td>0.0100</td></tr><tr><td>黑色系·螺纹钢</td><td>贵金属·白银</td><td>短期 IV 急升</td><td>3.22</td><td><strong>2.62</strong></td><td>228</td><td>0.0050</td></tr><tr><td>有色金属·铜</td><td>贵金属·黄金</td><td>无套利条件违反</td><td>2.69</td><td><strong>2.59</strong></td><td>1,313</td><td>0.0050</td></tr></tbody></table></div>
+<p>板块对通过的边数：</p>
+<div class='tw'><table><thead><tr><th>板块对</th><th>边数</th></tr></thead><tbody><tr><td>有色金属 ↔ 贵金属</td><td>23</td></tr><tr><td>贵金属 ↔ 黑色系</td><td>17</td></tr><tr><td>贵金属 ↔ 贵金属</td><td>12</td></tr><tr><td>新能源材料 ↔ 新能源材料</td><td>12</td></tr><tr><td>有色金属 ↔ 黑色系</td><td>11</td></tr><tr><td>新能源材料 ↔ 贵金属</td><td>10</td></tr><tr><td>新能源材料 ↔ 能源</td><td>7</td></tr><tr><td>新能源材料 ↔ 黑色系</td><td>6</td></tr><tr><td>能源 ↔ 贵金属</td><td>4</td></tr><tr><td>有色金属 ↔ 能源</td><td>4</td></tr><tr><td>能源 ↔ 黑色系</td><td>3</td></tr><tr><td>新能源材料 ↔ 有色金属</td><td>1</td></tr></tbody></table></div>
+<blockquote><p>仍需强调：这里衡量的是<strong>超出日内节律的同步共现</strong>，不是因果传导。统计上无法区分「风险由 A 传导到 B」与「A、B 共同暴露于同一宏观冲击」——对同属中国宏观定价的品种（如螺纹与白银），后者可能是更自然的解释。</p></blockquote>
+<h2 id="6-解释生成与人工评分材料">6. 解释生成与人工评分材料</h2>
+<p>解释文本采用固定的「根因 → 传导环节 → 可能后果」三段式，每段都附证据：根因段给当前实测读数与触发阈值，传导段给机制说明（标注为业务先验）与统计支撑（lift、条件概率、样本量、p 值、是否测试期复现）。</p>
+<p>赛题指标3 要求对解释文本做<strong>人工</strong> 5 分制评分，平均分 ≥4 分。本项目提供评分材料，但<strong>不自评达标</strong>——自评分不能替代人工评分：</p>
+<ul>
+<li><code>data_out/kg/explanation_samples.md</code>：测试期随机抽取的 30 条解释</li>
+<li><code>data_out/kg/scoring_sheet.csv</code>：空白评分表（三维度 × 5 分制）</li>
+<li><code>data_out/kg/self_check.json</code>：机器可检查的客观项（<strong>非</strong>人工评分）</li>
+</ul>
+<h3 id="评分细则">评分细则</h3>
+<p><strong>语义清晰</strong>——文本是否易读、术语是否准确、数字是否带明确口径</p>
+<ul>
+<li>5 分：完全清楚，非本领域同事也能读懂结论与依据</li>
+<li>4 分：清楚，个别术语需要背景知识</li>
+<li>3 分：基本可读，但有歧义或冗余</li>
+<li>2 分：需要反复阅读才能理解</li>
+<li>1 分：难以理解</li>
+</ul>
+<p><strong>因果逻辑合理</strong>——根因→传导→后果的链条是否成立，统计与机制是否分得清</p>
+<ul>
+<li>5 分：链条合理，且明确区分了数据结论与业务先验</li>
+<li>4 分：链条合理，个别环节略牵强</li>
+<li>3 分：方向大致对，但缺乏支撑或有跳跃</li>
+<li>2 分：存在明显逻辑问题</li>
+<li>1 分：因果关系错误或臆造</li>
+</ul>
+<p><strong>不含交易建议</strong>——是否只提示风险与分析，不出现任何操作指令</p>
+<ul>
+<li>5 分：完全没有操作暗示，且有免责声明</li>
+<li>4 分：无操作指令，个别措辞略有倾向</li>
+<li>3 分：有轻微暗示性表述</li>
+<li>2 分：出现类似操作倾向的表述</li>
+<li>1 分：包含明确交易建议</li>
+</ul>
+<h3 id="机器自查-客观项-非人工评分">机器自查（客观项，非人工评分）</h3>
+<ul>
+<li>全部 30 条样本均带免责声明：True</li>
+<li>全部样本正文无劝导词/交易动作词：True</li>
+<li>全部样本均含「根因」与「传导」两段：True</li>
+<li>显式标注「业务先验」的样本比例：100.0%</li>
+<li>解释文本中位长度：2823 字；中位证据引用数：5 条</li>
+</ul>
+<blockquote><p>这些客观项只能保证「不会明显违规」，<strong>不能替代</strong>对语义清晰度与因果合理性的人工判断。指标3 的达标与否，以人工评分结果为准。</p></blockquote>
+<h2 id="7-验证门">7. 验证门</h2>
+<p><code>python -m kg.tests --emit</code> 的实际执行结果：<strong>11/11 通过</strong>（在 200 条测试期样本上，结果存档于 <code>data_out/kg/gates.json</code>）。</p>
+<div class='tw'><table><thead><tr><th>门</th><th>结果</th><th>实测结论</th></tr></thead><tbody><tr><td>K1 解释文本不含交易建议</td><td>✓</td><td>200 条解释（其中 118 条含异常）均无劝导词/交易动作词，且都带免责声明</td></tr><tr><td>K2 解释中的数字均可回溯</td><td>✓</td><td>抽查 60 条解释，全部数字均可回溯到特征读数或图中边统计</td></tr><tr><td>K3 图结构合法</td><td>✓</td><td>21 条主干边方向与类型正确、110 条跨品种边合法、无自环、诠释层边权重恒为 0</td></tr><tr><td>K4 解释生成确定性</td><td>✓</td><td>抽查 40 条，两次调用输出逐字相同</td></tr><tr><td>K5 边统计可从原始数据复算</td><td>✓</td><td>复算 4 条边全部一致（R1_convexity→ArbPersist:2.37, R1_convexity→ConvexityBreak:4.00, R1_convexity→ExtremeSkew:1.28, R1_convexity→VolSpike:1.65）</td></tr><tr><td>K6 无证据时明确拒绝推断</td><td>✓</td><td>自然样本中出现 0 例；另做构造性检验：摘掉「Gamma/Vega 截面集中」的全部出边后，解释如实声明不作推断（未编造路径）</td></tr><tr><td>K7 图中不含未通过检验的边</td><td>✓</td><td>21 条主干边全部通过支撑度+置换检验+lift 下界三项；测试期<strong>按同一标准</strong>复现 19 条，另 2 条仅满足宽松判据（下界&gt;1.0 但未达 p≤0.05 或下界&gt;1.1），其样本外证据偏弱、已在解释文本中就地标注</td></tr><tr><td>K8 解释文案的各项功能仍在生效</td><td>✓</td><td>24 项文案功能全部在 200 条样本中出现：方向提示 31、R7 方向盲区说明 23、R8 机制分量错配提示 6、双重条件的 z 阈值 29、业务语义解读句 392、抬头句·排序说明 31、抬头句·单项分支不谈排序 81、机制↔后果落点提示 17、同源边警示进通俗层 71、未展开根因具名 6、分量提示块内传播 6、触发等级可见 172、p 值根因内上提 150、后果口径预警内回指 83、跨品种无边时如实说明 7、主干路径截断披露 64、跨品种截断披露 31、测试期 lift 披露 392、样本外结论已平实化 392、宽松判据就地标注 61、自相关警示 71、因果免责 118、停用规则双重身份说明 72、统一口径回指 392</td></tr><tr><td>K9 打印的判定不等式必须为真</td><td>✓</td><td>抽查 29 处「本级要求 z &gt; X，实测 z = Y」，全部满足 Y &gt; X 且 X 取自 DEFAULT_PARAMS</td></tr><tr><td>K10 通俗解读句不得自我抵消</td><td>✓</td><td>抽查 392 条解读句，全部满足「本形态后的次数 &gt; 平时次数」，无自我抵消</td></tr><tr><td>K11 强调标记必须成对</td><td>✓</td><td>200 条解释、2422 行，<code>**</code> 全部成对</td></tr></tbody></table></div>
+<blockquote><p>三道门在开发中真的拦下了问题：K1 初版把免责声明里的「操作建议」四字误判为违规；K2 的数字提取正则把日期 <code>2026-02-12</code> 里的 <code>-02</code> 当成负数；K5 初版只在前 24 幕上复算 lift，与全训练期标定的结果对不上（3.04 vs 2.45），看着像图谱有 bug，实为测试自己取错了样本。</p></blockquote>
+<h2 id="8-已知局限">8. 已知局限</h2>
+<ol>
+<li><strong>lift 衡量的是条件共现，不是因果</strong>。分块置换只能排除「纯属偶然」，排除不了「同源」与「共同暴露于第三方冲击」。图谱的定位是<strong>可解释的风险提示</strong>，不是因果推断结论。</li>
+<li><strong>4 条边存在同源特征问题</strong>（根因与后果共用同一底层指标），已标注但无法根除——要根除需要引入曲面之外的独立观测（如标的已实现波动、成交持仓明细），当前数据集不包含。</li>
+<li><strong>后果集合只有 5 类</strong>，且都定义在曲面特征上。像「保证金压力」「跨市场传染」这类业务上更关心的后果，缺乏可观测代理变量，本版未纳入。</li>
+<li><strong>机制层未经检验且覆盖不全</strong>。<code>MECH</code> 的机制说明是业务先验，图里已标注为诠释层、不参与打分，但其本身正确性没有独立验证手段；且 21 条实测边中只有 9 条配有机制说明。</li>
+<li><strong>指标3 未经人工评审</strong>，本报告不对该项作达标声明。</li>
+</ol>
+<hr>
+<h2 id="复现">复现</h2>
+<pre><code>python scripts/build_kg.py          # 标定 + 装配图谱（约 20s）
+python -m kg.tests --emit           # 11 道验证门
+python scripts/report_kg.py         # 重新生成本报告与评分材料
+python scripts/viz_kg.py            # 生成传导路径可视化 HTML</code></pre>
+    <p class="foot">源文件 <code>data_out/kg_report.md</code>　·
+      本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
+      正本仍是那份 Markdown。</p>
+  </main>
+  <nav class="toc"><div class="h">目录</div><a href="#1-这版要解决的核心问题" class="l2">1. 这版要解决的核心问题</a><a href="#2-图谱规模" class="l2">2. 图谱规模</a><a href="#3-边是怎么测出来的" class="l2">3. 边是怎么测出来的</a><a href="#通过检验的主干边" class="l3">通过检验的主干边</a><a href="#4-被数据否掉的先验" class="l2">4. 被数据否掉的先验</a><a href="#5-跨品种-一个差点写进报告的假结论" class="l2">5. 跨品种：一个差点写进报告的假结论</a><a href="#跨板块传导" class="l3">跨板块传导</a><a href="#6-解释生成与人工评分材料" class="l2">6. 解释生成与人工评分材料</a><a href="#评分细则" class="l3">评分细则</a><a href="#机器自查-客观项-非人工评分" class="l3">机器自查（客观项，非人工评分）</a><a href="#7-验证门" class="l2">7. 验证门</a><a href="#8-已知局限" class="l2">8. 已知局限</a><a href="#复现" class="l2">复现</a></nav>
+</div></body></html>

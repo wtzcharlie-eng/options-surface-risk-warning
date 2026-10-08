@@ -1,0 +1,1623 @@
+{
+ "preregistration": "data_out/q1_window_zmult_preregistration.md",
+ "target": {
+  "P": 0.5,
+  "R": 0.6,
+  "lead": 30.0
+ },
+ "zmults": [
+  1.0,
+  1.3,
+  1.6,
+  2.0,
+  2.5,
+  3.0
+ ],
+ "rows": [
+  {
+   "zmult": 1.0,
+   "sym": "ag",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.7333333333333333,
+   "R": 0.95,
+   "lead": 923.6842105263158,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "ag",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.6666666666666666,
+   "R": 1.0,
+   "lead": 4095.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "ag",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.44642857142857145,
+   "R": 0.9655172413793104,
+   "lead": 454.55357142857144,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "au",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.6,
+   "R": 1.0,
+   "lead": 1151.9117647058824,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "au",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.46153846153846156,
+   "R": 0.9347826086956522,
+   "lead": 958.6046511627907,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "cu",
+   "label": "2024-05 铜逼仓",
+   "seg": "train",
+   "P": 0.5882352941176471,
+   "R": 1.0,
+   "lead": 1148.125,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "cu",
+   "label": "2025-09 铜矿事故",
+   "seg": "test",
+   "P": 0.6363636363636364,
+   "R": 0.9722222222222222,
+   "lead": 1008.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "cu",
+   "label": "2026-01 有色",
+   "seg": "test",
+   "P": 0.5416666666666666,
+   "R": 1.0,
+   "lead": 1603.5,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "lc",
+   "label": "2023-12 碳酸锂",
+   "seg": "train",
+   "P": 0.7142857142857143,
+   "R": 1.0,
+   "lead": 579.375,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "lc",
+   "label": "2025-08 碳酸锂",
+   "seg": "test",
+   "P": 0.4090909090909091,
+   "R": 0.9333333333333333,
+   "lead": 1271.7857142857142,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "lc",
+   "label": "2025-12 碳酸锂",
+   "seg": "test",
+   "P": 0.6,
+   "R": 1.0,
+   "lead": 1141.578947368421,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "rb",
+   "label": "2024-01 螺纹单边",
+   "seg": "train",
+   "P": 0.4117647058823529,
+   "R": 1.0,
+   "lead": 2766.4,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "rb",
+   "label": "2024-02 铁矿分化",
+   "seg": "train",
+   "P": 0.4166666666666667,
+   "R": 0.9090909090909091,
+   "lead": 414.0,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "rb",
+   "label": "2025-07 焦煤黑色",
+   "seg": "test",
+   "P": 0.75,
+   "R": 0.9743589743589743,
+   "lead": 1362.2368421052631,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "sc",
+   "label": "2023-06 能化",
+   "seg": "train",
+   "P": 0.6428571428571429,
+   "R": 0.9545454545454546,
+   "lead": 942.8571428571429,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "sc",
+   "label": "2024-09 全板块",
+   "seg": "train",
+   "P": 0.5294117647058824,
+   "R": 0.868421052631579,
+   "lead": 1370.909090909091,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "sc",
+   "label": "2026-03 原油",
+   "seg": "test",
+   "P": 0.6037735849056604,
+   "R": 0.9878048780487805,
+   "lead": 814.6296296296297,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "si",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.6,
+   "R": 0.8461538461538461,
+   "lead": 1704.5454545454545,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.0,
+   "sym": "al",
+   "label": "2024-01 有色/氧化铝",
+   "seg": "train",
+   "P": 0.3333333333333333,
+   "R": 0.9545454545454546,
+   "lead": 4034.285714285714,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 1.0,
+   "sym": "br",
+   "label": "2023-09 合成橡胶",
+   "seg": "train",
+   "P": 0.4444444444444444,
+   "R": 1.0,
+   "lead": 1491.6,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 1.3,
+   "sym": "ag",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.7,
+   "R": 0.8,
+   "lead": 1417.5,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "ag",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.42857142857142855,
+   "R": 1.0,
+   "lead": 4794.6,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "ag",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.46296296296296297,
+   "R": 0.9655172413793104,
+   "lead": 453.75,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "au",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.5454545454545454,
+   "R": 1.0,
+   "lead": 1978.235294117647,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "au",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.5263157894736842,
+   "R": 0.9347826086956522,
+   "lead": 1359.0697674418604,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "cu",
+   "label": "2024-05 铜逼仓",
+   "seg": "train",
+   "P": 0.7,
+   "R": 0.7083333333333334,
+   "lead": 399.70588235294116,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "cu",
+   "label": "2025-09 铜矿事故",
+   "seg": "test",
+   "P": 0.6363636363636364,
+   "R": 0.7777777777777778,
+   "lead": 2875.1785714285716,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "cu",
+   "label": "2026-01 有色",
+   "seg": "test",
+   "P": 0.4444444444444444,
+   "R": 0.9666666666666667,
+   "lead": 2079.8275862068967,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "lc",
+   "label": "2023-12 碳酸锂",
+   "seg": "train",
+   "P": 0.7142857142857143,
+   "R": 1.0,
+   "lead": 578.125,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "lc",
+   "label": "2025-08 碳酸锂",
+   "seg": "test",
+   "P": 0.38095238095238093,
+   "R": 0.9333333333333333,
+   "lead": 1288.9285714285713,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "lc",
+   "label": "2025-12 碳酸锂",
+   "seg": "test",
+   "P": 0.6,
+   "R": 1.0,
+   "lead": 1141.578947368421,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "rb",
+   "label": "2024-01 螺纹单边",
+   "seg": "train",
+   "P": 0.2857142857142857,
+   "R": 1.0,
+   "lead": 3983.4,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "rb",
+   "label": "2024-02 铁矿分化",
+   "seg": "train",
+   "P": 0.3,
+   "R": 0.9090909090909091,
+   "lead": 663.0,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "rb",
+   "label": "2025-07 焦煤黑色",
+   "seg": "test",
+   "P": 0.7857142857142857,
+   "R": 0.7948717948717948,
+   "lead": 1806.2903225806451,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "sc",
+   "label": "2023-06 能化",
+   "seg": "train",
+   "P": 0.6363636363636364,
+   "R": 0.9545454545454546,
+   "lead": 984.2857142857143,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "sc",
+   "label": "2024-09 全板块",
+   "seg": "train",
+   "P": 0.3333333333333333,
+   "R": 0.868421052631579,
+   "lead": 1722.7272727272727,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "sc",
+   "label": "2026-03 原油",
+   "seg": "test",
+   "P": 0.5833333333333334,
+   "R": 0.9878048780487805,
+   "lead": 1018.8888888888889,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "si",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.6,
+   "R": 0.8461538461538461,
+   "lead": 1704.5454545454545,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.3,
+   "sym": "al",
+   "label": "2024-01 有色/氧化铝",
+   "seg": "train",
+   "P": 0.2,
+   "R": 0.9545454545454546,
+   "lead": 4211.428571428572,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 1.3,
+   "sym": "br",
+   "label": "2023-09 合成橡胶",
+   "seg": "train",
+   "P": 0.5384615384615384,
+   "R": 0.92,
+   "lead": 1411.304347826087,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 1.6,
+   "sym": "ag",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.8,
+   "R": 0.775,
+   "lead": 1667.9032258064517,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "ag",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.3333333333333333,
+   "R": 1.0,
+   "lead": 4838.4,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "ag",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.46296296296296297,
+   "R": 0.9655172413793104,
+   "lead": 453.2142857142857,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "au",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.625,
+   "R": 1.0,
+   "lead": 3126.176470588235,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "au",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.5294117647058824,
+   "R": 0.8260869565217391,
+   "lead": 1378.0263157894738,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "cu",
+   "label": "2024-05 铜逼仓",
+   "seg": "train",
+   "P": 0.875,
+   "R": 0.7083333333333334,
+   "lead": 496.7647058823529,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "cu",
+   "label": "2025-09 铜矿事故",
+   "seg": "test",
+   "P": 0.7142857142857143,
+   "R": 0.7222222222222222,
+   "lead": 3576.346153846154,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "cu",
+   "label": "2026-01 有色",
+   "seg": "test",
+   "P": 0.5,
+   "R": 0.9666666666666667,
+   "lead": 3885.5172413793102,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "lc",
+   "label": "2023-12 碳酸锂",
+   "seg": "train",
+   "P": 0.631578947368421,
+   "R": 1.0,
+   "lead": 608.125,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "lc",
+   "label": "2025-08 碳酸锂",
+   "seg": "test",
+   "P": 0.38095238095238093,
+   "R": 0.9333333333333333,
+   "lead": 1288.9285714285713,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "lc",
+   "label": "2025-12 碳酸锂",
+   "seg": "test",
+   "P": 0.6,
+   "R": 1.0,
+   "lead": 1141.578947368421,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "rb",
+   "label": "2024-01 螺纹单边",
+   "seg": "train",
+   "P": 0.2222222222222222,
+   "R": 1.0,
+   "lead": 4170.6,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "rb",
+   "label": "2024-02 铁矿分化",
+   "seg": "train",
+   "P": 0.16666666666666666,
+   "R": 0.9090909090909091,
+   "lead": 1344.0,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "rb",
+   "label": "2025-07 焦煤黑色",
+   "seg": "test",
+   "P": 0.7692307692307693,
+   "R": 0.7948717948717948,
+   "lead": 1865.3225806451612,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "sc",
+   "label": "2023-06 能化",
+   "seg": "train",
+   "P": 0.5,
+   "R": 0.9545454545454546,
+   "lead": 1269.2857142857142,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "sc",
+   "label": "2024-09 全板块",
+   "seg": "train",
+   "P": 0.5,
+   "R": 0.868421052631579,
+   "lead": 2083.6363636363635,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "sc",
+   "label": "2026-03 原油",
+   "seg": "test",
+   "P": 0.5777777777777777,
+   "R": 0.9878048780487805,
+   "lead": 1096.851851851852,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "si",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.6,
+   "R": 0.8461538461538461,
+   "lead": 1704.5454545454545,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 1.6,
+   "sym": "al",
+   "label": "2024-01 有色/氧化铝",
+   "seg": "train",
+   "P": 0.3333333333333333,
+   "R": 0.9545454545454546,
+   "lead": 4629.285714285715,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 1.6,
+   "sym": "br",
+   "label": "2023-09 合成橡胶",
+   "seg": "train",
+   "P": 0.4166666666666667,
+   "R": 0.92,
+   "lead": 1423.695652173913,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 2.0,
+   "sym": "ag",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.8,
+   "R": 0.775,
+   "lead": 1658.225806451613,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "ag",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.4,
+   "R": 1.0,
+   "lead": 5413.8,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "ag",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.4716981132075472,
+   "R": 0.9655172413793104,
+   "lead": 453.75,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "au",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.75,
+   "R": 0.8823529411764706,
+   "lead": 3225.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "au",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.6428571428571429,
+   "R": 0.8260869565217391,
+   "lead": 1837.8947368421052,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "cu",
+   "label": "2024-05 铜逼仓",
+   "seg": "train",
+   "P": 0.6666666666666666,
+   "R": 0.7083333333333334,
+   "lead": 997.0588235294117,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "cu",
+   "label": "2025-09 铜矿事故",
+   "seg": "test",
+   "P": 0.6666666666666666,
+   "R": 0.7222222222222222,
+   "lead": 4115.192307692308,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "cu",
+   "label": "2026-01 有色",
+   "seg": "test",
+   "P": 0.5,
+   "R": 0.9,
+   "lead": 4032.222222222222,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "lc",
+   "label": "2023-12 碳酸锂",
+   "seg": "train",
+   "P": 0.5789473684210527,
+   "R": 1.0,
+   "lead": 604.375,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "lc",
+   "label": "2025-08 碳酸锂",
+   "seg": "test",
+   "P": 0.38095238095238093,
+   "R": 0.9333333333333333,
+   "lead": 1288.9285714285713,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "lc",
+   "label": "2025-12 碳酸锂",
+   "seg": "test",
+   "P": 0.6,
+   "R": 1.0,
+   "lead": 1141.578947368421,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "rb",
+   "label": "2024-01 螺纹单边",
+   "seg": "train",
+   "P": 0.25,
+   "R": 1.0,
+   "lead": 4497.2,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "rb",
+   "label": "2024-02 铁矿分化",
+   "seg": "train",
+   "P": 0.3333333333333333,
+   "R": 0.9090909090909091,
+   "lead": 1989.0,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "rb",
+   "label": "2025-07 焦煤黑色",
+   "seg": "test",
+   "P": 0.6666666666666666,
+   "R": 0.7948717948717948,
+   "lead": 3015.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "sc",
+   "label": "2023-06 能化",
+   "seg": "train",
+   "P": 0.625,
+   "R": 0.9545454545454546,
+   "lead": 1956.4285714285713,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "sc",
+   "label": "2024-09 全板块",
+   "seg": "train",
+   "P": 0.5,
+   "R": 0.7105263157894737,
+   "lead": 3239.4444444444443,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "sc",
+   "label": "2026-03 原油",
+   "seg": "test",
+   "P": 0.5813953488372093,
+   "R": 0.8292682926829268,
+   "lead": 896.9117647058823,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "si",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.5454545454545454,
+   "R": 0.8461538461538461,
+   "lead": 1692.2727272727273,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.0,
+   "sym": "al",
+   "label": "2024-01 有色/氧化铝",
+   "seg": "train",
+   "P": 0.0,
+   "R": 0.9545454545454546,
+   "lead": 9292.142857142857,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 2.0,
+   "sym": "br",
+   "label": "2023-09 合成橡胶",
+   "seg": "train",
+   "P": 0.5555555555555556,
+   "R": 0.84,
+   "lead": 1837.857142857143,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 2.5,
+   "sym": "ag",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.8,
+   "R": 0.775,
+   "lead": 1658.225806451613,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "ag",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.3333333333333333,
+   "R": 0.68,
+   "lead": 2662.9411764705883,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "ag",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.45098039215686275,
+   "R": 0.9655172413793104,
+   "lead": 534.1071428571429,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "au",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 1.0,
+   "R": 0.8823529411764706,
+   "lead": 5836.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "au",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.5833333333333334,
+   "R": 0.8260869565217391,
+   "lead": 4792.105263157895,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "cu",
+   "label": "2024-05 铜逼仓",
+   "seg": "train",
+   "P": 0.75,
+   "R": 0.7083333333333334,
+   "lead": 1209.7058823529412,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "cu",
+   "label": "2025-09 铜矿事故",
+   "seg": "test",
+   "P": 0.75,
+   "R": 0.5555555555555556,
+   "lead": 3903.75,
+   "pass3": false,
+   "binding": [
+    "召回"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "cu",
+   "label": "2026-01 有色",
+   "seg": "test",
+   "P": 0.6,
+   "R": 0.6333333333333333,
+   "lead": 2697.6315789473683,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "lc",
+   "label": "2023-12 碳酸锂",
+   "seg": "train",
+   "P": 0.5882352941176471,
+   "R": 1.0,
+   "lead": 628.75,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "lc",
+   "label": "2025-08 碳酸锂",
+   "seg": "test",
+   "P": 0.38095238095238093,
+   "R": 0.9333333333333333,
+   "lead": 1288.9285714285713,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "lc",
+   "label": "2025-12 碳酸锂",
+   "seg": "test",
+   "P": 0.6,
+   "R": 1.0,
+   "lead": 1141.578947368421,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "rb",
+   "label": "2024-01 螺纹单边",
+   "seg": "train",
+   "P": 0.17647058823529413,
+   "R": 1.0,
+   "lead": 6451.0,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "rb",
+   "label": "2024-02 铁矿分化",
+   "seg": "train",
+   "P": 0.3333333333333333,
+   "R": 0.9090909090909091,
+   "lead": 1989.0,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "rb",
+   "label": "2025-07 焦煤黑色",
+   "seg": "test",
+   "P": 0.5,
+   "R": 0.7948717948717948,
+   "lead": 3528.3870967741937,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "sc",
+   "label": "2023-06 能化",
+   "seg": "train",
+   "P": 0.5,
+   "R": 0.9545454545454546,
+   "lead": 2060.714285714286,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "sc",
+   "label": "2024-09 全板块",
+   "seg": "train",
+   "P": 0.5,
+   "R": 0.7105263157894737,
+   "lead": 3220.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "sc",
+   "label": "2026-03 原油",
+   "seg": "test",
+   "P": 0.55,
+   "R": 0.8048780487804879,
+   "lead": 999.5454545454545,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "si",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.5,
+   "R": 0.8461538461538461,
+   "lead": 1905.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 2.5,
+   "sym": "al",
+   "label": "2024-01 有色/氧化铝",
+   "seg": "train",
+   "P": 0.0,
+   "R": 0.9545454545454546,
+   "lead": 9292.142857142857,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 2.5,
+   "sym": "br",
+   "label": "2023-09 合成橡胶",
+   "seg": "train",
+   "P": 0.42857142857142855,
+   "R": 0.84,
+   "lead": 2687.8571428571427,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 3.0,
+   "sym": "ag",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 0.8,
+   "R": 0.775,
+   "lead": 1658.225806451613,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "ag",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.3333333333333333,
+   "R": 0.68,
+   "lead": 2662.9411764705883,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "ag",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.45098039215686275,
+   "R": 0.9655172413793104,
+   "lead": 534.1071428571429,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "au",
+   "label": "2024-04 贵金属",
+   "seg": "train",
+   "P": 1.0,
+   "R": 0.8823529411764706,
+   "lead": 6988.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "au",
+   "label": "2026-01 贵金属",
+   "seg": "test",
+   "P": 0.5,
+   "R": 0.8260869565217391,
+   "lead": 5088.9473684210525,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "cu",
+   "label": "2024-05 铜逼仓",
+   "seg": "train",
+   "P": 0.6666666666666666,
+   "R": 0.7083333333333334,
+   "lead": 2407.9411764705883,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "cu",
+   "label": "2025-09 铜矿事故",
+   "seg": "test",
+   "P": 0.75,
+   "R": 0.5555555555555556,
+   "lead": 3835.5,
+   "pass3": false,
+   "binding": [
+    "召回"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "cu",
+   "label": "2026-01 有色",
+   "seg": "test",
+   "P": 0.5,
+   "R": 0.6333333333333333,
+   "lead": 3240.7894736842104,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "lc",
+   "label": "2023-12 碳酸锂",
+   "seg": "train",
+   "P": 0.5882352941176471,
+   "R": 1.0,
+   "lead": 628.75,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "lc",
+   "label": "2025-08 碳酸锂",
+   "seg": "test",
+   "P": 0.38095238095238093,
+   "R": 0.9333333333333333,
+   "lead": 1288.9285714285713,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "lc",
+   "label": "2025-12 碳酸锂",
+   "seg": "test",
+   "P": 0.6,
+   "R": 1.0,
+   "lead": 1141.578947368421,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "rb",
+   "label": "2024-01 螺纹单边",
+   "seg": "train",
+   "P": 0.13333333333333333,
+   "R": 1.0,
+   "lead": 6599.8,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "rb",
+   "label": "2024-02 铁矿分化",
+   "seg": "train",
+   "P": 0.5,
+   "R": 0.9090909090909091,
+   "lead": 1974.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "rb",
+   "label": "2025-07 焦煤黑色",
+   "seg": "test",
+   "P": 0.25,
+   "R": 0.48717948717948717,
+   "lead": 3585.7894736842104,
+   "pass3": false,
+   "binding": [
+    "精确率",
+    "召回"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "sc",
+   "label": "2023-06 能化",
+   "seg": "train",
+   "P": 0.25,
+   "R": 0.9545454545454546,
+   "lead": 2595.0,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "sc",
+   "label": "2024-09 全板块",
+   "seg": "train",
+   "P": 0.3333333333333333,
+   "R": 0.7105263157894737,
+   "lead": 3453.3333333333335,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "sc",
+   "label": "2026-03 原油",
+   "seg": "test",
+   "P": 0.55,
+   "R": 0.8048780487804879,
+   "lead": 999.5454545454545,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "si",
+   "label": "2025-04 关税战",
+   "seg": "val",
+   "P": 0.375,
+   "R": 0.8461538461538461,
+   "lead": 1990.909090909091,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": false
+  },
+  {
+   "zmult": 3.0,
+   "sym": "al",
+   "label": "2024-01 有色/氧化铝",
+   "seg": "train",
+   "P": 0.0,
+   "R": 0.9545454545454546,
+   "lead": 9292.142857142857,
+   "pass3": false,
+   "binding": [
+    "精确率"
+   ],
+   "out_of_calib": true
+  },
+  {
+   "zmult": 3.0,
+   "sym": "br",
+   "label": "2023-09 合成橡胶",
+   "seg": "train",
+   "P": 0.5,
+   "R": 0.72,
+   "lead": 2870.0,
+   "pass3": true,
+   "binding": [],
+   "out_of_calib": true
+  }
+ ],
+ "protocol": "训练期 10 窗选点；验证期 2 窗单列不参与选择；测试期 8 窗只评一次。调 zmult 是**沿前沿滑动**，不是移动前沿。",
+ "by_zmult": {
+  "1.0": {
+   "n_pass": {
+    "train": 6,
+    "val": 2,
+    "test": 5
+   },
+   "n_pass_all": 13,
+   "train_mean_P": 0.5414332399626518,
+   "min_recall_any": 0.8461538461538461
+  },
+  "1.3": {
+   "n_pass": {
+    "train": 6,
+    "val": 1,
+    "test": 5
+   },
+   "n_pass_all": 12,
+   "train_mean_P": 0.49536130536130535,
+   "min_recall_any": 0.7083333333333334
+  },
+  "1.6": {
+   "n_pass": {
+    "train": 6,
+    "val": 1,
+    "test": 6
+   },
+   "n_pass_all": 13,
+   "train_mean_P": 0.507046783625731,
+   "min_recall_any": 0.7083333333333334
+  },
+  "2.0": {
+   "n_pass": {
+    "train": 7,
+    "val": 1,
+    "test": 6
+   },
+   "n_pass_all": 14,
+   "train_mean_P": 0.5059502923976608,
+   "min_recall_any": 0.7083333333333334
+  },
+  "2.5": {
+   "n_pass": {
+    "train": 6,
+    "val": 1,
+    "test": 5
+   },
+   "n_pass_all": 12,
+   "train_mean_P": 0.5076610644257704,
+   "min_recall_any": 0.5555555555555556
+  },
+  "3.0": {
+   "n_pass": {
+    "train": 6,
+    "val": 0,
+    "test": 4
+   },
+   "n_pass_all": 10,
+   "train_mean_P": 0.47715686274509805,
+   "min_recall_any": 0.48717948717948717
+  }
+ },
+ "picked_zmult": 2.0,
+ "baseline_zmult": 1.0,
+ "recall_broken": [],
+ "verdict": {
+  "passed": true,
+  "n_test_base": 5,
+  "n_test_pick": 6,
+  "text": "**通过**：测试期达标 5/8 → 6/8。　**但这是沿 P-R 前沿滑动，不是系统变强**——调紧阈值把召回余量换成了精确率，前沿本身没动。"
+ }
+}

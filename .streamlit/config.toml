@@ -1,0 +1,27 @@
+# Streamlit 主题 —— 与 index.html / platform.html / doc_*.html 同一套配色。
+#
+# 为什么要有这个文件
+# ------------------
+# `dashboard/app.py` 里只能控制 Plotly 图表的配色，**Streamlit 外壳**（页面底色、
+# 侧边栏、控件、表格）由本文件决定。没有它的话，深色图表会被套在一个浅色外壳里，
+# 从入口页点进来像换了个产品。
+#
+# 色值与 `scripts/build_index.py` 的 `:root` 一一对应，改一处要同步四处。
+
+[theme]
+base = "dark"
+primaryColor = "#4fb79c"            # --calm：主色/选中态
+backgroundColor = "#0e1621"         # --ink：页面底
+secondaryBackgroundColor = "#151f2b"  # --panel：侧边栏、控件、表格底
+textColor = "#e3eaf1"               # --fg：正文
+# 西文族在前走 Times、汉字回退黑体——与其余三处的字体栈同一条规则。
+# Streamlit 只认 sans serif / serif / monospace 三个值，故取 serif
+# （Times 属衬线族），中文实际由系统黑体回退承担。
+font = "serif"
+
+[server]
+# 交付演示用：不做遥测、不自动开浏览器
+headless = true
+
+[browser]
+gatherUsageStats = false

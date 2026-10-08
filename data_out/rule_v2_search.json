@@ -1,0 +1,808 @@
+{
+  "grid": [
+    {
+      "cfg": {
+        "zmult": 1.0,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 639,
+        "n_risk": 1132,
+        "n_hit_event": 286,
+        "n_recalled": 1091,
+        "n_alert_slice": 1634,
+        "precision": 0.4475743348982786,
+        "recall": 0.9637809187279152,
+        "avg_lead_min": 1907.089825847846
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.0,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 630,
+        "n_risk": 1132,
+        "n_hit_event": 286,
+        "n_recalled": 1091,
+        "n_alert_slice": 1589,
+        "precision": 0.45396825396825397,
+        "recall": 0.9637809187279152,
+        "avg_lead_min": 1913.359303391384
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.0,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 407,
+        "n_risk": 1132,
+        "n_hit_event": 211,
+        "n_recalled": 1066,
+        "n_alert_slice": 878,
+        "precision": 0.5184275184275184,
+        "recall": 0.941696113074205,
+        "avg_lead_min": 2933.921200750469
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.0,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 402,
+        "n_risk": 1132,
+        "n_hit_event": 210,
+        "n_recalled": 1065,
+        "n_alert_slice": 860,
+        "precision": 0.5223880597014925,
+        "recall": 0.9408127208480566,
+        "avg_lead_min": 2972.1971830985917
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.0,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 376,
+        "n_risk": 1132,
+        "n_hit_event": 203,
+        "n_recalled": 1081,
+        "n_alert_slice": 909,
+        "precision": 0.5398936170212766,
+        "recall": 0.9549469964664311,
+        "avg_lead_min": 3521.7252543940795
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.0,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 371,
+        "n_risk": 1132,
+        "n_hit_event": 203,
+        "n_recalled": 1081,
+        "n_alert_slice": 890,
+        "precision": 0.5471698113207547,
+        "recall": 0.9549469964664311,
+        "avg_lead_min": 3544.0656799259946
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.0,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 254,
+        "n_risk": 1132,
+        "n_hit_event": 152,
+        "n_recalled": 994,
+        "n_alert_slice": 663,
+        "precision": 0.5984251968503937,
+        "recall": 0.8780918727915195,
+        "avg_lead_min": 5163.350100603621
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.0,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 252,
+        "n_risk": 1132,
+        "n_hit_event": 152,
+        "n_recalled": 993,
+        "n_alert_slice": 648,
+        "precision": 0.6031746031746031,
+        "recall": 0.877208480565371,
+        "avg_lead_min": 5185.543806646526
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.6,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 261,
+        "n_risk": 1132,
+        "n_hit_event": 143,
+        "n_recalled": 995,
+        "n_alert_slice": 526,
+        "precision": 0.5478927203065134,
+        "recall": 0.8789752650176679,
+        "avg_lead_min": 4722.753768844221
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.6,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 258,
+        "n_risk": 1132,
+        "n_hit_event": 143,
+        "n_recalled": 995,
+        "n_alert_slice": 519,
+        "precision": 0.5542635658914729,
+        "recall": 0.8789752650176679,
+        "avg_lead_min": 4764.361809045226
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.6,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 131,
+        "n_risk": 1132,
+        "n_hit_event": 82,
+        "n_recalled": 773,
+        "n_alert_slice": 224,
+        "precision": 0.6259541984732825,
+        "recall": 0.6828621908127208,
+        "avg_lead_min": 7242.554980595084
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.6,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 130,
+        "n_risk": 1132,
+        "n_hit_event": 81,
+        "n_recalled": 773,
+        "n_alert_slice": 221,
+        "precision": 0.6230769230769231,
+        "recall": 0.6828621908127208,
+        "avg_lead_min": 7330.808538163002
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.6,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 135,
+        "n_risk": 1132,
+        "n_hit_event": 82,
+        "n_recalled": 919,
+        "n_alert_slice": 262,
+        "precision": 0.6074074074074074,
+        "recall": 0.8118374558303887,
+        "avg_lead_min": 8412.22524483134
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.6,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 133,
+        "n_risk": 1132,
+        "n_hit_event": 82,
+        "n_recalled": 919,
+        "n_alert_slice": 258,
+        "precision": 0.6165413533834586,
+        "recall": 0.8118374558303887,
+        "avg_lead_min": 8553.248095756257
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.6,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 75,
+        "n_risk": 1132,
+        "n_hit_event": 51,
+        "n_recalled": 654,
+        "n_alert_slice": 157,
+        "precision": 0.68,
+        "recall": 0.5777385159010601,
+        "avg_lead_min": 8879.426605504586
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 1.6,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 75,
+        "n_risk": 1132,
+        "n_hit_event": 51,
+        "n_recalled": 654,
+        "n_alert_slice": 155,
+        "precision": 0.68,
+        "recall": 0.5777385159010601,
+        "avg_lead_min": 8879.426605504586
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.0,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 157,
+        "n_risk": 1132,
+        "n_hit_event": 95,
+        "n_recalled": 908,
+        "n_alert_slice": 283,
+        "precision": 0.6050955414012739,
+        "recall": 0.8021201413427562,
+        "avg_lead_min": 7267.863436123348
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.0,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 154,
+        "n_risk": 1132,
+        "n_hit_event": 95,
+        "n_recalled": 908,
+        "n_alert_slice": 278,
+        "precision": 0.6168831168831169,
+        "recall": 0.8021201413427562,
+        "avg_lead_min": 7464.647577092511
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.0,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 71,
+        "n_risk": 1132,
+        "n_hit_event": 53,
+        "n_recalled": 634,
+        "n_alert_slice": 105,
+        "precision": 0.7464788732394366,
+        "recall": 0.5600706713780919,
+        "avg_lead_min": 8225.276025236593
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.0,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 71,
+        "n_risk": 1132,
+        "n_hit_event": 53,
+        "n_recalled": 634,
+        "n_alert_slice": 103,
+        "precision": 0.7464788732394366,
+        "recall": 0.5600706713780919,
+        "avg_lead_min": 8225.276025236593
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.0,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 83,
+        "n_risk": 1132,
+        "n_hit_event": 50,
+        "n_recalled": 659,
+        "n_alert_slice": 134,
+        "precision": 0.6024096385542169,
+        "recall": 0.5821554770318021,
+        "avg_lead_min": 8918.444613050076
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.0,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 81,
+        "n_risk": 1132,
+        "n_hit_event": 50,
+        "n_recalled": 659,
+        "n_alert_slice": 130,
+        "precision": 0.6172839506172839,
+        "recall": 0.5821554770318021,
+        "avg_lead_min": 9115.1062215478
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.0,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 37,
+        "n_risk": 1132,
+        "n_hit_event": 27,
+        "n_recalled": 368,
+        "n_alert_slice": 66,
+        "precision": 0.7297297297297297,
+        "recall": 0.3250883392226148,
+        "avg_lead_min": 8947.907608695652
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.0,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 37,
+        "n_risk": 1132,
+        "n_hit_event": 27,
+        "n_recalled": 368,
+        "n_alert_slice": 64,
+        "precision": 0.7297297297297297,
+        "recall": 0.3250883392226148,
+        "avg_lead_min": 8947.907608695652
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.5,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 106,
+        "n_risk": 1132,
+        "n_hit_event": 57,
+        "n_recalled": 793,
+        "n_alert_slice": 154,
+        "precision": 0.5377358490566038,
+        "recall": 0.700530035335689,
+        "avg_lead_min": 9093.102143757882
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.5,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 104,
+        "n_risk": 1132,
+        "n_hit_event": 57,
+        "n_recalled": 793,
+        "n_alert_slice": 151,
+        "precision": 0.5480769230769231,
+        "recall": 0.700530035335689,
+        "avg_lead_min": 9223.846153846154
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.5,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 33,
+        "n_risk": 1132,
+        "n_hit_event": 26,
+        "n_recalled": 335,
+        "n_alert_slice": 42,
+        "precision": 0.7878787878787878,
+        "recall": 0.2959363957597173,
+        "avg_lead_min": 8583.358208955224
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.5,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 33,
+        "n_risk": 1132,
+        "n_hit_event": 26,
+        "n_recalled": 335,
+        "n_alert_slice": 42,
+        "precision": 0.7878787878787878,
+        "recall": 0.2959363957597173,
+        "avg_lead_min": 8583.358208955224
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.5,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 58,
+        "n_risk": 1132,
+        "n_hit_event": 34,
+        "n_recalled": 573,
+        "n_alert_slice": 77,
+        "precision": 0.5862068965517241,
+        "recall": 0.5061837455830389,
+        "avg_lead_min": 9887.015706806284
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.5,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 55,
+        "n_risk": 1132,
+        "n_hit_event": 34,
+        "n_recalled": 566,
+        "n_alert_slice": 74,
+        "precision": 0.6181818181818182,
+        "recall": 0.5,
+        "avg_lead_min": 10143.710247349823
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.5,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 18,
+        "n_risk": 1132,
+        "n_hit_event": 14,
+        "n_recalled": 214,
+        "n_alert_slice": 24,
+        "precision": 0.7777777777777778,
+        "recall": 0.18904593639575973,
+        "avg_lead_min": 8986.682242990653
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 2.5,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 18,
+        "n_risk": 1132,
+        "n_hit_event": 14,
+        "n_recalled": 214,
+        "n_alert_slice": 24,
+        "precision": 0.7777777777777778,
+        "recall": 0.18904593639575973,
+        "avg_lead_min": 8986.682242990653
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 3.0,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 79,
+        "n_risk": 1132,
+        "n_hit_event": 39,
+        "n_recalled": 559,
+        "n_alert_slice": 103,
+        "precision": 0.4936708860759494,
+        "recall": 0.49381625441696114,
+        "avg_lead_min": 8682.504472271914
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 3.0,
+        "composite": false,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 76,
+        "n_risk": 1132,
+        "n_hit_event": 39,
+        "n_recalled": 552,
+        "n_alert_slice": 100,
+        "precision": 0.5131578947368421,
+        "recall": 0.4876325088339223,
+        "avg_lead_min": 8883.478260869566
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 3.0,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 19,
+        "n_risk": 1132,
+        "n_hit_event": 13,
+        "n_recalled": 205,
+        "n_alert_slice": 23,
+        "precision": 0.6842105263157895,
+        "recall": 0.18109540636042404,
+        "avg_lead_min": 9083.926829268292
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 3.0,
+        "composite": false,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 19,
+        "n_risk": 1132,
+        "n_hit_event": 13,
+        "n_recalled": 205,
+        "n_alert_slice": 23,
+        "precision": 0.6842105263157895,
+        "recall": 0.18109540636042404,
+        "avg_lead_min": 9083.926829268292
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 3.0,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 42,
+        "n_risk": 1132,
+        "n_hit_event": 21,
+        "n_recalled": 368,
+        "n_alert_slice": 49,
+        "precision": 0.5,
+        "recall": 0.3250883392226148,
+        "avg_lead_min": 9768.75
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 3.0,
+        "composite": true,
+        "cooldown": 0,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 39,
+        "n_risk": 1132,
+        "n_hit_event": 21,
+        "n_recalled": 361,
+        "n_alert_slice": 46,
+        "precision": 0.5384615384615384,
+        "recall": 0.31890459363957596,
+        "avg_lead_min": 10208.808864265928
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 3.0,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": false
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 6,
+        "n_risk": 1132,
+        "n_hit_event": 5,
+        "n_recalled": 77,
+        "n_alert_slice": 6,
+        "precision": 0.8333333333333334,
+        "recall": 0.06802120141342756,
+        "avg_lead_min": 7325.8441558441555
+      }
+    },
+    {
+      "cfg": {
+        "zmult": 3.0,
+        "composite": true,
+        "cooldown": 8,
+        "qgate": true
+      },
+      "val": {
+        "n_episodes": 42,
+        "n_alert_event": 6,
+        "n_risk": 1132,
+        "n_hit_event": 5,
+        "n_recalled": 77,
+        "n_alert_slice": 6,
+        "precision": 0.8333333333333334,
+        "recall": 0.06802120141342756,
+        "avg_lead_min": 7325.8441558441555
+      }
+    }
+  ],
+  "picked": {
+    "cfg": {
+      "zmult": 1.6,
+      "composite": false,
+      "cooldown": 8,
+      "qgate": false
+    },
+    "val": {
+      "n_episodes": 42,
+      "n_alert_event": 131,
+      "n_risk": 1132,
+      "n_hit_event": 82,
+      "n_recalled": 773,
+      "n_alert_slice": 224,
+      "precision": 0.6259541984732825,
+      "recall": 0.6828621908127208,
+      "avg_lead_min": 7242.554980595084
+    },
+    "test": {
+      "n_episodes": 59,
+      "n_alert_event": 534,
+      "n_risk": 1767,
+      "n_hit_event": 234,
+      "n_recalled": 1381,
+      "n_alert_slice": 1254,
+      "precision": 0.43820224719101125,
+      "recall": 0.7815506508205999,
+      "avg_lead_min": 4499.543808834178
+    },
+    "pass3": false
+  },
+  "baseline_val": {
+    "n_episodes": 42,
+    "n_alert_event": 157,
+    "n_risk": 1132,
+    "n_hit_event": 95,
+    "n_recalled": 908,
+    "n_alert_slice": 283,
+    "precision": 0.6050955414012739,
+    "recall": 0.8021201413427562,
+    "avg_lead_min": 7267.863436123348
+  },
+  "caliber": "新口径（事件级精确率 / 召回不设上限），见 drl/metrics_v2.py",
+  "note": "所有配置只在验证集比较并选出一个；测试集只评一次。"
+}

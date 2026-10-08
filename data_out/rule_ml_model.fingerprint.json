@@ -1,0 +1,50 @@
+{
+ "feature_names": [
+  "atm_iv",
+  "atm_iv_z",
+  "atm_iv_vel_z",
+  "convexity_violation",
+  "convexity_violation_z",
+  "convexity_vel_z",
+  "term_slope",
+  "term_slope_roc",
+  "skew_percentile",
+  "skew_val",
+  "gamma_concentration",
+  "vega_concentration",
+  "iv_change",
+  "iv_change_rate",
+  "iv_spike",
+  "fit_degradation",
+  "arb_score",
+  "arb_score_z",
+  "arb_calendar_n",
+  "arb_butterfly_n",
+  "arb_parity_n",
+  "liquidity_ratio",
+  "liquidity_z",
+  "iv_near",
+  "iv_far",
+  "n_contracts",
+  "rv_short",
+  "rv_long",
+  "iv_rv_spread",
+  "iv_rv_ratio",
+  "spread_z",
+  "rv_accel"
+ ],
+ "n_features": 32,
+ "train_span": [
+  "2023-01",
+  "2024-12"
+ ],
+ "n_train_rows": 87517,
+ "pos_rate_train": 0.296022487059657,
+ "model_params": {
+  "max_iter": 200,
+  "learning_rate": 0.08,
+  "max_leaf_nodes": 31,
+  "random_state": 0
+ },
+ "sklearn": "1.7.2"
+}

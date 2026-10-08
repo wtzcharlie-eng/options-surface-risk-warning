@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>问题2 · 知识图谱 Schema · 期权波动率曲面风控预警系统</title>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0e1621; --panel:#151f2b; --rule:#22303f;
+  --fg:#e3eaf1; --fg2:#8fa0b2; --fg3:#5d6f82;
+  --calm:#4fb79c; --stress:#e8695e; --caveat:#d8a24a;
+  /* 与 index.html 完全一致：西文族在前走 Times，汉字回退到黑体 */
+  --sans:"Times New Roman",Times,"PingFang SC","Hiragino Sans GB",
+         "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --mono:"Times New Roman",Times,ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--calm);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--calm);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:9;background:rgba(14,22,33,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;
+  align-items:baseline;gap:16px}
+.bar .home{color:var(--fg2);font-size:13px}
+.bar h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.01em}
+.bar .sub{color:var(--fg3);font-size:12.5px;margin-left:auto}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;
+  grid-template-columns:1fr 236px;gap:44px;align-items:start}
+main{min-width:0;padding:34px 0 96px}
+
+nav.toc{position:sticky;top:66px;padding:34px 0;max-height:calc(100vh - 76px);
+  overflow:auto}
+nav.toc .h{font-size:11px;letter-spacing:.14em;color:var(--fg3);
+  margin-bottom:10px;font-family:var(--mono)}
+nav.toc a{display:block;color:var(--fg2);font-size:12.5px;line-height:1.55;
+  padding:3px 0 3px 10px;border-left:1px solid var(--rule);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--calm)}
+nav.toc a.l3{padding-left:22px;color:var(--fg3);font-size:12px}
+
+h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.35;letter-spacing:.01em}
+main h1{font-size:27px;margin:6px 0 22px}
+main h2{font-size:21px;margin:44px 0 14px;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+main h3{font-size:17px;margin:30px 0 10px;color:#f0f5fa}
+main h4{font-size:15px;margin:22px 0 8px;color:var(--fg2)}
+p{margin:13px 0}
+strong{color:#f4f8fc;font-weight:700}
+code{font-family:var(--mono);font-size:13.5px;background:#1b2735;
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:#cfe0ee}
+pre{background:var(--panel);border:1px solid var(--rule);padding:15px 17px;
+  overflow:auto;margin:16px 0}
+pre code{background:none;border:0;padding:0;font-size:13px;line-height:1.65;
+  color:#cfe0ee}
+blockquote{margin:16px 0;padding:2px 18px;border-left:3px solid var(--caveat);
+  background:#141d29;color:var(--fg2)}
+blockquote strong{color:var(--caveat)}
+blockquote p{margin:10px 0}
+ul,ol{margin:13px 0;padding-left:24px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:34px 0}
+.tw{overflow-x:auto;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--rule);padding:8px 11px;text-align:left;
+  vertical-align:top}
+th{background:#1a2532;color:var(--fg);font-weight:700;white-space:nowrap}
+td{color:var(--fg2)}
+tbody tr:nth-child(even) td{background:#121b26}
+td code,th code{font-size:12.5px}
+
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--fg3);line-height:1.9}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:0 0 20px}
+}
+</style></head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="../index.html">← 交付入口</a>
+  <h1>问题2 · 知识图谱 Schema</h1>
+  <span class="sub">节点类型（曲面特征 / Greeks / 标的）、边语义与标定口径。赛题要求的 Schema 文档。</span>
+</div></div>
+<div class="shell">
+  <main><h1 id="期权风险知识图谱-schema">期权风险知识图谱 Schema</h1>
+<blockquote><p>本文件由 <code>scripts/report_kg.py</code> 从 <code>kg/schema.py</code> 自动生成，请勿手工编辑。</p></blockquote>
+<h2 id="分层">分层</h2>
+<div class='tw'><table><thead><tr><th>layer</th><th>含义</th><th>权重来源</th><th>参与推理打分</th></tr></thead><tbody><tr><td><code>measured</code></td><td>实测层</td><td>87,517 个<strong>训练期</strong>真实截面标定的提升度 lift</td><td>是</td></tr><tr><td><code>interpretive</code></td><td>诠释层</td><td>业务先验，无权重</td><td>否</td></tr><tr><td><code>meta</code></td><td>品种/板块等元数据</td><td>—</td><td>否</td></tr></tbody></table></div>
+<h2 id="节点类型">节点类型</h2>
+<div class='tw'><table><thead><tr><th>type</th><th>layer</th><th>数量</th><th>说明</th></tr></thead><tbody><tr><td><code>ANOM</code></td><td><code>measured</code></td><td>8</td><td>曲面异常模式，与问题1 的 8 条预警规则一一对应</td></tr><tr><td><code>CONSEQ</code></td><td><code>measured</code></td><td>5</td><td>可测后果，由未来 8 个截面的特征客观判定</td></tr><tr><td><code>MECH</code></td><td><code>interpretive</code></td><td>6</td><td>传导机制说明，业务先验</td></tr><tr><td><code>CONSTRAINT</code></td><td><code>interpretive</code></td><td>3</td><td>无套利约束，说明异常为何属定价结构问题</td></tr><tr><td><code>SYM</code></td><td><code>meta</code></td><td>7</td><td>品种</td></tr><tr><td><code>SECTOR</code></td><td><code>meta</code></td><td>5</td><td>板块</td></tr><tr><td><code>XSYM</code></td><td><code>measured</code></td><td>48</td><td>品种级异常节点，承载跨品种共现边</td></tr></tbody></table></div>
+<h2 id="边类型">边类型</h2>
+<div class='tw'><table><thead><tr><th>kind</th><th>起点 → 终点</th><th>layer</th><th>权重含义</th></tr></thead><tbody><tr><td><code>AMPLIFIES</code></td><td>ANOM → CONSEQ</td><td>measured</td><td>lift 的 95% 保守下界（推理主干）</td></tr><tr><td><code>PROPAGATES_TO</code></td><td>XSYM → XSYM</td><td>measured</td><td>小时匹配后 lift 的保守下界</td></tr><tr><td><code>EXPLAINS</code></td><td>ANOM → MECH → CONSEQ</td><td>interpretive</td><td>恒 0，仅供可视化</td></tr><tr><td><code>VIOLATES</code></td><td>ANOM → CONSTRAINT</td><td>interpretive</td><td>恒 0</td></tr><tr><td><code>MEMBER_OF</code></td><td>SYM → SECTOR</td><td>meta</td><td>恒 1</td></tr></tbody></table></div>
+<h2 id="异常节点-anom">异常节点（ANOM）</h2>
+<div class='tw'><table><thead><tr><th>id</th><th>名称</th><th>对应规则</th><th>主特征</th><th>含义</th></tr></thead><tbody><tr><td><code>ANOM-R1_convexity</code></td><td>曲面凸性违反</td><td><code>R1_convexity</code></td><td><code>convexity_violation</code></td><td>同一到期上，总方差沿行权价方向不再是凸函数，蝶式组合出现负价值区间</td></tr><tr><td><code>ANOM-R2_term</code></td><td>期限结构斜率急变</td><td><code>R2_term_slope_roc</code></td><td><code>term_slope_roc</code></td><td>近月与远月的隐含波动率之差在短时间内大幅变化，期限结构形态被快速重塑</td></tr><tr><td><code>ANOM-R3_atmiv</code></td><td>ATM IV 异常偏离</td><td><code>R3_atm_iv_z</code></td><td><code>atm_iv</code></td><td>平值隐含波动率相对自身滚动分布出现显著偏离</td></tr><tr><td><code>ANOM-R4_conc</code></td><td>Gamma/Vega 截面集中</td><td><code>R4_concentration</code></td><td><code>gamma_concentration</code></td><td>Gamma 或 Vega 敞口高度集中在少数行权价上，敞口分布的集中度指标抬升</td></tr><tr><td><code>ANOM-R5_arb</code></td><td>无套利条件违反</td><td><code>R5_arb</code></td><td><code>arb_score</code></td><td>日历、蝶式、买卖权平价三类无套利校验的违反程度综合抬升</td></tr><tr><td><code>ANOM-R6_liq</code></td><td>流动性退化</td><td><code>R6_liquidity</code></td><td><code>liquidity_ratio</code></td><td>有成交的活跃合约占比下降，曲面报价的支撑变薄</td></tr><tr><td><code>ANOM-R7_ivspike</code></td><td>短期 IV 急升</td><td><code>R7_iv_spike</code></td><td><code>iv_spike</code></td><td>隐含波动率在数个截面内快速抬升</td></tr><tr><td><code>ANOM-R8_accel</code></td><td>IV/凸性加速度异常</td><td><code>R8_acceleration</code></td><td><code>atm_iv_vel_z</code></td><td>隐含波动率或凸性的变化速度本身出现异动，属导数层面的领先信号</td></tr></tbody></table></div>
+<h2 id="后果节点-conseq-判定口径">后果节点（CONSEQ）——判定口径</h2>
+<div class='tw'><table><thead><tr><th>id</th><th>名称</th><th>判定式</th><th>业务含义</th></tr></thead><tbody><tr><td><code>CONSEQ-VolSpike</code></td><td>波动率水平跳升</td><td>未来 8 个截面内 <code>atm_iv_z</code> 的最大值 &gt; 2.0</td><td>平值隐含波动率显著抬升，期权整体估值与保证金占用随之上行</td></tr><tr><td><code>CONSEQ-ConvexityBreak</code></td><td>曲面凸性破坏</td><td>未来 8 个截面内 <code>convexity_violation_z</code> 的最大值 &gt; 2.0</td><td>曲面沿行权价方向失去凸性，报价面出现结构性畸变</td></tr><tr><td><code>CONSEQ-ExtremeSkew</code></td><td>偏度走向极端</td><td>未来 8 个截面内 <code>skew_percentile</code> 对中性值 0.5 的偏离幅度[†] 的最大值 &gt; 0.45</td><td>看涨或看跌一侧的隐含波动率溢价被推到历史分布的尾部</td></tr><tr><td><code>CONSEQ-LiquidityDrop</code></td><td>流动性进一步塌陷</td><td>未来 8 个截面内 <code>liquidity_z</code> 的最小值 &lt; -1.5</td><td>活跃合约占比继续下滑，做市报价深度变薄</td></tr><tr><td><code>CONSEQ-ArbPersist</code></td><td>无套利违反持续</td><td>未来 8 个截面内 <code>arb_score_z</code> 的均值 &gt; 1.0</td><td>无套利违反在整个窗口内维持高位，而非单点噪声</td></tr></tbody></table></div>
+<h2 id="机制节点-mech-诠释层">机制节点（MECH，诠释层）</h2>
+<div class='tw'><table><thead><tr><th>id</th><th>名称</th><th>机制说明</th></tr></thead><tbody><tr><td><code>MECH-MakerGamma</code></td><td>做市商 Gamma 对冲压力</td><td>空头 Gamma 敞口集中时，做市商需顺势调整标的对冲头寸，标的价格波动被反馈放大，进而推高隐含波动率</td></tr><tr><td><code>MECH-VolFeedback</code></td><td>波动率反馈环</td><td>已实现波动上行推高隐含波动率报价，估值与保证金占用同步抬升，促使部分参与者调整敞口，又进一步加大已实现波动</td></tr><tr><td><code>MECH-LiquiditySpiral</code></td><td>流动性螺旋</td><td>报价深度变薄使成交冲击成本上升，做市商进一步收窄报价或撤单，曲面拟合可用点减少、形态更易畸变</td></tr><tr><td><code>MECH-ExpiryCluster</code></td><td>临到期敞口集中</td><td>临近到期时 Gamma 与到期损益高度非线性，敞口向平值附近集中，小幅标的变动即可引起较大的曲面形态变化</td></tr><tr><td><code>MECH-TermInversion</code></td><td>期限结构倒挂</td><td>近月隐含波动率超过远月，反映短期风险定价高于长期，常伴随事件驱动的短期不确定性上升</td></tr><tr><td><code>MECH-QuoteDistortion</code></td><td>报价面畸变传播</td><td>局部行权价的异常报价通过做市商的相对定价关系扩散到相邻行权价，使畸变从单点扩散为区间</td></tr></tbody></table></div>
+<blockquote><p>机制说明是<strong>业务先验</strong>，不参与权重计算，也未经独立验证。它只回答「为什么会这样传导」，其正确性不由本项目的数据背书。</p></blockquote>
+<h2 id="边属性">边属性</h2>
+<p><code>AMPLIFIES</code> 边携带以下可审计字段：</p>
+<div class='tw'><table><thead><tr><th>字段</th><th>含义</th></tr></thead><tbody><tr><td><code>lift</code></td><td>提升度 P(C</td><td>A)/P(C)</td></tr><tr><td><code>lift_ci_low</code></td><td>lift 的 95% Wilson 保守下界，即边权</td></tr><tr><td><code>p_cond</code></td><td>条件概率 P(C</td><td>A)</td></tr><tr><td><code>p_conseq</code></td><td>无条件基础率 P(C)</td></tr><tr><td><code>n_anom</code></td><td>支撑度（异常出现次数）</td></tr><tr><td><code>p_value</code></td><td>分块置换检验 p 值</td></tr><tr><td><code>self_feature</code></td><td>根因与后果是否共用同一底层特征</td></tr><tr><td><code>replicated</code></td><td>测试期是否可复现</td></tr><tr><td><code>mech / how</code></td><td>机制注解（诠释层）</td></tr></tbody></table></div>
+    <p class="foot">源文件 <code>kg/schema.md</code>　·
+      本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
+      正本仍是那份 Markdown。</p>
+  </main>
+  <nav class="toc"><div class="h">目录</div><a href="#分层" class="l2">分层</a><a href="#节点类型" class="l2">节点类型</a><a href="#边类型" class="l2">边类型</a><a href="#异常节点-anom" class="l2">异常节点（ANOM）</a><a href="#后果节点-conseq-判定口径" class="l2">后果节点（CONSEQ）——判定口径</a><a href="#机制节点-mech-诠释层" class="l2">机制节点（MECH，诠释层）</a><a href="#边属性" class="l2">边属性</a></nav>
+</div></body></html>

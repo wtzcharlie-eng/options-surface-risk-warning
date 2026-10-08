@@ -1,0 +1,50 @@
+{
+  "seed": 56,
+  "cfg": {
+    "gamma": 0.9,
+    "lr": 0.001,
+    "hidden": 128,
+    "weight_decay": 0.0001
+  },
+  "shuffled": false,
+  "fingerprint": {
+    "n_episodes": 263,
+    "n_slices": 138794,
+    "n_train": 162,
+    "n_val": 42,
+    "n_test": 59,
+    "symbols": [
+      "ag",
+      "au",
+      "cu",
+      "lc",
+      "rb",
+      "sc",
+      "si"
+    ],
+    "n_features": 32,
+    "n_risk": 7185
+  },
+  "val": {
+    "n_episodes": 42,
+    "total_reward": 1454.055,
+    "mean_reward_per_episode": 34.620357142857145,
+    "n_alert": 4060,
+    "n_risk": 1132,
+    "precision": 0.42266009852216746,
+    "recall": 0.7385159010600707,
+    "avg_lead_min": 41.393540669856456,
+    "alert_rate": 0.1881284463185209
+  },
+  "test": {
+    "n_episodes": 59,
+    "total_reward": 124.8250000000003,
+    "mean_reward_per_episode": 2.1156779661017002,
+    "n_alert": 10200,
+    "n_risk": 1767,
+    "precision": 0.35970588235294115,
+    "recall": 0.7724957555178268,
+    "avg_lead_min": 44.967032967032964,
+    "alert_rate": 0.34348060344827586
+  }
+}

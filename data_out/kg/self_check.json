@@ -1,0 +1,16 @@
+{
+  "n_samples": 30,
+  "note": "以下为机器可检查的客观项，**不是**赛题要求的人工 5 分制评分",
+  "all_have_disclaimer": true,
+  "all_no_advice": true,
+  "all_have_cause_and_path": true,
+  "pct_labels_prior": 1.0,
+  "median_chars": 2823.0,
+  "median_evidence_refs": 5.0,
+  "doc_dedup": {
+    "before": 67961,
+    "after": 29973,
+    "n_full": 45,
+    "n_ref": 76
+  }
+}

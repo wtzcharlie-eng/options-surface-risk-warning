@@ -1,0 +1,783 @@
+{
+  "params": {
+    "hold_days": 5,
+    "cut_to": 0.5,
+    "n_random": 200,
+    "seed": 0,
+    "n_seed": 15
+  },
+  "per_symbol": {
+    "ag": {
+      "n_days": 178,
+      "n_ep": 9,
+      "drl": {
+        "n_days": 178.0,
+        "n_alert_days": 156.0,
+        "avg_position": 0.5028089887640449,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "rule": {
+        "n_days": 178.0,
+        "n_alert_days": 152.0,
+        "avg_position": 0.5028089887640449,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "恒报警": {
+        "n_days": 178.0,
+        "n_alert_days": 178.0,
+        "avg_position": 0.5028089887640449,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "每8步机械报警": {
+        "n_days": 178.0,
+        "n_alert_days": 178.0,
+        "avg_position": 0.5028089887640449,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "只在开头报一次": {
+        "n_days": 178.0,
+        "n_alert_days": 9.0,
+        "avg_position": 0.8735955056179775,
+        "improve": 0.17401190924327048,
+        "always_improve": 0.5,
+        "random_improve": 0.10947316435071848,
+        "random_sd": 0.0816591232768411,
+        "excess": 0.064538744892552,
+        "pctile": 0.755,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      }
+    },
+    "au": {
+      "n_days": 167,
+      "n_ep": 9,
+      "drl": {
+        "n_days": 167.0,
+        "n_alert_days": 127.0,
+        "avg_position": 0.5029940119760479,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.4995428904572583,
+        "random_sd": 0.0029722883670708225,
+        "excess": 0.000457109542741696,
+        "pctile": 0.055,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "rule": {
+        "n_days": 167.0,
+        "n_alert_days": 108.0,
+        "avg_position": 0.5209580838323353,
+        "improve": 0.49611432105706577,
+        "always_improve": 0.5,
+        "random_improve": 0.4961466197072039,
+        "random_sd": 0.010516654018381155,
+        "excess": -3.2298650138151697e-05,
+        "pctile": 0.145,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "恒报警": {
+        "n_days": 167.0,
+        "n_alert_days": 167.0,
+        "avg_position": 0.5029940119760479,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "每8步机械报警": {
+        "n_days": 167.0,
+        "n_alert_days": 167.0,
+        "avg_position": 0.5029940119760479,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "只在开头报一次": {
+        "n_days": 167.0,
+        "n_alert_days": 9.0,
+        "avg_position": 0.8652694610778443,
+        "improve": 0.09385620623571522,
+        "always_improve": 0.5,
+        "random_improve": 0.10591898586678283,
+        "random_sd": 0.06559126253402216,
+        "excess": -0.01206277963106761,
+        "pctile": 0.465,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      }
+    },
+    "cu": {
+      "n_days": 140,
+      "n_ep": 8,
+      "drl": {
+        "n_days": 140.0,
+        "n_alert_days": 117.0,
+        "avg_position": 0.5035714285714286,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "rule": {
+        "n_days": 140.0,
+        "n_alert_days": 101.0,
+        "avg_position": 0.5035714285714286,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.4976685601406006,
+        "random_sd": 0.009119936420622518,
+        "excess": 0.0023314398593993757,
+        "pctile": 0.085,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "恒报警": {
+        "n_days": 140.0,
+        "n_alert_days": 140.0,
+        "avg_position": 0.5035714285714286,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "每8步机械报警": {
+        "n_days": 140.0,
+        "n_alert_days": 140.0,
+        "avg_position": 0.5035714285714286,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "只在开头报一次": {
+        "n_days": 140.0,
+        "n_alert_days": 8.0,
+        "avg_position": 0.8678571428571429,
+        "improve": 0.15469413101520393,
+        "always_improve": 0.5,
+        "random_improve": 0.08488184534971438,
+        "random_sd": 0.0651649941231952,
+        "excess": 0.06981228566548955,
+        "pctile": 0.855,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      }
+    },
+    "lc": {
+      "n_days": 187,
+      "n_ep": 10,
+      "drl": {
+        "n_days": 187.0,
+        "n_alert_days": 156.0,
+        "avg_position": 0.5213903743315508,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "rule": {
+        "n_days": 187.0,
+        "n_alert_days": 149.0,
+        "avg_position": 0.5080213903743316,
+        "improve": 0.4999588333344719,
+        "always_improve": 0.5,
+        "random_improve": 0.4998299599307994,
+        "random_sd": 0.001966378031260219,
+        "excess": 0.00012887340367251365,
+        "pctile": 0.01,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "恒报警": {
+        "n_days": 187.0,
+        "n_alert_days": 187.0,
+        "avg_position": 0.5026737967914439,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "每8步机械报警": {
+        "n_days": 187.0,
+        "n_alert_days": 187.0,
+        "avg_position": 0.5026737967914439,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "只在开头报一次": {
+        "n_days": 187.0,
+        "n_alert_days": 10.0,
+        "avg_position": 0.8689839572192514,
+        "improve": 0.11587179936730876,
+        "always_improve": 0.5,
+        "random_improve": 0.09712796840361465,
+        "random_sd": 0.08820253397354386,
+        "excess": 0.018743830963694114,
+        "pctile": 0.705,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      }
+    },
+    "rb": {
+      "n_days": 147,
+      "n_ep": 9,
+      "drl": {
+        "n_days": 147.0,
+        "n_alert_days": 122.0,
+        "avg_position": 0.5034013605442177,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.4965984634161553,
+        "random_sd": 0.008675146141619156,
+        "excess": 0.0034015365838446776,
+        "pctile": 0.135,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "rule": {
+        "n_days": 147.0,
+        "n_alert_days": 90.0,
+        "avg_position": 0.5238095238095238,
+        "improve": 0.4849321391352167,
+        "always_improve": 0.5,
+        "random_improve": 0.4844745389194546,
+        "random_sd": 0.017292080587756994,
+        "excess": 0.00045760021576213283,
+        "pctile": 0.48,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "恒报警": {
+        "n_days": 147.0,
+        "n_alert_days": 147.0,
+        "avg_position": 0.5034013605442177,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "每8步机械报警": {
+        "n_days": 147.0,
+        "n_alert_days": 147.0,
+        "avg_position": 0.5034013605442177,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "只在开头报一次": {
+        "n_days": 147.0,
+        "n_alert_days": 9.0,
+        "avg_position": 0.8605442176870748,
+        "improve": 0.05067576351138457,
+        "always_improve": 0.5,
+        "random_improve": 0.08011163732218715,
+        "random_sd": 0.06509453853231284,
+        "excess": -0.02943587381080258,
+        "pctile": 0.42,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      }
+    },
+    "sc": {
+      "n_days": 190,
+      "n_ep": 10,
+      "drl": {
+        "n_days": 190.0,
+        "n_alert_days": 157.0,
+        "avg_position": 0.5078947368421053,
+        "improve": 0.4943995374633058,
+        "always_improve": 0.5,
+        "random_improve": 0.4999897050395333,
+        "random_sd": 0.0001455927271603789,
+        "excess": -0.005590167576227545,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "rule": {
+        "n_days": 190.0,
+        "n_alert_days": 134.0,
+        "avg_position": 0.5131578947368421,
+        "improve": 0.4943995374633058,
+        "always_improve": 0.5,
+        "random_improve": 0.49861873022603803,
+        "random_sd": 0.008671307791067204,
+        "excess": -0.004219192762732249,
+        "pctile": 0.05,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "恒报警": {
+        "n_days": 190.0,
+        "n_alert_days": 190.0,
+        "avg_position": 0.5026315789473684,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "每8步机械报警": {
+        "n_days": 190.0,
+        "n_alert_days": 190.0,
+        "avg_position": 0.5026315789473684,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "只在开头报一次": {
+        "n_days": 190.0,
+        "n_alert_days": 10.0,
+        "avg_position": 0.868421052631579,
+        "improve": 0.1413494295250681,
+        "always_improve": 0.5,
+        "random_improve": 0.10486915811290153,
+        "random_sd": 0.07041566693826558,
+        "excess": 0.03648027141216657,
+        "pctile": 0.69,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      }
+    },
+    "si": {
+      "n_days": 70,
+      "n_ep": 4,
+      "drl": {
+        "n_days": 70.0,
+        "n_alert_days": 51.0,
+        "avg_position": 0.5142857142857142,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.48032474174463524,
+        "random_sd": 0.0303771328403122,
+        "excess": 0.019675258255364758,
+        "pctile": 0.305,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "rule": {
+        "n_days": 70.0,
+        "n_alert_days": 42.0,
+        "avg_position": 0.5142857142857142,
+        "improve": 0.4883134565593179,
+        "always_improve": 0.5,
+        "random_improve": 0.4689426650696889,
+        "random_sd": 0.037188311056505,
+        "excess": 0.019370791489629002,
+        "pctile": 0.455,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "恒报警": {
+        "n_days": 70.0,
+        "n_alert_days": 70.0,
+        "avg_position": 0.5071428571428571,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "每8步机械报警": {
+        "n_days": 70.0,
+        "n_alert_days": 70.0,
+        "avg_position": 0.5071428571428571,
+        "improve": 0.5,
+        "always_improve": 0.5,
+        "random_improve": 0.5,
+        "random_sd": 0.0,
+        "excess": 0.0,
+        "pctile": 0.0,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      },
+      "只在开头报一次": {
+        "n_days": 70.0,
+        "n_alert_days": 4.0,
+        "avg_position": 0.8714285714285714,
+        "improve": 0.08519135767007233,
+        "always_improve": 0.5,
+        "random_improve": 0.07236191022071192,
+        "random_sd": 0.0558928299863113,
+        "excess": 0.012829447449360404,
+        "pctile": 0.65,
+        "hold_days": 5.0,
+        "cut_to": 0.5
+      }
+    }
+  },
+  "sweep": {
+    "ag": {
+      "1": {
+        "drl": {
+          "improve": 0.49270128529338075,
+          "random_improve": 0.43771853216891216,
+          "excess": 0.0549827531244686,
+          "avg_position": 0.5646067415730337
+        },
+        "rule": {
+          "improve": 0.495025689902164,
+          "random_improve": 0.4275283650181012,
+          "excess": 0.06749732488406279,
+          "avg_position": 0.5758426966292135
+        },
+        "恒报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5028089887640449
+        },
+        "每8步机械报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5028089887640449
+        },
+        "只在开头报一次": {
+          "improve": 0.010515086021527769,
+          "random_improve": 0.024184434305422116,
+          "excess": -0.013669348283894347,
+          "avg_position": 0.9747191011235955
+        }
+      }
+    },
+    "au": {
+      "1": {
+        "drl": {
+          "improve": 0.4469842140270364,
+          "random_improve": 0.352586650385429,
+          "excess": 0.0943975636416074,
+          "avg_position": 0.6227544910179641
+        },
+        "rule": {
+          "improve": 0.3666156080883028,
+          "random_improve": 0.29697324930029106,
+          "excess": 0.06964235878801173,
+          "avg_position": 0.6796407185628742
+        },
+        "恒报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5029940119760479
+        },
+        "每8步机械报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5029940119760479
+        },
+        "只在开头报一次": {
+          "improve": 0.07335854944919885,
+          "random_improve": 0.023343423671854147,
+          "excess": 0.05001512577734471,
+          "avg_position": 0.9730538922155688
+        }
+      }
+    },
+    "cu": {
+      "1": {
+        "drl": {
+          "improve": 0.48146643457276517,
+          "random_improve": 0.3920387942142857,
+          "excess": 0.08942764035847944,
+          "avg_position": 0.5857142857142857
+        },
+        "rule": {
+          "improve": 0.3534020305195814,
+          "random_improve": 0.3171451755734557,
+          "excess": 0.03625685494612574,
+          "avg_position": 0.6428571428571429
+        },
+        "恒报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5035714285714286
+        },
+        "每8步机械报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5035714285714286
+        },
+        "只在开头报一次": {
+          "improve": 0.04558544067397831,
+          "random_improve": 0.017251557313722944,
+          "excess": 0.028333883360255364,
+          "avg_position": 0.9714285714285714
+        }
+      }
+    },
+    "lc": {
+      "1": {
+        "drl": {
+          "improve": 0.4874088064782555,
+          "random_improve": 0.40657840909622694,
+          "excess": 0.08083039738202857,
+          "avg_position": 0.5855614973262032
+        },
+        "rule": {
+          "improve": 0.4549654725481018,
+          "random_improve": 0.383335958054262,
+          "excess": 0.07162951449383981,
+          "avg_position": 0.6042780748663101
+        },
+        "恒报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5026737967914439
+        },
+        "每8步机械报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5026737967914439
+        },
+        "只在开头报一次": {
+          "improve": 0.023663893085761046,
+          "random_improve": 0.021312207521747152,
+          "excess": 0.002351685564013894,
+          "avg_position": 0.9732620320855615
+        }
+      }
+    },
+    "rb": {
+      "1": {
+        "drl": {
+          "improve": 0.40610235080327406,
+          "random_improve": 0.35646622434537817,
+          "excess": 0.04963612645789589,
+          "avg_position": 0.5884353741496599
+        },
+        "rule": {
+          "improve": 0.29865423483527465,
+          "random_improve": 0.22341369073503478,
+          "excess": 0.07524054410023986,
+          "avg_position": 0.6972789115646258
+        },
+        "恒报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5034013605442177
+        },
+        "每8步机械报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5034013605442177
+        },
+        "只在开头报一次": {
+          "improve": 0.018698044300438747,
+          "random_improve": 0.016419269536534758,
+          "excess": 0.0022787747639039894,
+          "avg_position": 0.9693877551020408
+        }
+      }
+    },
+    "sc": {
+      "1": {
+        "drl": {
+          "improve": 0.4855603644473156,
+          "random_improve": 0.39038692433785227,
+          "excess": 0.09517344010946333,
+          "avg_position": 0.5894736842105263
+        },
+        "rule": {
+          "improve": 0.4644768942573897,
+          "random_improve": 0.32854666284842454,
+          "excess": 0.13593023140896515,
+          "avg_position": 0.65
+        },
+        "恒报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5026315789473684
+        },
+        "每8步机械报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5026315789473684
+        },
+        "只在开头报一次": {
+          "improve": 0.06044239354496817,
+          "random_improve": 0.0220113192925743,
+          "excess": 0.03843107425239387,
+          "avg_position": 0.9736842105263158
+        }
+      }
+    },
+    "si": {
+      "1": {
+        "drl": {
+          "improve": 0.4179561553684955,
+          "random_improve": 0.28931112614298365,
+          "excess": 0.12864502922551185,
+          "avg_position": 0.6428571428571429
+        },
+        "rule": {
+          "improve": 0.4041448082094918,
+          "random_improve": 0.216929924740475,
+          "excess": 0.18721488346901677,
+          "avg_position": 0.7071428571428572
+        },
+        "恒报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5071428571428571
+        },
+        "每8步机械报警": {
+          "improve": 0.5,
+          "random_improve": 0.5,
+          "excess": 0.0,
+          "avg_position": 0.5071428571428571
+        },
+        "只在开头报一次": {
+          "improve": 0.020553395034983712,
+          "random_improve": 0.018740771230325793,
+          "excess": 0.0018126238046579195,
+          "avg_position": 0.9714285714285714
+        }
+      }
+    }
+  },
+  "summary": {
+    "drl": {
+      "improve_mean": 0.4991999339233294,
+      "random_improve_mean": 0.4966365429510832,
+      "always_improve_mean": 0.5,
+      "excess_mean": 0.0025633909722462267,
+      "n_positive": 3,
+      "n_symbol": 7
+    },
+    "rule": {
+      "improve_mean": 0.49481689822133973,
+      "random_improve_mean": 0.4922401534276836,
+      "always_improve_mean": 0.5,
+      "excess_mean": 0.002576744793656089,
+      "n_positive": 4,
+      "n_symbol": 7
+    },
+    "恒报警": {
+      "improve_mean": 0.5,
+      "random_improve_mean": 0.5,
+      "always_improve_mean": 0.5,
+      "excess_mean": 0.0,
+      "n_positive": 0,
+      "n_symbol": 7
+    },
+    "每8步机械报警": {
+      "improve_mean": 0.5,
+      "random_improve_mean": 0.5,
+      "always_improve_mean": 0.5,
+      "excess_mean": 0.0,
+      "n_positive": 0,
+      "n_symbol": 7
+    },
+    "只在开头报一次": {
+      "improve_mean": 0.11652151379543192,
+      "random_improve_mean": 0.09353495280380442,
+      "always_improve_mean": 0.5,
+      "excess_mean": 0.022986560991627495,
+      "n_positive": 5,
+      "n_symbol": 7
+    }
+  },
+  "preregistered_verdict": {
+    "criterion": "excess_mean > 0 且 n_positive >= 4/7",
+    "excess_mean": 0.0025633909722462267,
+    "n_positive": 3,
+    "n_symbol": 7,
+    "passed": false
+  }
+}

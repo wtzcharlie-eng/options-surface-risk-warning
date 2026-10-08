@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>交付包说明 · 期权波动率曲面风控预警系统</title>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0e1621; --panel:#151f2b; --rule:#22303f;
+  --fg:#e3eaf1; --fg2:#8fa0b2; --fg3:#5d6f82;
+  --calm:#4fb79c; --stress:#e8695e; --caveat:#d8a24a;
+  /* 与 index.html 完全一致：西文族在前走 Times，汉字回退到黑体 */
+  --sans:"Times New Roman",Times,"PingFang SC","Hiragino Sans GB",
+         "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --mono:"Times New Roman",Times,ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--calm);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--calm);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:9;background:rgba(14,22,33,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;
+  align-items:baseline;gap:16px}
+.bar .home{color:var(--fg2);font-size:13px}
+.bar h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.01em}
+.bar .sub{color:var(--fg3);font-size:12.5px;margin-left:auto}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;
+  grid-template-columns:1fr 236px;gap:44px;align-items:start}
+main{min-width:0;padding:34px 0 96px}
+
+nav.toc{position:sticky;top:66px;padding:34px 0;max-height:calc(100vh - 76px);
+  overflow:auto}
+nav.toc .h{font-size:11px;letter-spacing:.14em;color:var(--fg3);
+  margin-bottom:10px;font-family:var(--mono)}
+nav.toc a{display:block;color:var(--fg2);font-size:12.5px;line-height:1.55;
+  padding:3px 0 3px 10px;border-left:1px solid var(--rule);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--calm)}
+nav.toc a.l3{padding-left:22px;color:var(--fg3);font-size:12px}
+
+h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.35;letter-spacing:.01em}
+main h1{font-size:27px;margin:6px 0 22px}
+main h2{font-size:21px;margin:44px 0 14px;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+main h3{font-size:17px;margin:30px 0 10px;color:#f0f5fa}
+main h4{font-size:15px;margin:22px 0 8px;color:var(--fg2)}
+p{margin:13px 0}
+strong{color:#f4f8fc;font-weight:700}
+code{font-family:var(--mono);font-size:13.5px;background:#1b2735;
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:#cfe0ee}
+pre{background:var(--panel);border:1px solid var(--rule);padding:15px 17px;
+  overflow:auto;margin:16px 0}
+pre code{background:none;border:0;padding:0;font-size:13px;line-height:1.65;
+  color:#cfe0ee}
+blockquote{margin:16px 0;padding:2px 18px;border-left:3px solid var(--caveat);
+  background:#141d29;color:var(--fg2)}
+blockquote strong{color:var(--caveat)}
+blockquote p{margin:10px 0}
+ul,ol{margin:13px 0;padding-left:24px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:34px 0}
+.tw{overflow-x:auto;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--rule);padding:8px 11px;text-align:left;
+  vertical-align:top}
+th{background:#1a2532;color:var(--fg);font-weight:700;white-space:nowrap}
+td{color:var(--fg2)}
+tbody tr:nth-child(even) td{background:#121b26}
+td code,th code{font-size:12.5px}
+
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--fg3);line-height:1.9}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:0 0 20px}
+}
+</style></head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="../index.html">← 交付入口</a>
+  <h1>交付包说明</h1>
+  <span class="sub">包里有什么、缺什么、什么能直接跑，以及容易踩的坑。</span>
+</div></div>
+<div class="shell">
+  <main><h1 id="交付包说明">交付包说明</h1>
+<blockquote><p>期权波动率曲面风控预警系统 —— 宁证期货赛题（问题1/2/3 全覆盖） 本文件说明<strong>这个包里有什么、缺什么、什么能直接跑</strong>。项目本身的完整说明见 <code>README.md</code>。</p></blockquote>
+<hr>
+<h2 id="先看这个">先看这个</h2>
+<p><strong>先打开 <code>index.html</code></strong>（解压后就在根目录）—— 交付入口页，60 秒看清三个问题 做到了什么、以及每个结论各自的对照。页面上没有一个手写数字，全部由 <code>scripts/build_index.py</code> 从落盘 JSON 现算。</p>
+<p>再往里一层是 <strong><code>data_out/platform.html</code></strong> —— 研究总览，单文件零依赖， 全部过程与证据：两个评测口径、七条已证伪路径、逐品种对照、未达标项。</p>
+<p><strong><code>方法与结果.md</code></strong> 是学术结构的正文（摘要 / 数据与口径 / 方法 / 实验与结果 / 验证与可复现 / 局限与讨论）。<code>README.md</code> 保留为<strong>完整工程记录</strong>——逐轮修订、 含被推翻的结论——在正文文末作为附录链过去。两者共用同一批落盘数字，不会各说各话。</p>
+<p>五份文档都有<strong>与入口页同主题的深色 HTML 版</strong>（<code>data_out/doc_*.html</code>，带目录与表格样式， 由 <code>scripts/build_docs.py</code> 渲染）。入口页卡片指向的是 HTML 版； <strong><code>.md</code> 正本仍在包里</strong>，那是可 grep、可 diff 的那一份。</p>
+<p>仪表板的主题在 <code>.streamlit/config.toml</code>，与其余四处同一套色值。</p>
+<hr>
+<h2 id="包内容">包内容</h2>
+<div class='tw'><table><thead><tr><th>目录</th><th>内容</th></tr></thead><tbody><tr><td><code>vol_surface/</code></td><td>曲面清洗、插值、特征提取、预警规则（问题1 算法库）</td></tr><tr><td><code>kg/</code></td><td>风险传导知识图谱：实测层标定 + 诠释层解释生成（问题2）</td></tr><tr><td><code>drl/</code></td><td>纯 NumPy Double DQN 智能体、环境、指标、15 道验证门（问题3）</td></tr><tr><td><code>scripts/</code></td><td>数据集构建、训练、评测、报告与平台生成脚本（含打包脚本 <code>make_package.py</code>）</td></tr><tr><td><code>dashboard/</code></td><td>Streamlit 多页交互系统：曲面预警 · 传导推理 · DRL 推理 · 系统总览</td></tr><tr><td><code>tests/</code></td><td>单元测试</td></tr><tr><td><code>data_out/</code></td><td>全部交付产物 + 标注数据集 + 15 个模型 checkpoint + 8 个 sklearn 模型</td></tr></tbody></table></div>
+<p><strong><code>data_out/</code> 关键内容</strong></p>
+<ul>
+<li><code>platform.html</code> —— 总览平台（自包含）</li>
+<li><code>anchor/</code> —— 标注数据集，7 品种 / 263 幕 / 138,794 截面（<strong>这是口径源</strong>）</li>
+<li><code>drl/agent_seed*.npz</code> —— 15 个训练好的 checkpoint（交付版集成）</li>
+<li><code>drl/results.json</code>、<code>workpoint.json</code>、<code>gates.json</code> —— 问题3 的评测产物与验证门</li>
+<li><code>kg/</code> —— 图谱边、跨品种边、解释样本、11 道门结果、自评记录</li>
+<li><strong><code>rule_ml_model.joblib</code> + <code>.fingerprint.json</code></strong> —— 问题1 连续口径达标配置的模型，</li>
+<p>指纹含特征名与<strong>顺序</strong>（模型按列序吃数，顺序变了不报错、只静默给出错误概率）</p>
+<li><strong><code>model_&lt;品种&gt;.joblib</code>（7 个）</strong> —— 仪表板 ML 层的 IsolationForest，<code>G14</code> 逐个检查</li>
+<li><strong><code>alert_engine_golden.json</code></strong> —— <code>G13</code> 的金标准夹具（600 例固定输入→期望输出）</li>
+<li><code>*.json</code> —— 各项专题实验的落盘结果（死区、CVaR、漂移、集成规模、2022 覆盖度、</li>
+<p>异常分缺陷等）</p>
+<li><code>*_preregistration.md</code> —— <strong>判据写于跑数之前</strong>的预登记文件</li>
+<li><code>drl_report.md</code> / <code>kg_report.md</code> —— 由脚本从 JSON 生成的报告，非手写</li>
+<li><code>backtest_report.md</code> —— <strong>历史快照</strong>（2026-08-03 的旧口径记录），文件顶部自带声明，</li>
+<p>其数字不作为交付结论</p>
+</ul>
+<hr>
+<h2 id="未包含-有意排除">未包含（有意排除）</h2>
+<div class='tw'><table><thead><tr><th>未含</th><th>说明</th></tr></thead><tbody><tr><td><code>options_merged.parquet</code>（5.7 G）</td><td>原始行情数据（2.26 亿行 / 35 品种）</td></tr><tr><td><code>archive/</code>（6.2 G）</td><td>按合约月拆分的原始数据</td></tr><tr><td><code>data_out/anchor_model.joblib</code></td><td>早期 anchor 预测器，<strong>训练区间覆盖测试期（泄漏）</strong>，已被 <code>rule_ml_model.joblib</code> 取代，不被任何结论引用</td></tr><tr><td><code>data_out/.bf_cache/</code></td><td><code>build_features.py</code> 的载入/特征缓存，只加速、删掉不影响任何结果</td></tr><tr><td><code>data_out/drl_more/</code>、<code>drl_legacy_monthly/</code>、<code>drl_evrew/</code>、<code>drl_ctrl_old/</code>、<code>roll/</code>、<code>drl_c26/</code>、<code>drl_5seed_archive/</code></td><td>已证伪路径的实验归档。其<strong>结论</strong>已落盘在顶层 JSON 里（如 <code>roll_retrain.json</code>、<code>ensemble_scaling.json</code>），归档本体不影响复现</td></tr></tbody></table></div>
+<blockquote><p>⚠️ <strong>上一版包曾整类排除 <code>data_out/*.joblib</code></strong>，理由写的是「早期 sklearn 路线， 不被任何交付结论引用」。那条理由<strong>后来失效了</strong>：<code>rule_ml_model.joblib</code> 成了问题1 连续口径达标的依据、<code>model_*.joblib</code> 成了仪表板 ML 层，两者都被验证门检查。 按旧规则打出的包，解压后 <code>G13</code>/<code>G14</code> 与指纹门<strong>会当场失败</strong>。 根因是<strong>排除规则用通配符，而通配符的语义随时间漂移</strong>—— 现已改为 <code>scripts/make_package.py</code> 显式列出「必须存在」的文件并逐个断言， 且再加一道<strong>从代码里推</strong>的检查（源码字面引用的顶层数据文件必须在包里）—— 因为手写清单同样会漏：实测就漏过 <code>extreme_event.csv</code>，仪表板首屏即崩而自检照样打 ✓。</p></blockquote>
+<blockquote><p>⚠️ <code>README.md</code> 中若干处引用了 <code>data_out/drl_5seed_archive/</code>（旧交付版备份，用于新旧对照）， 该目录不在本包内。相关<strong>数字</strong>仍可在 <code>README.md</code> 正文与 <code>ensemble_scaling.json</code> 中查到。</p></blockquote>
+<hr>
+<h2 id="什么能直接跑">什么能直接跑</h2>
+<p>安装依赖：<code>pip install -r requirements.txt</code>（核心只需 numpy / pandas / pyarrow / scipy； <code>drl/</code> 与 <code>kg/</code> 是<strong>纯 Python + NumPy，零新增依赖</strong>）</p>
+<pre><code># 0) **先跑这个** —— 交付前一键验收，给出「能不能交付」的结论
+#    在**解压出来的包里**跑才算数（本项目的交付事故全部只在那里暴露）
+python scripts/preflight.py
+#    随手自查可加 --fast（跳过耗时门，但**不足以下交付结论**）
+
+# 1) 文档数字核对 —— 逐条比对 README 与方法学文档里的数字是否与落盘一致
+python scripts/check_doc_numbers.py
+
+# 2) 问题3 的 15 道验证门（必须带 --underlying，否则只载入 26 维、与 32 维交付模型不匹配）
+python -m drl.tests --underlying --emit
+
+# 3) 问题2 的 11 道验证门
+python -m kg.tests --emit
+
+# 4) 结构性死区的 2×2 对照（约 2.5 分钟）
+python scripts/dead_zone_study.py --underlying
+
+# 5) 逐品种评测（含「同召回」对照，约 2.5 分钟）
+python scripts/eval_per_symbol.py --underlying
+
+# 6) 异常分缺陷的量化复算（README §7.25，秒级）
+python scripts/ml_score_defect.py
+
+# 7) 重新生成总览平台与报告 —— **顺序要紧**：门 → 报告 → 平台
+python -m drl.tests --underlying --emit &amp;&amp; python -m kg.tests --emit
+python scripts/report_drl.py &amp;&amp; python scripts/report_kg.py
+python scripts/build_platform.py --keep-surfaces   # 包内无原始数据，须带此参数
+python scripts/build_paper.py &amp;&amp; python scripts/build_docs.py &amp;&amp; python scripts/build_index.py
+#   正文 → 报告页 → 入口页（顺序要紧：后者读前者的产物）
+#   不带 --keep-surfaces 时会**报错退出**（而不是静默生成一个少了曲面的版本）
+
+# 8) 交互系统（四页：曲面预警 / 传导推理 / DRL 推理 / 系统总览）
+cd dashboard &amp;&amp; streamlit run app.py
+#   主题在 .streamlit/config.toml，与入口页同一套色值
+#   三个子页直接调用 vol_surface / kg.reason / drl.api 交付本体，不复制逻辑
+
+# 9) 校验本包内容完整（不重新打包）
+python scripts/make_package.py --verify-only</code></pre>
+<p><strong>需要原始数据才能跑的</strong>（本包未含原始数据）：</p>
+<ul>
+<li><code>scripts/build_anchor_dataset.py</code> —— 从 <code>options_merged.parquet</code> / <code>archive/</code> 重建 <code>anchor/</code></li>
+<li><code>scripts/build_features.py</code>、<code>build_underlying.py</code> —— 特征与标的侧特征的构建</li>
+<li><code>scripts/train_drl.py</code> —— 从头训练（本包已附 checkpoint，无需重训）</li>
+</ul>
+<hr>
+<h2 id="交付前验收-scripts-preflight-py">交付前验收（<code>scripts/preflight.py</code>）</h2>
+<p>一条命令给出「能不能交付」的结论。<strong>在解压出来的包里跑才算数</strong>—— 本项目历次交付事故（包漏文件、校验命令自己崩、平台被静默改坏） 在源目录里全都看不出来。</p>
+<pre><code>tar -xzf 期权曲面风控预警系统.tar.gz
+cd 期权曲面风控预警系统
+python scripts/preflight.py</code></pre>
+<p><strong>退出码</strong>：<code>0</code> 可交付 · <code>1</code> 有阻塞项 · <code>2</code> 未跑全或还在源目录（不足以下结论）</p>
+<div class='tw'><table><thead><tr><th>机器可查（11 项）</th><th>它防的是什么</th></tr></thead><tbody><tr><td>交付数字可读且判别力为正</td><td>新口径自带退化，「达标」若无判别力就不构成证据</td></tr><tr><td>文档数字与落盘一致</td><td>手写数字随重跑过期</td></tr><tr><td>问题3 / 问题2 验证门</td><td>15/15、11/11</td></tr><tr><td>报告不旧于其数据源</td><td>跑完门不补跑报告</td></tr><tr><td>平台 payload 无 NaN/undefined</td><td>字段路径写错，语法门与 grep 都看不见</td></tr><tr><td>平台可重建且逐字节一致</td><td>交付的 HTML 与 builder 已脱节</td></tr><tr><td>交付目录无缓存/临时目录</td><td>本地产物混进交付</td></tr><tr><td>仪表板首屏依赖可用</td><td>上一版包漏了 <code>extreme_event.csv</code>，<code>streamlit run</code> 直接崩</td></tr><tr><td>交付包不旧于源文件</td><td>改完忘了重打包（<strong>只在源目录判</strong>，包内不适用）</td></tr><tr><td>包内容自检</td><td>63 项必需文件齐全</td></tr></tbody></table></div>
+<p><strong>机器查不了、但评委会看到的 4 项</strong>，脚本会列出来让你逐条确认： 平台在浏览器里的<strong>渲染结果</strong>（NaN / 裸 Markdown / 空白卡片只有人能看见）、 每个「达标」旁边有没有判别力或对照、仪表板能不能真起来、 以及提交物清单与赛题通知的具体要求（命名、目录结构、正文文档形式）。</p>
+<hr>
+<h2 id="三个容易踩的坑">三个容易踩的坑</h2>
+<p><strong>1. <code>data_out/features_*.parquet</code> 不是口径源。</strong> 那是给仪表板用的<strong>采样版</strong>（每品种约 400 行、7 品种合计约 2,479 行）。真正的口径源是 <code>data_out/anchor/</code>（138,794 行）。拿采样版去复核文档里的中位数、分位数会对不上， <strong>那不是文档写错，是文件选错</strong>。</p>
+<p><strong>2. 报数字必须标口径。</strong> 同一套系统在两个评测口径下会给出差很多的结论：</p>
+<div class='tw'><table><thead><tr><th>（<strong>旧口径</strong>：截面级、120min 命中窗）</th><th>事件窗口（20 窗等权）</th><th>anchor 连续测试集</th></tr></thead><tbody><tr><td>命中基础率</td><td>27.5%</td><td>24.4%</td></tr><tr><td>规则引擎精确率</td><td>50.1%</td><td>45.4%</td></tr></tbody></table></div>
+<p>来源：<code>q1_7sym.json.summary_new.base / .P</code>、<code>dead_zone_study.json.grid_2x2[&#x27;wp_new|dz_off&#x27;].rule.precision</code>。 ⚠ <strong>不要用 <code>metrics_v2.json</code> 的 44.96% 填这一格</strong>——那是<strong>新口径</strong>（事件级）， 与本表其余三格的旧口径只差 0.4pp，极易蒙混过去。 前者是围绕已知极端事件挑的时段，门槛天然更松。 <strong>两列的工作点也不同，不要相减</strong>——README 与平台里每个数字都标了口径。</p>
+<p><strong>3. <code>data_out/backtest_report.md</code> 是历史快照，不是交付结论。</strong> 它生成于 2026-08-03，用的是旧风险起点口径、原始 7 条规则、仅 4 个已校准品种， 且当时的 ML 层存在缺陷（见 README §7.25）。文件顶部自带声明， <code>check_doc_numbers.py</code> 有专门一道门守着那段声明不被删掉。 <strong>交付数字见 <code>q1_7sym.json</code> 与 README §7.11 / §7.18。</strong></p>
+<hr>
+<h2 id="一句话交付状态">一句话交付状态</h2>
+<ul>
+<li><strong>问题1（必选）</strong>：<strong>新口径</strong>（事件级、召回不设上限）下 20 个事件窗口精确率 55.6% ✓ /</li>
+<p>召回 96.3% ✓ / 提前 1461.9min ✓，13/20 窗口三项全达标，<strong>判别力 +5.6pp</strong> （最强平凡策略「只在开头报一次」精确率就有 50.0%——<strong>该口径自带退化， 每个「达标」都必须配判别力</strong>；召回与提前时间在此口径下门槛形同虚设， 1461.9min 不应读作「提前 24 小时预警」）。 未达标的 7 个<strong>全部只卡精确率</strong>；<strong>卡在召回门槛（&lt;60%）的窗口数为 0</strong>。 ⚠ 这<strong>不等于零漏报</strong>——20 个窗口里有 12 个召回不足 100%（最低 84.6%）， 确实漏掉了一些风险起点，只是没有任何窗口低到 60% 的门槛线以下。 连续口径经规则+ML 否决式融合后 53.86% ✓ / 62.25% ✓ / 48.1min ✓ （<strong>纯规则够不到</strong>，见 README §7.21/§7.23）</p>
+<li><strong>问题2（加分）</strong>：21/40 主干边、110/280 跨品种边，11/11 验证门通过；人工 5 分制自评 12 轮，<strong>不宣称达标</strong></li>
+<li><strong>问题3（加分）</strong>：新口径三项全达标（64.6% / 69.2% / 6520min，判别力 +17.1pp）；旧口径经结构性死区修正后 54.15% ✓ / 74.93% ✓ / 36.2min ✓，15/15 验证门通过</li>
+</ul>
+<blockquote><p>⚠️ <strong>死区过滤把旧口径精确率抬了约 7pp，但那不是模型改进</strong>： 同工作点下 DRL 47.13% → 54.15%，规则 45.36% → 52.36%，<strong>增益同等</strong>， <strong>同工作点</strong>下 DRL +7.02pp vs 规则 +7.00pp，判别力仅变 <strong>+0.02pp</strong>。 预登记判据（2×2 对角线口径）为 −0.26pp，两者结论一致：<strong>全员抬升</strong>。详见 README §7.19。</p></blockquote>
+<p>全部未达标项与七条已证伪路径，见 <code>platform.html</code> 的「未达标项与已证伪路径」一节。</p>
+    <p class="foot">源文件 <code>PACKAGE.md</code>　·
+      本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
+      正本仍是那份 Markdown。</p>
+  </main>
+  <nav class="toc"><div class="h">目录</div><a href="#先看这个" class="l2">先看这个</a><a href="#包内容" class="l2">包内容</a><a href="#未包含-有意排除" class="l2">未包含（有意排除）</a><a href="#什么能直接跑" class="l2">什么能直接跑</a><a href="#交付前验收-scripts-preflight-py" class="l2">交付前验收（`scripts/preflight.py`）</a><a href="#三个容易踩的坑" class="l2">三个容易踩的坑</a><a href="#一句话交付状态" class="l2">一句话交付状态</a></nav>
+</div></body></html>

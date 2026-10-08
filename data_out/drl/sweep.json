@@ -1,0 +1,32 @@
+[
+  {
+    "gamma": 0.95,
+    "lr": 0.001,
+    "hidden": 128,
+    "weight_decay": 0.0,
+    "val_reward": 394.475,
+    "val_precision": 0.36058779201205726,
+    "val_recall": 0.7397034596375618,
+    "val_lead": 46.87082405345212
+  },
+  {
+    "gamma": 0.95,
+    "lr": 0.001,
+    "hidden": 128,
+    "weight_decay": 0.0001,
+    "val_reward": 517.9100000000001,
+    "val_precision": 0.40044345898004435,
+    "val_recall": 0.7199341021416804,
+    "val_lead": 45.892448512585815
+  },
+  {
+    "gamma": 0.9,
+    "lr": 0.001,
+    "hidden": 128,
+    "weight_decay": 0.0001,
+    "val_reward": 570.23,
+    "val_precision": 0.4490216271884655,
+    "val_recall": 0.6935749588138386,
+    "val_lead": 45.78384798099763
+  }
+]

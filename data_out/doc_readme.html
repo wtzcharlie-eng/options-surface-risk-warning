@@ -1,0 +1,1244 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>完整工程记录（附录） · 期权波动率曲面风控预警系统</title>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0e1621; --panel:#151f2b; --rule:#22303f;
+  --fg:#e3eaf1; --fg2:#8fa0b2; --fg3:#5d6f82;
+  --calm:#4fb79c; --stress:#e8695e; --caveat:#d8a24a;
+  /* 与 index.html 完全一致：西文族在前走 Times，汉字回退到黑体 */
+  --sans:"Times New Roman",Times,"PingFang SC","Hiragino Sans GB",
+         "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --mono:"Times New Roman",Times,ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--calm);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--calm);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:9;background:rgba(14,22,33,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;
+  align-items:baseline;gap:16px}
+.bar .home{color:var(--fg2);font-size:13px}
+.bar h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.01em}
+.bar .sub{color:var(--fg3);font-size:12.5px;margin-left:auto}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;
+  grid-template-columns:1fr 236px;gap:44px;align-items:start}
+main{min-width:0;padding:34px 0 96px}
+
+nav.toc{position:sticky;top:66px;padding:34px 0;max-height:calc(100vh - 76px);
+  overflow:auto}
+nav.toc .h{font-size:11px;letter-spacing:.14em;color:var(--fg3);
+  margin-bottom:10px;font-family:var(--mono)}
+nav.toc a{display:block;color:var(--fg2);font-size:12.5px;line-height:1.55;
+  padding:3px 0 3px 10px;border-left:1px solid var(--rule);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--calm)}
+nav.toc a.l3{padding-left:22px;color:var(--fg3);font-size:12px}
+
+h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.35;letter-spacing:.01em}
+main h1{font-size:27px;margin:6px 0 22px}
+main h2{font-size:21px;margin:44px 0 14px;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+main h3{font-size:17px;margin:30px 0 10px;color:#f0f5fa}
+main h4{font-size:15px;margin:22px 0 8px;color:var(--fg2)}
+p{margin:13px 0}
+strong{color:#f4f8fc;font-weight:700}
+code{font-family:var(--mono);font-size:13.5px;background:#1b2735;
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:#cfe0ee}
+pre{background:var(--panel);border:1px solid var(--rule);padding:15px 17px;
+  overflow:auto;margin:16px 0}
+pre code{background:none;border:0;padding:0;font-size:13px;line-height:1.65;
+  color:#cfe0ee}
+blockquote{margin:16px 0;padding:2px 18px;border-left:3px solid var(--caveat);
+  background:#141d29;color:var(--fg2)}
+blockquote strong{color:var(--caveat)}
+blockquote p{margin:10px 0}
+ul,ol{margin:13px 0;padding-left:24px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:34px 0}
+.tw{overflow-x:auto;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--rule);padding:8px 11px;text-align:left;
+  vertical-align:top}
+th{background:#1a2532;color:var(--fg);font-weight:700;white-space:nowrap}
+td{color:var(--fg2)}
+tbody tr:nth-child(even) td{background:#121b26}
+td code,th code{font-size:12.5px}
+
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--fg3);line-height:1.9}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:0 0 20px}
+}
+</style></head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="../index.html">← 交付入口</a>
+  <h1>完整工程记录（附录）</h1>
+  <span class="sub">逐轮修订：每一次改动的动机、对照与结论——包括推翻自己的那些。</span>
+</div></div>
+<div class="shell">
+  <main><h1 id="期权波动率曲面风控预警系统">期权波动率曲面风控预警系统</h1>
+<blockquote><p>宁证期货「基于期权波动率曲面与智能体的量化风控预警系统」赛题实现（问题1/2/3 全覆盖） —— 问题1（必选）曲面异常检测与分级预警 ＋ 问题2（加分）风险传导知识图谱 ＋ 问题3（加分）DRL 自适应预警</p>
+<p><strong>总览入口：<code>data_out/platform.html</code></strong>（单文件、零依赖、可搜索，汇总三个问题的全部结果）</p>
+<p>成果：曲面特征提取算法库（<code>vol_surface/</code>）+ <strong>风险传导知识图谱（<code>kg/</code>，问题2）</strong> + <strong>DRL 自适应预警智能体（<code>drl/</code>，问题3，加分门槛已达标；新口径下三项全达标）</strong></p>
+<ul>
+<li>预警可视化仪表板（<code>dashboard/</code>）+ 离线生成 / 定时扫描脚本（<code>scripts/</code>）+ 回测验证。</li>
+</ul></blockquote>
+<hr>
+<h2 id="0-这份-readme-怎么读">0. 这份 README 怎么读</h2>
+<p>下面按实际开发顺序组织，而非按模块罗列：</p>
+<ol>
+<li><strong>先实测数据</strong>——摸清曲面几何与质量问题，这是后续所有算法决策的依据</li>
+<li><strong>清洗</strong>——从实测问题反推清洗规则，并迭代修正&quot;误杀微笑拐点&quot;</li>
+<li><strong>插值</strong>——踩了 SVI 的坑，从 w 空间拟合演进到 PCHIP 重建 + SVI 提参</li>
+<li><strong>特征工程</strong>——把赛题点名的指标全部落到可量化标量，并加临到期降权</li>
+<li><strong>预警</strong>——规则+ML 融合，迭代阈值与等级钳制</li>
+<li><strong>回测</strong>——修正召回率计算口径，得到真实指标</li>
+<li><strong>仪表板</strong>——Streamlit + Plotly，遵循 dataviz 规范</li>
+<li><strong>品种扩样</strong>（§7.6、§7.18）——4→7 个（事件覆盖 7/17→15/17），后再补 al/br 至 <strong>17/17</strong>；两次扩样均如实记录指标下降</li>
+<li><strong>推高精确率的四条路径</strong>（§6 调阈值 / §7.7 清洗 / §7.8 决策方式 / §7.9 引入曲面外信息）</li>
+<p>——前三条是负面结果，第四条的结论后来被 §7.10 推翻</p>
+<li><strong>查出并修掉一个标签缺陷</strong>（§7.10）——每幕前 72 根截面结构上不可能有正标签，</li>
+<p>吃掉约 20% 的误报；修正后重训，同协议同口径下召回 55.29%→71.93%、精确率 46.59%→47.61%</p>
+<li><strong>问题1 按 7 品种重跑</strong>（§7.11）——同一个死区缺陷；扩样后平均精确率反而从</li>
+<p>55.8% 降到 42.5%（原 4 窗口全来自已校准品种），rb 黑色系判别力为负； <strong>CVaR 指标的原结论被推翻</strong>（50.0% 是算术产物）</p>
+<li><strong>追查 rb 并改造规则引擎</strong>（§7.12–§7.15）——规则是<strong>探测器不是预测器</strong>；</li>
+<p>逐条检验后关闭 R4/R2/R6 三条噪声规则，判别力 +8.2→+20.9pp（anchor 测试集）、 18 个事件窗口平均精确率 42.9%→<strong>51.5%</strong></p>
+<li><strong>问题3 DRL</strong>（§8.5）——事件级奖励、<strong>15 seed</strong> + 集成，15 道验证门（含新口径非退化门 G10、CVaR 非饱和门 G11、异常分批不变性门 G14）</li>
+<li><strong>问题2 知识图谱</strong>（§8.6）——边权全部实测标定，11 道验证门</li>
+<li><strong>口径澄清与重算</strong>（§7.18）——向命题方确认七处歧义后按新口径全面重算，并对新口径本身做退化检验</li>
+</ol>
+<blockquote><p>⚠️ <strong>读数字前必看（其一）：口径已由命题方澄清，交付结论以新口径为准。</strong> 2026-08 命题方答复明确：精确率按<strong>合并连续预警后的预警事件</strong>计（非每个 15min 截面）、 召回匹配与提前时间<strong>不设时间上限</strong>、并建议分高波/低波区报告、指标3 采用自评。 新口径下：<strong>问题3 DRL 智能体在 anchor 连续测试集上三项全达标</strong>（64.58% / 69.16% / 6520min）； <strong>问题1 规则引擎在 20 个事件窗口上平均精确率 55.6%、召回 96.3%、三项全达标 13/20</strong>（已覆盖全部 17 个极端事件）。 但同一套规则<strong>换到 anchor 连续测试集</strong>只有 43.8%（40 组配置交叉重检后的可行域最优）。 <strong>这两个数不可相减</strong>：口径不同（事件级 vs 截面级），<strong>且工作点也不同</strong> （55.6% 是 <code>zmult=1.0/cooldown=0</code>，43.8% 来自 <code>rule_v2_search.json.picked</code> 的 <code>zmult=1.6/cooldown=8</code>）——只能各自标口径并列引用，不要给差值。 详见「§7.18 新评测口径」。 <strong>但该口径自带退化</strong>：召回不设上限使所有平凡策略召回均达 98.9%， 三条门槛实际塌缩成只剩精确率，故<strong>必须并列平凡策略对照</strong>—— DRL 判别力 <strong>+17.1pp</strong>（anchor 连续口径，由验证门 G10 强制）、 问题1 规则引擎判别力 <strong>+5.6pp</strong>（20 窗口口径，落盘于 <code>q1_7sym.json</code>）。 旧口径（截面级、120min 窗）的全部结果保留，<strong>报任何数字都必须标明口径</strong>。</p></blockquote>
+<blockquote><p>⚠️ <strong>读数字前必看（其二）：§7.10 之前所有章节的指标都是在「逐月」风险起点口径下测的， 那个口径有缺陷（每幕前 72 根截面不可能有正标签）。</strong> 修正后的口径下命中基础率 从 21.06% 升到 24.41%，因此<strong>旧口径的精确率与新口径不可直接比较</strong>。 交付版结论以 §7.10（问题3）与 §7.11（问题1）的表为准；§6–§7.9 以及 §7.5 保留原样，它们记录的是当时的推理过程， 其中的相对比较（谁比谁好）在同口径内仍然成立。</p></blockquote>
+<p>每节都有&quot;为什么这么做&quot;和&quot;踩过的坑&quot;，便于复现与二次开发。</p>
+<hr>
+<h2 id="1-数据实测发现-一切算法决策的前提">1. 数据实测发现（一切算法决策的前提）</h2>
+<p>数据集：<code>options_merged.parquet</code> 5.6GB / 2.26 亿行 / 35 品种 / 2022-2026 / 15 分钟频率，字段含 iv/delta/gamma/vega/theta/dte/moneyness 等，附 <code>extreme_event.csv</code>（GBK 编码）17 个极端事件标注。</p>
+<p>逐层采样实测后，三个关键事实决定了整个系统设计：</p>
+<h3 id="1-1-曲面几何">1.1 曲面几何</h3>
+<p>单时间截面 ≈ 220 条合约 = <strong>6 个到期月 × ~20 行权价 × call/put</strong>，构成真正的 <code>IV(dte, moneyness)</code> 二维曲面。这是要建模的对象——不是单条 IV 曲线，而是跨期限×行权价的曲面。</p>
+<h3 id="1-2-系统性数据质量问题-清洗要解决的">1.2 系统性数据质量问题（清洗要解决的）</h3>
+<p>在 ag2023-05 一个截面上实测发现：</p>
+<div class='tw'><table><thead><tr><th>问题</th><th>实测表现</th><th>性质</th></tr></thead><tbody><tr><td>休市段</td><td><code>suspend_flag==1</code> 占约 7% 行</td><td>噪声，剔除</td></tr><tr><td>僵尸合约</td><td><code>volume==0 &amp; OI==0 &amp; close==pre_close</code>，深度 OTM 长时间无成交卡死</td><td>噪声，剔除</td></tr><tr><td>IV 触底</td><td><code>iv==0.001</code> 且 `</td><td>delta</td><td>==1<code> 且 </code>gamma=vega=0`，BS 反推已退化</td><td>噪声，剔除</td></tr><tr><td>IV 爆炸</td><td>深度 ITM 的 <code>iv&gt;1.0</code> 甚至到 5.0，BS 数值不稳定</td><td><strong>半信号</strong>，仅剔除极端值</td></tr><tr><td>邻居跳变</td><td><code>ag2306C4850 iv=0.489</code> 与邻居 0.80 严重偏离</td><td>离群，剔除</td></tr></tbody></table></div>
+<h3 id="1-3-临到期的极端期限结构-最关键的判断">1.3 临到期的极端期限结构（最关键的判断）</h3>
+<p>实测 ag2403（dte=1，距到期 1 天）截面：ATM IV≈0.20，但深 ITM/深 OTM 的 IV 高达 1.0~1.6。这与 ag2404（dte=31）的健康微笑（0.108→0.237）形成鲜明对比。</p>
+<p><strong>这里做了一个贯穿全项目的设计判断：临到期的极端陡峭 IV 是真实市场信号而非噪声</strong>——它恰恰是预警系统要捕捉的风险（临到期 Gamma 风险、流动性枯竭）。所以清洗只剔除 BS 卡死值，<strong>把&quot;近月陡峭&quot;作为特征保留</strong>，而非平滑掉。这决定了后面&quot;清洗保信号、违反即特征&quot;的整体策略。</p>
+<hr>
+<h2 id="2-清洗-vol_surface-cleaning-py">2. 清洗（<code>vol_surface/cleaning.py</code>）</h2>
+<p>从上节的实测问题反推清洗链路，顺序执行、每步记录剔除条数（可审计）：</p>
+<pre><code>休市 → 僵尸合约 → IV 边界(0.01~3.0) → Greeks 卡死 → 邻居跳变</code></pre>
+<h3 id="踩过的坑-邻居跳变误杀-v-形拐点">踩过的坑：邻居跳变误杀 V 形拐点</h3>
+<p>初版用&quot;一阶差分超 k×MAD&quot;剔除跳变，结果把 ag2403 ATM 处从 IV=0.80 降到 0.20 的真实 V 形微笑拐点误杀了 21 条。</p>
+<p><strong>修正</strong>：改为&quot;仅剔除<strong>单调段内逆向离群跳变</strong>&quot;——先估局部趋势方向（窗口中位差分符号），只标记与趋势反向且超阈的点。V 形拐点两侧方向本就相反，不在此列。修正后剔除数从 21 降到 5，ATM 拐点完整保留。</p>
+<p>实测效果（ag 2024-02 截面，220 条）：</p>
+<pre><code>cleaning: in=220 out=152 (suspend=0 inactive=40 iv_bound=23 dead_greeks=0 neighbor_jump=5)</code></pre>
+<hr>
+<h2 id="3-插值与曲面重建-vol_surface-interpolation-py">3. 插值与曲面重建（<code>vol_surface/interpolation.py</code>）</h2>
+<h3 id="踩过的坑-1-svi-在-w-空间拟合严重低估-atm">踩过的坑 1：SVI 在 w 空间拟合严重低估 ATM</h3>
+<p>SVI 原本为股票期权设计，拟合 total-variance <code>w=σ²T</code>。商品期权 IV 绝对值跨度大（0.03~1.6），<strong>w 空间损失让高 IV 端（深 OTM）主导拟合，ATM 反而严重低估</strong>。实测 ag dte=22 切片：原始 ATM IV=0.159，SVI 拟合给出 0.0205——<strong>低估 8 倍</strong>，而 rmse=0.0038 在 w 空间看似&quot;合格&quot;。</p>
+<p><strong>修正</strong>：残差改到 <strong>IV 空间</strong>（<code>sqrt(svi) - iv</code>），让各 moneyness 点被均匀加权，ATM 形态正确还原。</p>
+<h3 id="踩过的坑-2-近月极端曲线通过-dte-维度外推污染远月">踩过的坑 2：近月极端曲线通过 dte 维度外推污染远月</h3>
+<p>初版用最近两个真实切片的 dte 距离倒数加权，结果 dte=1 的极端曲线把 dte=7/14 的网格点拉到 IV=0.16，与真实远月 0.14 不符。</p>
+<p><strong>修正</strong>：dte 维度改用 <strong>√T 空间线性插值</strong>（符合 w∝T 无套利期限结构），<strong>仅内插不外推</strong>——超出真实 dte 范围的网格点用边界切片，避免近月污染远月。</p>
+<h3 id="踩过的坑-3-pchip-要求-x-严格递增">踩过的坑 3：PCHIP 要求 x 严格递增</h3>
+<p>同切片存在重复 moneyness（不同 strike 同 moneyness），PCHIP 报错。<strong>修正</strong>：插值前对 x 去重取均值。</p>
+<h3 id="最终方案-重建与提参分离">最终方案：重建与提参分离</h3>
+<ul>
+<li><strong>曲面重建</strong>（主路径，要求稳健）：moneyness 用 PCHIP 单调三次插值（保形不振荡），dte 用 √T 线性插值</li>
+<li><strong>SVI 参数化</strong>（仅提特征，不强求完美重建）：每切片拟 <code>[a,b,ρ,m,σ]</code> 五参数作为偏度/倾斜特征</li>
+<li>SVI 失败时自动退化为线性插值兜底</li>
+</ul>
+<p>最终曲面形态正确：正常截面 ATM IV≈0.155 期限平稳、微笑 V 形完整；临到期截面近月偏高、期限结构倒挂信号被正确捕捉。</p>
+<hr>
+<h2 id="4-无套利校验-vol_surface-arbitrage-py">4. 无套利校验（<code>vol_surface/arbitrage.py</code>）</h2>
+<p>在拟合后的规则网格上做三项校验，量化违反程度而非强制消除（违反本身是预警信号）：</p>
+<ul>
+<li><strong>日历套利</strong>：<code>w(k,T)=iv²·T</code> 随 T 单调非降。临到期时近月 IV 远高于远月，calendar 违反数显著上升——这正是核心信号</li>
+<li><strong>蝶式套利</strong>：<code>w(k)</code> 凸，二阶差分≥0，量化曲面非凸度</li>
+<li><strong>put-call parity</strong>：同点 call/put IV 偏离超 5 vol point 计为违反</li>
+</ul>
+<p>实测对比：正常截面 calendar 违反 5、临到期截面 39——校验能有效区分常态与异常。</p>
+<hr>
+<h2 id="5-风险特征工程-vol_surface-features-py">5. 风险特征工程（<code>vol_surface/features.py</code>）</h2>
+<p>每个时间截面 → 一个特征向量。赛题点名的指标全部落地：</p>
+<div class='tw'><table><thead><tr><th>特征</th><th>含义</th></tr></thead><tbody><tr><td><code>convexity_violation</code></td><td>曲面凸性违反程度（蝶式非凸数量×幅度）</td></tr><tr><td><code>skew_percentile</code></td><td>偏度分位数（25-delta skew 历史分位）</td></tr><tr><td><code>term_slope_roc</code></td><td>期限结构斜率变化率（核心信号）</td></tr><tr><td><code>gamma_concentration</code> / <code>vega_concentration</code></td><td>Gamma/Vega 截面集中度（HHI of Greek×OI）</td></tr><tr><td><code>atm_iv_z</code></td><td>ATM IV 的滚动 z-score</td></tr><tr><td><code>iv_spike</code></td><td>短期 IV 急升幅度</td></tr><tr><td><code>fit_degradation</code></td><td>SVI 拟合退化（曲面畸变）—— <strong>注意：anchor 数据里恒为 0，见 §7.7</strong></td></tr><tr><td><code>arb_score</code></td><td>无套利违反综合分</td></tr><tr><td><code>liquidity_z</code></td><td>流动性退化</td></tr></tbody></table></div>
+<p>全部特征带 500 截面滚动窗口（<code>FeatureHistory</code>），支持 z-score 化与分位计算。</p>
+<h3 id="迭代-临到期降权">迭代：临到期降权</h3>
+<p>初版回测发现临到期月常态化触发凸性/IV急升规则，误报率高（FPR 39%）。<strong>修正</strong>：当存在 dte&lt;7 的近月时，对 <code>convexity_violation</code>、<code>term_slope_roc</code>、<code>iv_spike</code> 乘 0.35 降权因子——临到期的陡峭是机制性常态，降权后只保留突发异常部分。降权后 L3 触发从 125 降到 116，部分原 L3 转为 L1。</p>
+<hr>
+<h2 id="6-四级预警-vol_surface-alert_rules-py-alert_model-py-alert_engine-py">6. 四级预警（<code>vol_surface/alert_rules.py</code> + <code>alert_model.py</code> + <code>alert_engine.py</code>）</h2>
+<h3 id="规则层-可解释">规则层（可解释）</h3>
+<p>7 条规则，每条触发即生成中文原因，如&quot;曲面凸性违反 1.80（阈值&gt;1.5），蝶式非凸程度显著&quot;： R1 凸性 / R2 期限斜率Δ / R3 ATM IV z / R4 Greek 集中 / R5 无套利 / R6 流性 / R7 IV 急升 / R8 加速度（导数提前预警）。</p>
+<blockquote><p>⚠️ <strong>R2 / R4 / R6 现已默认关闭</strong>（§7.13–§7.15）：逐条实测它们在所有数据切片上都是负贡献， 关掉后判别力 +8.2→+20.9pp。本节保留 7 条规则的原始描述作为设计记录。</p></blockquote>
+<h3 id="ml-层-捕捉复合畸变">ML 层（捕捉复合畸变）</h3>
+<p>IsolationForest 吃多变量特征向量，输出 0-1 异常分。规则擅长单指标触发，ML 擅长捕捉&quot;单看都不超阈、合在一起已异常&quot;的复合畸变。</p>
+<h3 id="融合策略">融合策略</h3>
+<pre><code>level = max(规则级, ML级)   # 取严不取松
+level = clip(level, 0, 3)    # 钳制四级
+if not triggers and level &gt; 2: level = 2  # 仅 ML 触发无规则时不超 2（避免纯黑箱升级）
+# 可选 composite 模式：孤立单 warn 规则降为 watch，需多规则协同或 serious 强信号
+# 才保留 level&gt;=2，提升精确率（牺牲召回）</code></pre>
+<h3 id="阈值校准与精度-召回前沿">阈值校准与精度-召回前沿</h3>
+<p>规则阈值全部参数化（<code>DEFAULT_PARAMS</code>），经 <code>scripts/grid_search.py</code> 在事件期窗口网格搜索校准：6561 组阈值 × 6 种状态机配置（含 cooldown 冷却去重），以&quot;召回≥60% 且 提前≥30min&quot;为硬约束、精确率最大化为目标。最优为无状态机配置：精确率 47.5%、召回 61.6%、提前 52min。<strong>经实验确认这是当前规则+特征集的精度-召回前沿</strong>——cooldown 与 composite 能提精确率到 60%+ 但召回跌破 60% 门槛，故默认不启用，作为可选模式保留。</p>
+<h3 id="踩过的坑-ml-升级到-4-级">踩过的坑：ML 升级到 4 级</h3>
+<p>初版 <code>_ml_level</code> 在规则级≥2 且 ML 极高时返回 <code>rule_level+1</code>，结果算出 4 级越界。<strong>修正</strong>：所有等级转换钳制到 0-3。</p>
+<p>输出：<code>{level, triggers[], top_features, ml_score}</code>。</p>
+<hr>
+<h2 id="7-回测验证-vol_surface-backtest-py">7. 回测验证（<code>vol_surface/backtest.py</code>）</h2>
+<p>对照 <code>extreme_event.csv</code>（GBK 编码加载）算召回率/提前时间/误报率。</p>
+<h3 id="踩过的坑-召回率口径错误">踩过的坑：召回率口径错误</h3>
+<p>初版对每个品种都拿全部 17 个事件算召回分母，结果 au（黄金）被黑色系/碳酸锂等<strong>根本不覆盖 au</strong> 的事件稀释，召回率假性偏低。</p>
+<p><strong>修正</strong>：召回分母只统计<strong>覆盖该品种的事件</strong>（用中文板块名→品种的映射表过滤）。修正后真实指标：</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>相关事件数</th><th>召回率</th><th>平均提前</th><th>FPR</th></tr></thead><tbody><tr><td>ag 白银</td><td>2</td><td><strong>100%</strong></td><td>4275 min (~3天)</td><td>29%</td></tr><tr><td>au 黄金</td><td>2</td><td>50%</td><td>2235 min</td><td>14%</td></tr><tr><td>sc 原油</td><td>2</td><td><strong>100%</strong></td><td>1695 min</td><td>26%</td></tr><tr><td>si 工业硅</td><td>0 标注</td><td>—</td><td>—</td><td>24%</td></tr></tbody></table></div>
+<p>au 漏检的 1 个是 2024-04 贵金属日内冲高事件——该事件太短，采样 400/30000 太稀疏导致事件窗口内仅 2 个采样点且都差一点到阈值（z=2.82）。这是采样密度问题，非算法问题。</p>
+<h3 id="意外收获-主动发现未标注异常">意外收获：主动发现未标注异常</h3>
+<p>si（工业硅）未被任何事件标注，但系统触发 96 个高等级预警——2023-02 IV 异常下跌（z=-3.28）、2023-03 期限结构急变等，都是真实市场异常。这体现了<strong>主动发现未标注风险</strong>的能力。</p>
+<hr>
+<h2 id="7-5-赛题量化指标对照-关键">7.5 赛题量化指标对照（关键！）</h2>
+<p>赛题&quot;任务目标&quot;定义了明确的量化评测口径。<strong>本节保留的是 2026-08-03 的历史记录</strong> （旧风险起点口径、原始 7 条规则、仅 4 个已校准品种，且评测启用了当时存在缺陷的 ML 层，见 §7.25）， 对应产物 <code>data_out/backtest_report.md</code> —— 该文件顶部亦有同样的声明。 <strong>交付结论见 §7.11 / §7.18 与 <code>data_out/q1_7sym.json</code>，不要引用本节的数字。</strong></p>
+<h3 id="指标1-预警准确性与时效性-主指标">指标1：预警准确性与时效性（主指标）</h3>
+<p>口径：未来 5 个 15min 点内 ATM IV 或凸性违反 &gt; 过去 20 交易日 95 分位 → 之后 2h 为&quot;风险区间&quot;；预警 level≥2。目标：精确率≥50%、召回≥60%、平均提前≥30min。</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>事件期</th><th>精确率</th><th>召回率</th><th>平均提前</th><th>达标</th></tr></thead><tbody><tr><td>sc</td><td>2026-03 原油</td><td>57.6%</td><td>75.4%</td><td>49min</td><td>✓ 全达标</td></tr><tr><td>sc</td><td>2023-06 能化</td><td>49.4%</td><td>60.0%</td><td>62min</td><td>召回+提前达标</td></tr><tr><td>ag</td><td>2026-01 贵金属</td><td>35.6%</td><td>64.7%</td><td>51min</td><td>召回+提前达标</td></tr><tr><td>ag</td><td>2024-04 贵金属</td><td>47.5%</td><td>46.2%</td><td>44min</td><td>提前达标</td></tr></tbody></table></div>
+<blockquote><p>⚠️ 上表为<strong>旧（无预热）风险起点口径</strong>、原始 7 条规则、且只含 ag/sc 两个已校准品种。修正死区并扩到 7 品种 18 个窗口后：平均精确率 42.9%、判别力 +15.2pp、达标 3/18（§7.11）；再经 §7.13–§7.15 关闭 R2/R4/R6 后：<strong>平均精确率 51.5%、判别力 +23.9pp、达标 4/18</strong>。</p>
+<p>网格搜索校准的最优阈值（<code>scripts/grid_search.py</code>，含 R8 加速度导数预警）：4 窗口平均精确率 47.5%、召回 61.6%、提前 52min，召回与提前时间达标。<strong>sc 原油窗口三项全达标</strong>；持续型大事件（原油、2026-01 白银）表现好，短促事件（2024-04 日内冲高）因采样密度受限召回偏低。R8 导数特征（IV/凸性加速度的 z-score）领先于水平触发，使预警更早、更稀疏，精确率较无导数版提升 2.6pp。</p></blockquote>
+<h3 id="指标2-cvar-改善率-核心业务指标-本小节结论已被-7-11-推翻">指标2：CVaR 改善率（核心业务指标）—— ⚠️ <strong>本小节结论已被 §7.11 推翻</strong></h3>
+<blockquote><p><strong>下表的 50.0% 是算术产物，不是业务成果。</strong> 原口径「首次预警次日减半、之后持有 至期末」在实测预警密度下退化为「全程半仓」（首次预警总落在窗口第一个交易日）， CVaR 机械减半 → 恒为 +50.0%，恒预警/随机预警都能拿到同样的数。 换成事件驱动仓位路径并加随机择时对照后：<strong>0/7 个品种达到 95 分位显著性</strong>。 详见 §7.11。原文保留作为「缺少平凡策略对照会怎样」的记录。</p></blockquote>
+<p>口径：预警≥2 级时次日开盘持仓减半，首次减仓后持有至期末，对比无预警策略日收益 CVaR(95%)。目标：平均改善率&gt;10% 视为显著有效。</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>测试期</th><th>多头改善</th><th>空头改善</th><th>平均改善</th><th>显著</th></tr></thead><tbody><tr><td>ag</td><td>2025-11~2026-03</td><td>50.0%</td><td>50.0%</td><td>50.0%</td><td>✓</td></tr><tr><td>sc</td><td>2025-12~2026-04</td><td>50.0%</td><td>50.0%</td><td>50.0%</td><td>✓</td></tr></tbody></table></div>
+<blockquote><p>~~两品种均远超 10% 显著线。预警在 2026-01 白银、2026-03 原油极端下跌簇之前触发，减仓有效降低尾部损失。~~ <strong>此归因不成立</strong>——50.0% 与预警时点无关，见 §7.11。标的价优先用 AKShare 主力连续日线，不可用时从期权 <code>strike/moneyness</code> 反推（现已改用 <code>vol_surface/underlying.py</code>，按到期月分组 + 换月修正）。</p></blockquote>
+<h3 id="指标3-解释能力-问题2-知识图谱-已完成-客观项达标-人工评分待评审">指标3：解释能力（问题2 知识图谱）—— <strong>已完成；客观项达标，人工评分待评审</strong></h3>
+<p>赛题要求对解释文本做<strong>人工</strong> 5 分制评分、平均分 ≥4。本项目交付了完整的图谱、推理引擎、 解释生成与评分材料。</p>
+<p><strong>已做自评，十二轮独立盲评的结论是「最后两轮过线、但不宣称达标」</strong> （<code>data_out/kg/self_assessment.md</code>）：<strong>十二位</strong>独立评审员按预先写定的细则分轮盲评 （每轮针对上一轮修订后的材料），总平均 <strong>3.89 → … → 3.82 → 4.39 → 4.16 → 4.30 → 4.28</strong>， 最后四轮越过 4 分线。作者未参与打分。</p>
+<blockquote><p><strong>为什么仍不宣称达标</strong>：评审员与作者同源，偏向风险无法消除；「不含交易建议」由机器门 <code>K1</code> 保证必得满分、几乎无判别力，把总均分托高约 0.5 分——<strong>只看有区分度的前两维， 第 9 轮为 4.08、第 10 轮为 3.73</strong>；<strong>若命题方按维度分别卡 4 分则过不了</strong> （第 10~12 轮「语义清晰」3.63 / 3.80 / 3.67）。赛题以真人评审为准。</p></blockquote>
+<p><strong>这条 V 形曲线本身是最有价值的记录</strong>：前四轮持续「加」内容补正确性——补触发量口径、 补测试期 lift、补因果免责、补统计口径，每条单看都被评审核实为做到了， 但总分从 3.89 掉到 3.46。第 4 轮评审量化了原因：正文被补丁堆到翻倍， 免责+口径占 70.8%、实质内容仅 29.2%，两句方法学注释被逐条复制 119/121 遍。 第 5 轮改为「减」（把重复 240 次的注释提到文档头声明一次），正文缩 12.7%、 口径占比降到 40.1%，分数才首次回升。 <strong>教训一：逐条补正确性会以可读性为代价，而人工评分同时看两者。</strong> 第 6 轮又修了三处显示层缺陷（胜出分量、绝对值比较式、下界改名），评审核验确认都做对了， 但分数只从 3.59 到 3.60。<strong>教训二：显示层的正确性是下限，修它只能防扣分、不能加分； 真正卡住的是机制叙事未随触发条件分支这类建模层问题。</strong> 须注意「不含交易建议」维度三位都给满分（由免责模板 + 机器门 K1 保证，几乎不含区分信息）， <strong>只看前两维则是 3.33 / 2.80 / 3.35</strong>。</p>
+<p>扣分主因：图谱显式启用了规则引擎已判定为差的 R2/R4/R6（辩护是「描述 ≠ 预测」， 但只写在代码里、解释文本没提）；主干边用「根因/传导」的因果措辞却只给跨品种边加了免责； p 值地板、训练期口径、条件概率的池化范围三处未披露。 十轮修订的完整轨迹与每轮的指认、复核、处置见 <code>data_out/kg/self_assessment.md</code>；第 10 位评审首次判定有一条样本达到 5 分（语义清晰维度）。</p>
+<p><strong>自评仍不能替代人工评分</strong>——评审员与作者同源，偏向风险无法完全消除。</p>
+<p>图谱不是手写断言，而是在 <strong>138,794 个真实截面</strong>（7 品种 5 板块）上标定出来的：</p>
+<div class='tw'><table><thead><tr><th>项</th><th>结果</th></tr></thead><tbody><tr><td>覆盖范围</td><td><strong>7 个品种、5 个板块</strong>（ag/au/sc/si/lc/cu/rb），263 幕 / 138,794 截面</td></tr><tr><td>主干边（异常→后果）</td><td>候选 40 条 → <strong>通过检验 21 条</strong>；测试期<strong>按与训练期同一标准</strong>复现 <strong>19/21</strong>，另 2 条仅满足宽松判据</td></tr><tr><td>跨品种共现边</td><td>候选 280 条 → 通过 110 条，其中<strong>跨板块 86 条</strong></td></tr><tr><td>诠释层覆盖</td><td>21 条实测边中仅 9 条配有机制说明，其余为「观测到但机制待补」</td></tr><tr><td>边权来源</td><td>提升度 lift + 95% Wilson 保守下界 + 200 次<strong>分块置换检验</strong></td></tr><tr><td>验证门</td><td><code>python -m kg.tests --emit</code> → <strong>11/11 通过</strong>（200 条测试期样本，K1–K11）</td></tr><tr><td>可机器检查的客观项</td><td>无交易建议 ✓、证据全部可回溯 ✓、无证据时拒绝推断 ✓</td></tr><tr><td>人工 5 分制评分</td><td><strong>十二轮独立盲评：3.89→…→4.39→4.16→4.30→4.28（最后四轮连续越过 ≥4）</strong>。但<strong>不宣称达标</strong>：评审员与作者同源；「不含交易建议」由机器门 K1 保证必得满分、几乎无判别力，把总分托高约 0.5——<strong>只看有区分度的前两维，I/J/K/L 为 4.08 / 3.73 / 3.95 / 3.94，无一稳定站上 4</strong>；<strong>若按维度分别卡 4 分则过不了</strong>（J 3.63、K 3.80、L 3.67）；四位评审对相近材料给出 4.39 / 4.16 / 4.30 / 4.28，离散度本身说明单票不足为凭。第 10 位评审首次判定有一条样本达 5 分。测试期复现口径已修正为与训练期同标准（21→19 条，2 条仅宽松）；真人评审仍待进行。材料见 <code>explanation_samples.md</code> + <code>scoring_sheet.csv</code>，自评详情见 <code>self_assessment.md</code></td></tr></tbody></table></div>
+<p><strong>两个被数据否掉的先验</strong>（这部分比通过的边更值得看）：</p>
+<ol>
+<li>「Gamma/Vega 截面集中 → 波动率水平跳升」——即教科书式的「做市商 Gamma 对冲压力推高</li>
+<p>波动」。几乎所有期权风险图谱都会写进去，但实测 lift 仅 <strong>0.82</strong>（p=0.93），<strong>已剔除</strong>。</p>
+<li>「白银流动性枯竭 → 黄金流动性枯竭」用全时段基线算出 lift <strong>3.22</strong>，看着是极强的传导链。</li>
+<p>核查发现 ag/au/sc 的流动性异常 90% 以上集中在 0–2 点夜盘，而 si（广期所）不交易夜盘、 异常集中在 10–14 点——这条「传导」几乎全是日内季节性。改用<strong>按小时匹配的基线</strong>后 lift 降到 <strong>1.10</strong>（已剔除）；反过来 si→ag 的朴素 lift 只有 0.07（看似强烈负相关）， 小时匹配后是 <strong>2.27</strong>——朴素口径把方向都搞反了。</p>
+</ol>
+<p><strong>扩样后新增的关键结果</strong>：跨品种边里 <strong>86/110 条是跨板块的</strong>（有色↔贵金属 23 条、 贵金属↔黑色系 17 条为最多）。扩样前只有 4 品种 3 板块且 ag/au 同属贵金属，跨板块传导实际上 没有验证条件；现在才真正可测。lift 最高的几条经日内时段匹配后仍然成立，例如 螺纹→白银的期限结构斜率急变（7.47×）、白银→螺纹的 Gamma/Vega 集中（5.96×）、 铜→白银的短期 IV 急升（4.11×）。</p>
+<p>详见 <code>data_out/kg_report.md</code>；Schema 文档 <code>kg/schema.md</code>；可视化 <code>data_out/kg/kg_viz.html</code>。</p>
+<h3 id="指标4-drl-决策优化-问题3-旧口径历史记录-交付结论见-7-10-7-18">指标4：DRL 决策优化（问题3）—— <strong>旧口径历史记录</strong>（交付结论见 §7.10 / §7.18）</h3>
+<blockquote><p>⚠️ <strong>本小节整段是「逐月」标签口径下的旧结果，已被 §7.10 取代。</strong> 保留原文是因为 它记录了当时的推理与对照设计（尤其是盲节奏对照与判别力口径，那部分方法论仍然有效）。 <strong>交付版数字请看 §7.10 与 <code>data_out/drl_report.md</code></strong>（该报告已按新口径重新生成， 与本小节的数不一致是正常的）。</p></blockquote>
+<p>赛题加分门槛：DRL 相对固定阈值规则，在累计奖励<strong>或</strong> CVaR 改善率上提升 ≥10%。 本项目走累计奖励口径，在<strong>从未参与任何选择</strong>的测试集（2025-07~2026-04，含 2026-01 白银与 2026-03 原油两次极端行情）上：</p>
+<div class='tw'><table><thead><tr><th>策略</th><th>累计奖励</th><th>精确率</th><th>召回率</th><th>平均提前</th><th>预警数</th><th>判别力</th></tr></thead><tbody><tr><td>规则基线（问题1 校准阈值）</td><td>-5,916.2</td><td>29.6%</td><td>58.1%</td><td>46.2min</td><td>8,492</td><td>8.5%</td></tr><tr><td>最佳盲节奏（不看特征，每3步报一次）</td><td>-1,590.3</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0.8%</td></tr><tr><td>DRL 单 seed 均值（n=5）</td><td>-1,304.7 ± 846.0¹</td><td>38.6%</td><td>62.2%</td><td>39.4min</td><td>—</td><td>—</td></tr><tr><td><strong>DRL 集成（5 seed Q 值平均）</strong></td><td><strong>-525.9</strong></td><td><strong>41.2%</strong></td><td><strong>63.0%✓</strong></td><td><strong>36.2min✓</strong></td><td><strong>4,085</strong></td><td><strong>20.1%</strong></td></tr><tr><td>预言机上界</td><td>+14,851.4</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div>
+<ul>
+<li><strong>相对规则基线提升：集成 +91.1%、单 seed 均值 +77.9%</strong>，均远超 ≥10% 门槛</li>
+<li>相对规则基线<strong>精确率与召回率同时改善</strong>：29.6%→41.2%、58.1%→63.0%，</li>
+<p>而预警条数从 8,492 降到 4,085（<strong>少 52%</strong>）</p>
+<li>但这<strong>不是帕累托改进</strong>：平均提前时间从 46.2min 降到 36.2min，严格变劣</li>
+<p>（仍高于 30min 门槛）。智能体倾向于等证据更充分时才出手，这是精确率提升所付的代价</p>
+<li>召回率与平均提前时间双双达标；精确率 41.2% 仍未过 50%，与 §12 论证的 P-R 前沿一致</li>
+<li>需注意：集成召回率 63.0% 超线仅 3.0pp，而单 seed 召回率标准差 4.4pp</li>
+<p>（5 个 seed 中有 2 个低于 60%：65.8/62.7/56.3/58.2/68.0）——该项达标处在种子噪声量级之内，不宜过度解读</p>
+</ul>
+<blockquote><p><strong>最重要的一条对照</strong>：「盲节奏」策略完全不看特征、只按固定间隔机械刷预警，它的累计奖励 （-1,590.3）<strong>反而优于</strong>校准后的规则基线（-5,916.2）。这说明在这个偏重召回的口径下， 单看累计奖励会严重误导。真正区分「学到信号」与「刷召回」的是<strong>判别力</strong>（精确率 − hit 基础率 21.1%）：盲节奏 0.8%、恒预警 +0.00%，而 DRL 集成 20.1%， 是规则基线（8.5%）的 2.4 倍。增益来自曲面信号，不是预警节奏。</p></blockquote>
+<blockquote><p><strong>一处需如实声明的口径例外</strong>：DRL 的超参与 checkpoint 全部只用验证集选、测试集不参与； 但<strong>盲节奏基线的周期</strong>（每 N 步报一次）是在被评估的那个数据集上取最优的。这个方向是 对基线有利、对本文结论从严——它把对照线做强了，不会抬高 DRL 的成绩。</p></blockquote>
+<p>详见 <code>data_out/drl_report.md</code>（由 <code>scripts/report_drl.py</code> 生成，数字从 <code>results.json</code> / <code>workpoint.json</code> / <code>gates.json</code> 读出，可一键刷新；<strong>该报告已是新口径</strong>，与本小节不一致属正常。奖励消融段需要 <code>ablation_reward.json</code>，交付目录下暂缺，仅存于 <code>data_out/drl_legacy_monthly/</code>）。</p>
+<h3 id="指标5-系统功能">指标5：系统功能</h3>
+<p>✓ 可分析历史数据（连续截面回放）+ Streamlit Web 界面。</p>
+<h3 id="成果交付对照">成果交付对照</h3>
+<div class='tw'><table><thead><tr><th>赛题要求</th><th>交付</th></tr></thead><tbody><tr><td>可运行原型源码（Python+依赖）</td><td><code>vol_surface/</code> + <code>scripts/</code> + <code>requirements</code></td></tr><tr><td>系统部署与运行文档</td><td>本 README §10 快速开始</td></tr><tr><td>离线回测报告（对比基线、关键指标、典型案例）</td><td><code>data_out/backtest_report.md</code> + <code>scripts/generate_report.py</code></td></tr><tr><td>预警可视化界面</td><td><code>dashboard/app.py</code>（Streamlit）</td></tr><tr><td>技术设计文档</td><td>本 README 全文（设计决策 + 坑演进）</td></tr></tbody></table></div>
+<hr>
+<h2 id="7-6-品种扩样-从-4-个到-7-个-问题2-3-已重跑-问题1-未重跑">7.6 品种扩样：从 4 个到 7 个（问题2/3 已重跑，问题1 未重跑）</h2>
+<h3 id="为什么扩">为什么扩</h3>
+<p>原先只建模 ag/au/sc/si 四个品种，而 <code>extreme_event.csv</code> 的 17 个极端事件里， <strong>只有 7 个</strong>的板块能对应上这四个品种。剩下 10 个分别属于碳酸锂(3)、黑色系(3)、 铜(2)、氧化铝(1)、合成橡胶(1)——这些品种的原始数据 <code>archive/</code> 里全都现成， 只是从没跑过 <code>build_anchor_dataset</code>。</p>
+<p>三个问题都受影响：问题1 的事件回测样本量小到个位数；问题2 只有 3 个板块且 ag/au 同属 贵金属，<strong>跨板块传导根本没有验证条件</strong>；问题3 的训练集全来自 4 个品种，泛化性无从检验。</p>
+<p>补 <strong>lc（碳酸锂）/ cu（铜）/ rb（螺纹钢）</strong> 后：</p>
+<div class='tw'><table><thead><tr><th>项</th><th>扩样前</th><th>扩样后</th></tr></thead><tbody><tr><td>品种 / 板块</td><td>4 / 3</td><td><strong>7 / 5</strong></td></tr><tr><td>标注截面</td><td>90,298</td><td><strong>138,794</strong>（+54%）</td></tr><tr><td>事件覆盖</td><td>7/17</td><td><strong>15/17</strong> → 后补 al/br 至 <strong>17/17</strong>（§7.18）</td></tr><tr><td>幕数（训练/验证/测试）</td><td>96 / 24 / 32</td><td>162 / 42 / 59</td></tr></tbody></table></div>
+<h3 id="扩样后指标是升是降-如实对照-测试集">扩样后指标是升是降：如实对照（测试集）</h3>
+<div class='tw'><table><thead><tr><th>指标</th><th>4 品种</th><th>7 品种</th><th>变化</th></tr></thead><tbody><tr><td>规则基线累计奖励</td><td>−3,093.7</td><td>−5,916.2</td><td>↓</td></tr><tr><td>DRL 集成累计奖励</td><td>−91.2</td><td>−525.9</td><td>↓</td></tr><tr><td>DRL 集成精确率</td><td>43.2%</td><td>41.2%</td><td>↓</td></tr><tr><td>DRL 集成召回率</td><td>61.9%</td><td>63.0%</td><td>↑</td></tr><tr><td>DRL 集成平均提前</td><td>37.6min</td><td>36.2min</td><td>↓</td></tr><tr><td>相对规则基线提升</td><td>+97.0%</td><td>+91.1%</td><td>↓</td></tr><tr><td>主干边测试期复现（与训练期同标准）</td><td>20/21</td><td><strong>19/21</strong>（另 2 条仅宽松判据）</td><td>↑</td></tr><tr><td>跨品种边（跨板块）</td><td>22（几乎全同板块）</td><td><strong>110（其中跨板块 86）</strong></td><td>↑↑</td></tr></tbody></table></div>
+<p><strong>大部分绝对指标是下降的</strong>——测试集从 32 幕扩到 59 幕、且新增的有色与黑色系是训练期 从没见过的板块类型，本来就更难。这里不做美化：扩样让数字变难看了，但让结论更可信。</p>
+<h3 id="扩样揭示的一件事-规则退化得比-drl-快">扩样揭示的一件事：规则退化得比 DRL 快</h3>
+<div class='tw'><table><thead><tr><th></th><th>4 品种</th><th>7 品种</th><th>相对衰减</th></tr></thead><tbody><tr><td>规则基线判别力</td><td>+11.48%</td><td>+8.52%</td><td><strong>−25.8%</strong></td></tr><tr><td>DRL 集成判别力</td><td>+21.63%</td><td>+20.12%</td><td><strong>−7.0%</strong></td></tr><tr><td>DRL / 规则 倍数</td><td>1.88×</td><td><strong>2.36×</strong></td><td>—</td></tr></tbody></table></div>
+<p>加入两个训练期没见过的板块后，固定阈值规则的判别力掉了约四分之一，而 DRL 几乎没掉， 两者差距从 1.9 倍拉大到 2.4 倍。这正是赛题「固定阈值僵化、需要自适应」这一命题的 直接证据——<strong>而且是扩样之前拿不到的证据</strong>，因为原来 4 个品种里没有可供泛化检验的新板块。</p>
+<h3 id="一个防呆改动">一个防呆改动</h3>
+<p>扩样时踩到一个隐蔽问题：<code>drl/dataset.load_episodes</code> 里硬编码了品种名单 <code>[&quot;ag&quot;,&quot;au&quot;,&quot;sc&quot;,&quot;si&quot;]</code>，新数据被静默忽略、指标看着&quot;没变化&quot;。已改为自动发现目录。 同时给 <code>metrics_seed*.json</code> 加了<strong>数据集指纹</strong>，<code>--stage report</code> 汇总时校验所有 seed 是否来自同一数据集——扩样过程中确实发生过「只重训了 1 个 seed，另外 4 个还是旧结果」 的情况，若不拦住，报告会把两个数据集的结果平均在一起且完全看不出来。</p>
+<h3 id="尚未重跑的部分-如实说明">尚未重跑的部分（如实说明）</h3>
+<p><strong>问题1 的事件回测（§7）与赛题指标1/2 对照表（§7.5）仍是 4 品种口径</strong>，本次未重跑。 原因是那两项依赖 <code>scripts/generate_report.py</code> 的事件期连续截面回放与 CVaR 回测 （后者还需 AKShare 取标的价），耗时与外部依赖都较重。扩样只用于问题2 与问题3。 若要补齐，跑 <code>python scripts/generate_report.py</code> 即可，新品种的事件覆盖会从 7 个升到 15 个。</p>
+<hr>
+<h2 id="7-7-为提高精确率做的数据清洗实验-三条线索-只有一条有效">7.7 为提高精确率做的数据清洗实验（三条线索，只有一条有效）</h2>
+<p>目标是把精确率往 50% 推。<strong>先说结论：清洗买到了规则基线 +3.10pp、DRL 集成 +1.29pp， 两者都仍未过 50% 线。</strong> 三条线索的实测过程如下。</p>
+<h3 id="前提-精确率的靶子会自己动">前提：精确率的靶子会自己动</h3>
+<p>精确率的分母是预警数、分子是命中数，而&quot;命中&quot;由 <code>identify_risk_windows</code> 从 <code>atm_iv</code> 与 <code>convexity_violation</code> 算出的风险起点决定。清洗一旦改变这两个特征，风险起点本身也跟着变。 因此凡是改动清洗规则的实验，<strong>风险区间一律固定用基线口径</strong>，只比较预警侧，否则没有可比性。</p>
+<h3 id="线索1-最小合约数门槛-不成立">线索1：最小合约数门槛 —— 不成立</h3>
+<p>测试集上按 <code>n_contracts</code> 五等分，最低分箱（10–22 条合约）精确率只有 20.2%，明显低于整体 29.6%，看起来是条好线索。但拿到<strong>验证集</strong>上扫门槛，从 ≥15 到 ≥40 精确率<strong>一点没变</strong>—— 验证集里几乎没有这么低的截面；加到 ≥60 时精确率反而 −0.18pp、召回 −0.64pp。 这是典型的&quot;在测试集上看到的模式，在验证集上不存在&quot;，没有采用。</p>
+<h3 id="线索2-陈价年龄-修好了一个坏规则-但不提精确率">线索2：陈价年龄 —— 修好了一个坏规则，但不提精确率</h3>
+<p>排查发现原「僵尸合约」规则实际上<strong>几乎从不触发</strong>：它要求 <code>volume==0 且 open_interest==0 且 close==pre_close</code> 三条同时成立，而实测 <code>pre_close</code> 是 <strong>上一根 K 线</strong>的收盘（98% 吻合），所以 <code>close==pre_close</code> 只表示这 15 分钟没成交—— 商品期权大多数合约本就不是每根都有成交（保留行里 79.6% 满足此条），而 <code>open_interest==0</code> 又极少成立，两者相乘后规则形同虚设。</p>
+<p>真正有害的是&quot;已经很久没成交&quot;。实测 ag 2025-08 全月，价格连续未变根数中位数 14 根 （约 3.5 小时）、90 分位 34 根（约一个交易日）——这类合约的 IV 是隔日陈价。 故新增 <code>annotate_staleness</code> + <code>clean_slice(max_stale_bars=N)</code> 来剔除陈价过久的合约。</p>
+<p><strong>但它不提精确率</strong>：固定风险区间、重算特征后，N=32 时 ΔP=+0.11pp、N=16 时 ΔP=−0.05pp， 预警数几乎不动。原因说得通——被剔除的陈价合约主要是深度虚值，而曲面网格聚焦 0.85–1.15 的近月平值区，那里的合约本来就有成交。该实验子集只有 161 条预警、 基础精确率 8.7%，统计功效低，±0.1pp 属噪声，但至少可以说&quot;看不到效果&quot;。</p>
+<p>规则本身作为数据质量治理是真改进，<strong>默认关闭</strong>（<code>max_stale_bars=None</code> 保持原行为）， 避免在没有收益的情况下改变既有全部结果。</p>
+<h3 id="线索3-流动性门-唯一有效的一条">线索3：流动性门 —— 唯一有效的一条</h3>
+<p>误报明显集中在低流动性截面。按 <code>liquidity_ratio</code> 五等分看规则基线精确率，呈单调关系： <strong>16.5% → 28.9% → 33.0% → 32.5% → 36.3%</strong>。门槛在验证集上选定为 0.55 （更高门槛召回塌得很快：≥0.70 时精确率 48.9% 但召回只剩 16.7%）。</p>
+<p>测试集（59 幕，只评这一次）：</p>
+<div class='tw'><table><thead><tr><th>被包装的策略</th><th>精确率</th><th>召回率</th><th>平均提前</th><th>预警数</th><th>换取比</th></tr></thead><tbody><tr><td>规则基线</td><td>29.58% → <strong>32.68%</strong>（+3.10pp）</td><td>58.08% → 55.74%（−2.35pp）</td><td>46.2→46.6min</td><td>8,492→7,010</td><td><strong>1.32 pp/pp</strong></td></tr><tr><td>DRL 集成</td><td>41.18% → 42.46%（+1.29pp）</td><td>63.04% → 61.41%（−1.63pp）</td><td>36.2→36.8min</td><td>4,085→3,841</td><td>0.79 pp/pp</td></tr></tbody></table></div>
+<p><strong>一个有意思的发现：这道门对 DRL 是负收益。</strong> 对固定阈值规则它是划算买卖（每损失 1pp 召回 换到 1.32pp 精确率），但对 DRL 换取比只有 0.79——因为 DRL 的状态里本来就有 <code>liquidity_ratio</code> 与 <code>liquidity_z</code> 两维，它<strong>已经自己学到了同样的信息</strong>，再加硬门只是重复 抑制、白白损失召回。这从侧面印证了 DRL 确实在用曲面信号，而不是靠预警节奏。</p>
+<p>实现为 <code>drl.baseline.QualityGate</code>，<strong>默认不启用</strong>，需要时显式包装。</p>
+<h3 id="附带发现-fit_degradation-是死特征">附带发现：<code>fit_degradation</code> 是死特征</h3>
+<p>它在全部 138,794 个截面里<strong>恒为 0</strong>，且是唯一的常量特征。根因是 <code>features.py</code> 里它取 SVI 拟合残差的均值，而 anchor 构建用 <code>lightweight=True</code> 跳过了 SVI，列表为空即返回 0。 影响范围：占用 DRL 状态 26 维特征中的 1 维（无贡献）、在 IsolationForest 输入里， 但<strong>规则引擎不使用它</strong>，故不影响任何预警判定。§5 的特征表把它列为特征之一，此处更正。</p>
+<h3 id="这一轮的总结">这一轮的总结</h3>
+<p>精确率从 29.58% 推到 32.68%（规则）/ 42.46%（DRL 集成），仍未过 50%。 三条线索里两条无效，说明<strong>剩余误报不是数据质量问题</strong>——它符合 §12 论证的 P-R 前沿：召回与精确率共用同一个 120 分钟对称窗口，事件月里风险起点密集， 维持高召回就必然产生结构性误报。清洗能削掉最脏的那一层，削不动前沿本身。</p>
+<hr>
+<h2 id="7-8-改决策方式能不能把精确率推过-50-约-30-组配置的实验-结论-不能">7.8 改决策方式能不能把精确率推过 50%：约 30 组配置的实验（结论：不能）</h2>
+<p>§7.7 排除了「精确率低是数据脏」，这一节排除「是决策方式不对」。 <strong>先给结论：试了 5 类结构不同的决策规则、约 30 组配置，测试集上没有任何一个同时满足 赛题的精确率≥50% 与召回率≥60%。现状（纯贪心）反而是唯一守住召回与提前时间两项门槛的配置。</strong></p>
+<h3 id="实验设置">实验设置</h3>
+<p>以 DRL 集成的 Q 值构造置信度信号 <code>lean = max(Q₂,Q₃) − max(Q₀,Q₁)</code>（「倾向预警」相对 「倾向不报」的优势），在此之上试各种决策规则。<strong>全部在验证集选参，测试集只评一次。</strong></p>
+<h3 id="五类规则在验证集上的表现">五类规则在验证集上的表现</h3>
+<div class='tw'><table><thead><tr><th>规则族</th><th>代表配置</th><th>精确率</th><th>召回率</th><th>提前</th><th>双门槛</th></tr></thead><tbody><tr><td>现状（纯贪心）</td><td>—</td><td>45.41%</td><td>69.32%</td><td>35.6min</td><td>R✓</td></tr><tr><td>置信度阈值</td><td>lean&gt;0.34</td><td>49.16%</td><td>60.30%</td><td>31.5min</td><td>R✓</td></tr><tr><td>置信度阈值</td><td>lean&gt;0.50</td><td>50.63%</td><td>56.26%</td><td>30.1min</td><td>P✓</td></tr><tr><td>冷却去抖</td><td>cd=4</td><td>39.80%</td><td>52.44%</td><td>32.7min</td><td>—</td></tr><tr><td>连续确认</td><td>k=2</td><td>56.23%</td><td>22.19%</td><td>54.8min</td><td>P✓</td></tr><tr><td>集成一致度门</td><td>agree≥0.8</td><td>51.60%</td><td>52.12%</td><td>29.4min</td><td>P✓</td></tr><tr><td>逐品种阈值·打靶</td><td>7 参数</td><td>49.40%</td><td>61.15%</td><td>31.4min</td><td>R✓</td></tr><tr><td>逐品种阈值·贪心</td><td>7 参数</td><td><strong>51.08%</strong></td><td><strong>60.08%</strong></td><td>31.8min</td><td><strong>✓✓</strong></td></tr></tbody></table></div>
+<p>只有最后一行在验证集上&quot;越过&quot;了双门槛——但它是<strong>用 7 个自由参数贪心拟合、且刚好卡在 约束边界上</strong>（60.08% / 51.08%）。同样是逐品种、但改用「每个品种各自把召回压到 60%」 这一单一准则（自由度低得多）时，结果只有 49.40%，<strong>和全局单阈值的 49.16% 几乎一样</strong>。 这基本说明贪心版的&quot;越线&quot;来自验证集拟合，而非真实增益。</p>
+<h3 id="测试集验证-过拟合判断被证实">测试集验证：过拟合判断被证实</h3>
+<div class='tw'><table><thead><tr><th>方案</th><th>参数量</th><th>验证集精确率</th><th>测试集精确率</th><th>落差</th></tr></thead><tbody><tr><td>全局单阈值 lean&gt;0.34</td><td>1</td><td>49.16%</td><td>43.85%</td><td>−5.32pp</td></tr><tr><td>逐品种·召回打靶</td><td>7</td><td>49.40%</td><td>44.10%</td><td>−5.30pp</td></tr><tr><td>逐品种·贪心优化</td><td>7</td><td><strong>51.08%</strong></td><td><strong>44.66%</strong></td><td><strong>−6.42pp</strong></td></tr></tbody></table></div>
+<p>三者落差都在 5–6pp（验证集是 2025 上半年，测试集含 2026 初极端行情，本身存在分布漂移）， 而贪心版落差最大。<strong>验证集上唯一&quot;达标&quot;的方案，测试集只有 44.66%。</strong></p>
+<h3 id="提阈值在测试集上的实际代价">提阈值在测试集上的实际代价</h3>
+<p>以实际部署路径（<code>AlertAgentAPI</code> 在线应用阈值）为准：</p>
+<div class='tw'><table><thead><tr><th>配置</th><th>精确率</th><th>召回率</th><th>平均提前</th><th>预警数</th></tr></thead><tbody><tr><td>现状 lean&gt;0</td><td>41.18%</td><td><strong>63.04%</strong> ✓</td><td><strong>36.2min</strong> ✓</td><td>4,085</td></tr><tr><td>lean&gt;0.34</td><td>42.77%</td><td>58.21% ✗</td><td>33.9min ✓</td><td>3,161</td></tr></tbody></table></div>
+<p><strong>每损失 1pp 召回只换到约 0.3pp 精确率</strong>——极不划算，且直接把召回打到 60% 线下。</p>
+<blockquote><p>一个技术细节：在线应用阈值（42.77%/58.21%）与「先按贪心跑出 Q 值轨迹、再事后套阈值」 （43.85%/54.24%）结果不同。因为在线改动作会改变状态里的 <code>since_alert</code> / <code>last_level</code> 上下文，后续 Q 值随之偏移。<strong>以在线数字为准</strong>，那才是实际部署行为。</p></blockquote>
+<h3 id="两个值得记录的负面结果">两个值得记录的负面结果</h3>
+<p><strong>冷却去抖对 DRL 是纯负收益</strong>：精确率与召回率同时下降（45.41%/69.32% → 39.80%/52.44%）。 这与它对规则引擎的效果相反（§6 记录 cooldown 能把规则精确率提到 60%+）。原因是 DRL 在 事件簇内发出的预警本来大多就是命中，去抖删掉的是命中而非误报。</p>
+<p><strong>连续确认能把精确率推到 56%，但召回塌到 22%</strong>——它实际上是在等风险起点快到了才确认， 提前时间反而升到 54.8min，但已完全不具备预警价值。</p>
+<h3 id="为什么推不过去">为什么推不过去</h3>
+<p>赛题的召回与精确率<strong>共用同一个 120 分钟对称窗口</strong>：召回要求每个风险起点前 120min 内至少有 一条预警；精确率要求每条预警后 120min 内至少有一个风险起点。事件月里风险起点每隔 135–420min 就出现一条，维持 60% 召回就必须密集预警，而密集预警必然在&quot;风险刚过 120min、 下一条还没到&quot;的间隙里产生结构性误报。这是<strong>评分函数本身的形状</strong>，不是决策规则能绕开的。</p>
+<p>至此三条路径都试过并留下了证据：调阈值（§6 网格搜索 6561 组）、清洗数据（§7.7 三条线索）、 改决策方式（本节约 30 组配置）。三者都指向同一个前沿。要真正过 50%，需要的是 <strong>曲面之外的独立信息</strong>（标的已实现波动、成交持仓明细、资金流），而非在现有特征上换算法。</p>
+<h3 id="交付形态">交付形态</h3>
+<p><code>AlertAgentAPI.set_confidence_threshold(lean)</code> 提供了沿前沿移动工作点的接口， <strong>默认 0.0（纯贪心）不变</strong>，docstring 里写明了调高的代价。偏好精确率的场景可自行调整， 但需知道那会牺牲赛题的召回门槛。</p>
+<hr>
+<h2 id="7-9-引入曲面之外的独立信息-原标题-唯一真正移动了前沿的一条路-结论已作废">7.9 引入曲面之外的独立信息（原标题「唯一真正移动了前沿的一条路」——<strong>结论已作废</strong>）</h2>
+<blockquote><p>⚠️ <strong>本节的量化结论已被 §7.10 推翻，请连同 §7.10 一起读。</strong> 本节测得的判别力有相当一部分来自一个位置性假信号（逐月计算的 RV 在每月前 32 根 恒为 0，而这段区间因标签缺陷必然为负）。把 RV 算法与标签口径交叉对比即可看出： 在有缺陷的逐月标签下逐月 RV 的测试集 AUC 是 0.579、连续 RV 只有 0.528； 换成修正后的连续标签，两者<strong>反转</strong>为 0.535 与 0.549（§7.10）。 方法论（反推标的价、RV 与方差风险溢价的构造）仍然成立且已成为交付的一部分， 但「唯一真正移动前沿」这个结论<strong>不成立</strong>——按 §7.10 的配对检验，标的特征的增益 在 n=5 下不显著（p≈0.26）。本节原文保留，作为「测量口径错了会怎样」的记录。</p></blockquote>
+<p>§6 / §7.7 / §7.8 三条路径（调阈值、清洗数据、改决策方式）都只是在同一条 P-R 前沿上滑动。 本节验证最后一个假设：<strong>前沿之所以卡住，是因为所有 26 维特征都来自隐含波动率曲面自身； 引入曲面之外的独立信息应当能把前沿整体外推。</strong></p>
+<p><strong>（下述结论已作废，见上方警示）</strong> 假设成立。前沿在全召回区间外推了 0.6–4.5pp， 是四条路径里唯一真正移动前沿的。但幅度不足以在保住 60% 召回的前提下达到 50% 精确率。</p>
+<h3 id="独立信息从哪来-反推标的价">独立信息从哪来：反推标的价</h3>
+<p>数据集没有标的价字段，但 <code>moneyness = strike / S</code> 可以反解。由此可算<strong>已实现波动 RV</strong>， 它来自标的价格路径，与曲面特征不同源。二者之差 IV−RV（方差风险溢价）刻画 「期权市场定价的波动」与「标的实际走出来的波动」之间的背离——这在曲面内部看不到。</p>
+<p><strong>踩到一个关键陷阱：必须按到期月分组反推。</strong> 初版跨期限混算，得到的截面内一致性只有 5.3e-3、年化波动仅 8.5%（白银通常 25–45%），看着像数据有问题。排查发现不同到期月的期权 是按各自的期货合约定价的：同一截面上 dte=9 反解出 9190、dte=221 反解出 9270， 呈单调 contango——<strong>混算等于把跨期限价差当成了价格波动</strong>。按最近月分组后， 组内一致性达 1e-7（机器精度），年化波动 12.9%。</p>
+<p>实现见 <code>vol_surface/underlying.py</code>。逐截面反推是 O(n²)，改成整月 groupby 向量化后 <strong>加速 238×</strong> 且结果逐位一致。</p>
+<h3 id="新特征确实独立-也确实有判别力">新特征确实独立，也确实有判别力</h3>
+<p>在 DRL 已发出的预警上看单变量区分度（AUC，0.5 = 无区分）：</p>
+<div class='tw'><table><thead><tr><th>特征</th><th>AUC</th><th>说明</th></tr></thead><tbody><tr><td><code>atm_iv_z</code>（现有，最强）</td><td>0.618</td><td>—</td></tr><tr><td><code>lean</code>（DRL 置信度）</td><td>0.614</td><td>—</td></tr><tr><td><strong><code>rv_long</code>（新）</strong></td><td><strong>0.601</strong></td><td>判别力接近最强现有特征</td></tr><tr><td><strong><code>iv_rv_spread</code>（新）</strong></td><td>0.444</td><td><strong>反向</strong>：价差越低越可能命中</td></tr></tbody></table></div>
+<p><code>iv_rv_spread</code> 的方向经济上讲得通——方差风险溢价低，意味着期权市场相对标的实际波动 <strong>定价不足</strong>，真实风险更可能兑现。</p>
+<p>与现有特征的相关系数普遍 |r| &lt; 0.2（最高 0.32），确认是独立信息而非翻版。</p>
+<h3 id="但-加一道门-没用-得让它参与打分">但「加一道门」没用，得让它参与打分</h3>
+<p>先试把新特征当作附加门（<code>lean&gt;t 且 spread_z&lt;s</code>）：在可行域（R≥60%、lead≥30）内 最优仍是纯阈值的 49.16%，<strong>没有任何提升</strong>。</p>
+<p>改为让它参与打分——在验证集上拟合一个逻辑回归组合器（输入 <code>lean</code> + 5 个标的特征， 只在「DRL 贪心会发预警」的截面上拟合），权重显示新特征的贡献超过 DRL 自身的置信度：</p>
+<div class='tw'><table><thead><tr><th>特征</th><th>权重（标准化）</th></tr></thead><tbody><tr><td><strong><code>rv_long</code>（新）</strong></td><td><strong>+0.733</strong></td></tr><tr><td><code>lean</code>（DRL 置信度）</td><td>+0.485</td></tr><tr><td><strong><code>rv_short</code>（新）</strong></td><td>−0.399</td></tr><tr><td><strong><code>rv_accel</code>（新）</strong></td><td>+0.298</td></tr></tbody></table></div>
+<h3 id="测试集-前沿整体外推">测试集：前沿整体外推</h3>
+<p>阈值在验证集选、测试集只评一次：<strong>P=46.25%、R=57.56%、lead=35.2min</strong>。 与纯 lean 在相近召回下比（42.77% @ 58.21%），<strong>精确率高出 3.5pp</strong>。</p>
+<p>完整前沿对照（测试集，相同召回下比精确率）：</p>
+<div class='tw'><table><thead><tr><th>目标召回</th><th>纯 lean</th><th>＋标的特征</th><th>增量</th></tr></thead><tbody><tr><td>63%</td><td>41.18%</td><td>41.81%</td><td>+0.63pp</td></tr><tr><td>60%</td><td>42.37%</td><td><strong>44.64%</strong></td><td><strong>+2.27pp</strong></td></tr><tr><td>57%</td><td>43.26%</td><td>46.25%</td><td>+2.99pp</td></tr><tr><td>54%</td><td>43.85%</td><td>47.16%</td><td>+3.31pp</td></tr><tr><td>50%</td><td>44.56%</td><td>48.40%</td><td>+3.84pp</td></tr><tr><td>45%</td><td>45.81%</td><td><strong>50.09%</strong></td><td>+4.28pp</td></tr><tr><td>40%</td><td>48.24%</td><td>52.70%</td><td>+4.46pp</td></tr></tbody></table></div>
+<p><strong>前沿在整个召回区间上都外推了</strong>，且召回要求越松、增量越大。 在赛题约束（R≥60%、lead≥30min）下精确率上限从 42.37% 提到 <strong>44.64%</strong>； 精确率要过 50%，召回需放到约 45%。</p>
+<h3 id="两点如实说明">两点如实说明</h3>
+<ol>
+<li><strong>验证集又出现约 5pp 落差</strong>（验证集组合器 51.17%「过线」，测试集 46.25%）。</li>
+<p>这与 §7.8 的三个方案落差一致（−5.3 ~ −6.4pp），是验证集（2025 上半年）与 测试集（含 2026 初极端行情）的分布漂移，非本方法独有。</p>
+<li><strong>本节的组合器是在贪心轨迹上事后打分</strong>，与在线决策会有偏差（§7.8 记录过同类差异</li>
+<p>约 1pp 量级）。要拿到干净结论，需把 6 个标的特征并入 DRL 状态（26→32 维）重训。</p>
+</ol>
+<h3 id="下一步">下一步</h3>
+<p>把标的特征并入状态重训 DRL 是自然的下一步 → <strong>已完成，见 §7.10</strong>。 但重训过程中先查出了一个更要紧的东西：<strong>标签本身有缺陷</strong>。</p>
+<hr>
+<h2 id="7-10-一个把精确率压低了约-5pp-的标签缺陷-本轮最重要的发现">7.10 一个把精确率压低了约 5pp 的标签缺陷（本轮最重要的发现）</h2>
+<h3 id="怎么发现的">怎么发现的</h3>
+<p>按 §7.9 的计划补算训练期标的特征时，顺手把两件事做对了：按品种<strong>跨月连续</strong>算 （而非逐月各算各的），以及剔除主力合约<strong>换月</strong>造成的反解价跳空。结果 <code>rv_long</code> 的判别力不升反降——测试集 AUC 0.579 → 0.528。</p>
+<p><strong>修得更干净反而变差，是假信号的典型征兆。</strong> 把两种 RV 算法 × 两种标签口径交叉来看， 四个数把话说全了（测试集 59 幕，AUC）：</p>
+<div class='tw'><table><thead><tr><th></th><th>逐月 RV（§7.9 原版）</th><th>连续 RV + 换月修正</th></tr></thead><tbody><tr><td><strong>逐月标签（有缺陷）</strong></td><td><strong>0.5790</strong></td><td>0.5276</td></tr><tr><td><strong>连续标签（修正后）</strong></td><td>0.5345</td><td><strong>0.5489</strong></td></tr></tbody></table></div>
+<p>在有缺陷的靶子上逐月 RV 更&quot;强&quot;，换成正确的靶子后<strong>排序反转</strong>——正确计算的特征赢了。 这正是「特征的零值区恰好落在标签的死区里」该有的表现。查下去果然如此：</p>
+<div class='tw'><table><thead><tr><th>月内位置</th><th>0–40 根</th><th>40–80 根</th><th>80–120 根</th><th>120–160 根</th></tr></thead><tbody><tr><td>标签为正的比例</td><td><strong>0.0%</strong></td><td>8.3%</td><td>41.7%</td><td>32.3%</td></tr></tbody></table></div>
+<p>（口径：测试集 59 幕，标签 <code>y</code> 即 <code>LABEL_HORIZON=8</code> 的定义。换成 <code>lead_min≤120</code> 的命中口径数值不同，但第一格恒为 0.0% 这一关键性质不变。）</p>
+<p>而逐月口径下的 <code>rv_long</code> 恰好在<strong>每月前 32 根恒为 0</strong>（中位数与最大值都是 31）。 零值区完全落在「必然为负」的区域里，于是排序时白捡了一段判别力。 剔除每月前 80 根后两种口径归一（0.540 vs 0.545），确认是位置性假信号。</p>
+<h3 id="根因-我自己管线里的不一致">根因：我自己管线里的不一致</h3>
+<p>赛题的风险区间定义是「超过<strong>过去 20 个交易日</strong>的 95 分位」。 <code>scripts/build_anchor_dataset.py</code> 第 155 行给<strong>特征</strong>做了跨月 history 预热 （<code>_load_history_priors</code>），但第 178 行的 <code>identify_risk_windows(cont)</code> <strong>只吃当月数据</strong>。 滚动 q95 的 <code>min_periods=80</code>，于是每幕前 80 根阈值为 NaN、判不出风险起点， 再经 horizon=8 反推，<strong>每幕前 72 根截面在结构上不可能有正标签</strong>。</p>
+<p>这不是赛题定义——线上系统的 20 日窗口本来就跨月。是实现缺陷。</p>
+<h3 id="代价有多大-测试集-59-幕">代价有多大（测试集，59 幕）</h3>
+<div class='tw'><table><thead><tr><th></th><th>死区(&lt;72 根)</th><th>死区外</th><th>死区占比</th></tr></thead><tbody><tr><td>全样本风险起点</td><td><strong>0 / 1534</strong></td><td>1534</td><td>截面的 14.1%</td></tr><tr><td>DRL 预警</td><td>485 条，精确率 <strong>0.00%</strong></td><td>3600 条，46.72%</td><td>占其误报的 <strong>20.2%</strong></td></tr><tr><td>规则基线预警</td><td>1312 条，精确率 <strong>0.00%</strong></td><td>7180 条，34.99%</td><td>占其误报的 <strong>21.9%</strong></td></tr></tbody></table></div>
+<p>在那片区域里发的预警<strong>必然</strong>是误报，与模型好坏无关。</p>
+<h3 id="修法与验证">修法与验证</h3>
+<p><code>drl/dataset.apply_continuous_risk()</code>：按品种把所有月份拼成连续时间轴再判风险起点， <code>lead_min</code> 同样在连续轴上算再切回各幕（月末的预警因此能被次月初的风险起点正确计入）。</p>
+<ul>
+<li><strong>单幕退化检验</strong>：只给一幕时，连续版与逐月版逐位相同——同一套判定逻辑，只是输入跨度不同。</li>
+<li>风险起点 6201 → <strong>7185</strong>（+15.9%），其中 1092 个落在原死区。注意 1092 <strong>不是净增量</strong>：</li>
+<p>净增只有 984，即约 108 个原本在死区外的起点在连续口径下消失了——滚动阈值改用跨月数据后 更高，部分原先「超阈」的点不再超阈。这是应有的行为，不是丢数据。</p>
+<li>冷启动从「每月一次」变成「每品种首幕一次」（约 560 根，占全样本 0.4%）。</li>
+<li>门 G0 改为检验死区消除 + 幕内自洽（幕尾 8 根允许由下一幕的风险起点触发，</li>
+<p>实测 464 处跨幕标签——这是正确行为）。</p>
+</ul>
+<h3 id="修正后的数字-两句话都要说">修正后的数字：两句话都要说</h3>
+<p><strong>同一批旧模型</strong>（26 维、按旧标签训练）在两种标签口径下评估，测试集：</p>
+<div class='tw'><table><thead><tr><th>标签口径</th><th>命中基础率</th><th>精确率</th><th>判别力</th><th>召回</th></tr></thead><tbody><tr><td>逐月（原）</td><td>21.06%</td><td>41.18%</td><td>+20.12pp</td><td>63.04%</td></tr><tr><td>连续（修正）</td><td>24.41%</td><td><strong>45.09%</strong></td><td>+20.68pp</td><td>59.25%</td></tr></tbody></table></div>
+<ol>
+<li><strong>系统的真实精确率是 45.09% 而非 41.18%</strong>——之前那个数低估了，因为靶子里有一块打不中的区域。</li>
+<li><strong>模型本身没有变好</strong>：涨的 3.91pp 里 3.35pp 只是基础率变密，判别力仅 +0.56pp。</li>
+<p>盲节奏策略的判别力仍是 +1.03%≈0（它必须为零），这条对照线证明修正没有凭空造出信号。</p>
+</ol>
+<p>代价是召回跌到 59.25%，<strong>跌破赛题 60% 门槛</strong>——风险起点多了 233 个，旧模型没学过。故须重训。</p>
+<h3 id="重训结果-7-9-计划的-26-32-维-与标签修正一并做">重训结果（§7.9 计划的 26→32 维，与标签修正一并做）</h3>
+<p>三个变体，同超参、同 seed 集合（42–46，5 个）、同评估口径（连续标签）： <code>old</code>=旧模型 / <code>c26</code>=连续标签重训 / <code>c32</code>=连续标签 + 6 维标的特征。</p>
+<p><strong>按诚实协议选工作点</strong>（阈值只看验证集：R≥60% 且 lead≥30min 下精确率最大）：</p>
+<div class='tw'><table><thead><tr><th>变体</th><th>验证集精确率</th><th>测试集精确率</th><th>召回</th><th>提前</th><th>判别力</th></tr></thead><tbody><tr><td>old（仅作对照，非候选）</td><td>53.51%</td><td>46.59% ✗</td><td>55.29% ✗</td><td>35.9m ✓</td><td>+22.17pp</td></tr><tr><td>c26</td><td>50.54%</td><td>45.35% ✗</td><td>70.91% ✓</td><td>35.4m ✓</td><td>+20.93pp</td></tr><tr><td><strong>c32（5-seed，当时的交付版）</strong></td><td><strong>50.77%</strong></td><td><strong>47.61%</strong> ✗</td><td><strong>71.93%</strong> ✓</td><td><strong>36.4m</strong> ✓</td><td><strong>+23.19pp</strong></td></tr></tbody></table></div>
+<p><strong>这里有个坑必须讲清楚</strong>：<code>old</code> 的验证集精确率（53.51%）看着最高，且在验证集上也满足 R≥60%、lead≥30min 两个约束——单看这张表，「验证集选最优」会选中它。 但 <strong><code>old</code> 不是交付候选</strong>：它是按<strong>已作废的逐月标签</strong>训练的，把它选进来等于用错误的 监督信号交付。它在测试集上召回只有 55.29%，<strong>连 60% 门槛都过不了</strong>，正说明了这一点。 真正的候选只有 c26 与 c32 两个（都在修正标签下训练），二者中 c32 验证集更优（50.77% vs 50.54%），故选中 c32。<strong>测试集不参与任何选择。</strong></p>
+<p>当时结论：精确率 47.61%（差 2.39pp）、召回 71.93%、提前 36.4min，10/10 验证门通过。 工作点由 <code>scripts/select_workpoint.py</code> 产出（<code>data_out/drl/workpoint.json</code>），不是手算。</p>
+<blockquote><p>⚠️ <strong>本表是 5-seed 时期的记录。</strong> 后续集成规模实验（判据预先登记）通过验证集判据， 交付版已换为 <strong>15-seed 集成</strong>：测试集 <strong>精确率 47.41% ✗ / 召回 74.14% ✓ / 提前 35.6min ✓</strong> （<strong>这是死区过滤之前的数</strong>；现行交付版见 §7.19，精确率 54.15% ✓—— 但<strong>规则引擎在同一过滤下也从 45.36% 涨到 52.36%，增益同等</strong>，那不是模型改进）。 换版依据<strong>只有验证集</strong>（判别力 +1.53pp）；测试集反而低 0.19pp，如实报出—— 不能因为测试集低就退回 5-seed，那是拿测试集选模型。详见「已知局限」的集成规模一节。</p></blockquote>
+<p><strong>测试集前沿</strong>（同召回下的精确率，5-seed 集成）：</p>
+<div class='tw'><table><thead><tr><th>目标召回</th><th>c26</th><th>c32</th><th>差</th></tr></thead><tbody><tr><td>60%</td><td>49.77%</td><td><strong>51.16%</strong></td><td>+1.39</td></tr><tr><td>65%</td><td>48.42%</td><td>50.84%</td><td>+2.42</td></tr><tr><td>70%</td><td>45.70%</td><td>48.64%</td><td>+2.94</td></tr></tbody></table></div>
+<p>前沿在 R=60% 处已经越过 50%（51.16%）。但<strong>这不等于「换个阈值就能达标」</strong>： 该点对应 lean≈1.0，而在验证集上 lean=1.0 的召回只有 55.0%、提前 26.9min， <strong>两个约束都不满足</strong>，任何只看验证集的程序都不会选它。也就是说 51.16% 与交付的 47.61% 之差（3.55pp）不是「阈值挑得不够好」，而是验证集与测试集之间 <strong>召回—阈值关系整体漂移</strong>的结果——没有诚实程序能够到它。 故本文只把它作为<strong>选择误差的量化对照</strong>列出，不作为成绩，也不据此声称 「前沿已经够用」。（旁证：c26 在同点的前沿是 49.77%，同样贴着 50%， 说明这个数更像口径与分布的产物，而非某个变体的本事。）</p>
+<blockquote><p>⚠️ <strong>本段是 5-seed 时期的分析。</strong> 换用 15-seed 集成后该对照量<strong>不再可算</strong>： 15-seed 的测试集召回下界是 60.4%，整条曲线都在目标 60% 之上，网格包不住该点， <code>frontier_p_at_r60</code> 如实记为 NaN。<strong>刻意不为此扩大 lean 网格</strong>——扩网格本身 无害（选点仍只用验证集），但那一步会发生在已经看过测试集曲线之后， 与「看了测试集再改搜索空间」无法区分。诊断量缺失可以接受，选择过程被污染不行。</p></blockquote>
+<h3 id="标的特征到底有没有用-不能确立">标的特征到底有没有用：不能确立</h3>
+<p>集成层面 c32 稳定优于 c26（+1.4~2.9pp），但<strong>逐 seed 配对检验不显著</strong>：</p>
+<pre><code>R=66% 处 c32−c26（单模型）：+0.05  −2.24  +3.54  +5.60  +1.88
+均值 +1.77pp，标准差 3.04pp，t=1.30，df=4，p≈0.263；符号检验 4/5 正，p=0.375</code></pre>
+<p>方向为正、5 个 seed 里 4 个为正、且 c32 的 seed 间离散明显更小 （贪心工作点、样本标准差：测试集精确率 2.15pp vs c26 的 3.97pp；在 R=66% 处则是 1.29pp vs 3.54pp），但 <strong>n=5 不足以确立</strong>。 如实记为「疑似有效、未证实」，不计入结论。</p>
+<h3 id="本轮的诚实账">本轮的诚实账</h3>
+<p>同口径、同工作点选择协议下的分解（避免跨口径对比误导）：</p>
+<div class='tw'><table><thead><tr><th>比较</th><th>精确率</th><th>召回</th><th>说明</th></tr></thead><tbody><tr><td>旧模型 @ 旧标签、贪心</td><td>41.18%</td><td>63.04%</td><td>之前文档里的数，<strong>靶子有缺陷</strong></td></tr><tr><td>旧模型 @ 新标签、贪心</td><td>45.09%</td><td>59.25%</td><td>纯测量修正：+3.35pp 基础率 + 0.56pp 判别力</td></tr><tr><td>旧模型 @ 新标签、验证集选点</td><td>46.59%</td><td>55.29%</td><td>同协议下的对照基准</td></tr><tr><td><strong>c32 @ 新标签、验证集选点</strong></td><td><strong>47.61%</strong></td><td><strong>71.93%</strong></td><td>5-seed 版（当时交付）</td></tr><tr><td><strong>c32 @ 15-seed 集成</strong></td><td><strong>47.41%</strong></td><td><strong>74.14%</strong></td><td>15-seed 版（死区过滤前）</td></tr><tr><td><strong>c32 @ 15-seed + 死区过滤</strong></td><td><strong>54.15%</strong></td><td><strong>74.93%</strong></td><td><strong>当前交付版</strong>（§7.19；规则引擎同获 +7pp）</td></tr></tbody></table></div>
+<ul>
+<li><strong>测量修正 +3.91pp</strong>（41.18→45.09），其中 3.35pp 只是基础率变密，模型没变好。</li>
+<li><strong>重训与建模的净增益 +1.02pp</strong>（46.59→47.61，同协议同口径）。这是个诚实但不亮眼的数字；</li>
+<p>之前草稿里写的「约 +3.1pp」把阈值移动与基础率变化混进了同一桶，已修正。</p>
+<li><strong>召回是本轮的实质改善</strong>：同协议下 55.29% → 71.93%。旧模型在新标签下单模型有</li>
+<p><strong>3/5</strong> 个 seed 根本够不到 60% 召回（63.6/59.9/53.5/56.1/66.0），重训后全部越过。</p>
+<li>仍未过 50% 精确率。</li>
+<li>受沙箱单次执行时长限制，每个 seed 训练 3 epoch；交付版现为 15 个 seed 的集成；<code>drl/train.py</code> 新增按</li>
+<p>epoch 断点续训（门 G9 断言续跑与直跑<strong>逐位等价</strong>，缺存任一随机数发生器状态都会被它抓住）。</p>
+</ul>
+<hr>
+<h2 id="7-11-问题1-按-7-品种重跑-同一个死区缺陷-以及一个被推翻的-cvar-结论">7.11 问题1 按 7 品种重跑：同一个死区缺陷，以及一个被推翻的 CVaR 结论</h2>
+<p>§7.10 在问题3 上查出的死区缺陷，问题1 里<strong>一模一样地存在</strong>： <code>run_quant_evaluation</code> 预跑 25 天只为给<strong>特征</strong>的滚动窗热身，而 <code>identify_risk_windows(cont)</code> 只吃评测窗内的数据。事件窗只有 20~40 天， 前 80 根截面（约 5 个交易日）阈值为 NaN，死区占比比整月口径<strong>更高</strong>。</p>
+<p>修法与 §7.10 同源：把预跑段一并喂进滚动阈值，只在评测窗内产出风险起点 （<code>warmup_risk=True</code>，默认开启；<code>False</code> 复现旧口径）。 一处保守偏差需知晓：预跑段不产生预警记录，故窗口最开头的风险起点无法被更早的 预警召回，这会<strong>低估</strong>召回率——方向对本文结论从严。</p>
+<h3 id="第一件事-死区修正的净效果-原-4-窗口-预警条数完全不变">第一件事：死区修正的净效果（原 4 窗口，预警条数完全不变）</h3>
+<div class='tw'><table><thead><tr><th></th><th>旧口径</th><th>修正后</th><th>Δ</th></tr></thead><tbody><tr><td>精确率</td><td>47.5%</td><td><strong>55.8%</strong></td><td>+8.32pp</td></tr><tr><td>命中基础率</td><td>26.8%</td><td>33.8%</td><td>+7.06pp ← 靶子变密</td></tr><tr><td><strong>判别力（P − 基础率）</strong></td><td>+20.7pp</td><td><strong>+22.0pp</strong></td><td><strong>+1.25pp</strong> ← 真正的净改进</td></tr><tr><td>召回率</td><td>61.6%</td><td>58.6%</td><td>−3.01pp</td></tr></tbody></table></div>
+<p><strong>8.32pp 里有 7.06pp 只是基础率上升。</strong> 与 §7.10 同一个结构：修正后的口径才是 正确的测量，故 55.8% 是该报的数；但模型本身只变好了 1.25pp。 三项全达标的窗口从 1/4 增到 2/4（sc 两个窗口）。</p>
+<p>一个必须披露的反例：<strong>ag 2026-01 的判别力只有 +1.4pp，修正后反而更低</strong> （+3.7 → +1.4）——规则引擎在那个窗口基本没有判别能力，精确率 41.3% 几乎全部 来自 39.9% 的基础率。</p>
+<h3 id="第二件事-扩到-7-品种后-平均精确率-下降">第二件事：扩到 7 品种后，平均精确率<strong>下降</strong></h3>
+<p>18 个事件窗口（修正口径、纯规则层）。下表两列分别是<strong>原始 7 条规则</strong>与 <strong>§7.13–§7.15 改造后</strong>（关闭 R2/R4/R6）的结果：</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>窗口数</th><th>精确率（原）</th><th>精确率（改造后）</th><th>判别力（原）</th><th>判别力（改造后）</th></tr></thead><tbody><tr><td>sc 原油</td><td>3</td><td>57.0%</td><td><strong>64.3%</strong></td><td>+26.2</td><td><strong>+33.6</strong></td></tr><tr><td>au 黄金</td><td>2</td><td>50.9%</td><td>59.2%</td><td>+16.8</td><td>+25.1</td></tr><tr><td>ag 白银</td><td>3</td><td>46.2%</td><td>55.5%</td><td>+12.9</td><td>+22.3</td></tr><tr><td>cu 铜</td><td>3</td><td>45.5%</td><td>54.0%</td><td>+19.9</td><td>+28.3</td></tr><tr><td>si 工业硅</td><td>1</td><td>29.0%</td><td>47.4%</td><td>+10.7</td><td>+29.0</td></tr><tr><td>lc 碳酸锂</td><td>3</td><td>42.3%</td><td>45.2%</td><td>+12.4</td><td>+15.3</td></tr><tr><td><strong>rb 螺纹钢</strong></td><td>3</td><td><strong>20.4%</strong></td><td>26.9%</td><td><strong>−1.4</strong></td><td><strong>+5.1</strong></td></tr><tr><td><strong>18 窗口平均</strong></td><td>18</td><td><strong>42.9%</strong></td><td><strong>51.5%</strong></td><td><strong>+15.2</strong></td><td><strong>+23.9pp</strong></td></tr></tbody></table></div>
+<p><strong>先看扩样本身的效应（原规则列）：平均精确率从 4 窗口的 55.8% 拉到 42.5%。</strong> 这不是退步，而是原来那个数偏乐观——4 个窗口全部来自规则阈值<strong>被校准过的</strong> ag/sc。</p>
+<p><strong>再看规则改造的效应：18 窗口平均精确率 42.9% → 51.5%，判别力 +15.2 → +23.9pp， 三项全达标 3/18 → 4/18。</strong> 7 个品种的判别力全部提升，rb 从 −1.4pp 转正到 +5.1pp。</p>
+<p>改造前后逐窗口的完整对照落盘于 <code>data_out/q1_7sym.json</code>。几个值得注意的点：</p>
+<ul>
+<li><strong>改动最大的三个窗口都是原来判别力最低的</strong>：ag 2025-04 关税战 +7.3→+35.4pp、</li>
+<p>si 2025-04 +10.7→+29.0pp、au 2026-01 +6.0→+22.8pp。三条被关掉的规则原本 在这些窗口里几乎主导了预警集。</p>
+<li><strong>有 5 个窗口完全没变</strong>（ag 2024-04、ag 2026-01、au 2024-04、lc 2023-12 等）——</li>
+<p>在那些窗口里 R2/R4/R6 从未单独把等级推到 ≥2，其他规则总是同时触发。</p>
+<li><strong>rb 2025-07 焦煤仍是 −10.0pp</strong>（几乎没改善），且提前时间仍只有 3min。</li>
+<p>这与 §7.12 的诊断一致：那个窗口的问题是<strong>电平触发的规则来晚了</strong>，不是规则选错了， 关掉噪声规则救不了它。</p>
+</ul>
+<p>即便改造后，<strong>rb 在事件窗口口径下仍是最低（+5.1pp）</strong>，且 lc 2025-12 仍为 −0.1pp。 （口径注：这是<strong>事件窗口</strong>口径。在 anchor 连续测试集上改造后最低的是 ag +19.6pp、rb 为 +25.8pp，见 §7.13——两个口径的排序不同。<strong>这两个数是死区过滤后重算的</strong>，过滤前为 +13.7pp / +17.7pp。） 当前交付的仍是一套<strong>在贵金属/能化上更有效</strong>的规则，黑色系应以 DRL 为主（§7.12）。</p>
+<h3 id="第三件事-cvar-指标的原结论被推翻">第三件事：<strong>CVaR 指标的原结论被推翻</strong></h3>
+<p>原 §7.5 报的是「ag/sc 平均改善 50.0%，远超 10% 显著线 ✓」，并归因为 「预警在极端下跌簇之前触发，减仓有效降低尾部损失」。<strong>这个结论不成立。</strong></p>
+<p>原口径是「首次预警次日减半、之后持有至期末」。实测 7 个品种的<strong>首次预警全部落在 窗口的第一个交易日</strong>（预警密度 150~1500 条 / 45~95 日），于是策略退化为 「全程半仓」，CVaR 被机械地按比例缩小——7 个品种算出来<strong>一模一样都是 +50.0%</strong>。 恒预警、随机预警、瞎报都会得到同样的 50.0%。它衡量的是降杠杆，不是风控。</p>
+<p>改用事件驱动的仓位路径（预警后压仓 N 日即恢复，<code>backtest_cvar_path</code>）， 并加上<strong>同等仓位占用下的随机择时对照</strong>（200 次重抽）：</p>
+<div class='tw'><table><thead><tr><th>口径</th><th>结果</th></tr></thead><tbody><tr><td>level≥2 / 压仓 5 日</td><td>预警日 89/95，均仓 0.51，超额改善 <strong>+0.0~0.1pp</strong>，指标饱和</td></tr><tr><td>level≥3 / 压仓 3 日</td><td>超额改善均值 <strong>+1.88pp</strong>，范围 −8.0~+7.9pp，<strong>0/7 达到 95 分位</strong></td></tr></tbody></table></div>
+<p><strong>控制住仓位占用后，CVaR 上检测不到任何可辨识的技能。</strong> 3/7 个品种的超额为负。</p>
+<p>这个错误本该被我自己定的规矩拦住（实验必须配平凡策略对照）——问题3 的奖励函数 配了「恒不预警/恒预警/随机/盲节奏」四条对照线并因此抓出了奖励可套利， 但 CVaR 指标当时<strong>没有配任何对照</strong>，于是一个纯算术产物被当成了业务成果。 <code>backtest_cvar</code> 保留但已在 docstring 标注退化，新结果一律用 <code>backtest_cvar_path</code>。</p>
+<h3 id="复现">复现</h3>
+<pre><code>python -m drl.tests --underlying              # 10 道门仍全通过（本节不涉及问题3）
+# 问题1 窗口评测（结果落盘 data_out/q1_7sym.json）
+python -c &quot;from vol_surface.quant_metrics import run_quant_evaluation as R; \
+           print(R(&#x27;rb&#x27;,&#x27;20250714&#x27;,&#x27;20250728&#x27;,use_state=False,use_model=False)[3])&quot;</code></pre>
+<blockquote><p>工程说明：本节顺带修了两个阻塞。① 事件窗口原先一次性 concat 全部月文件， 2026 年单文件已达 21 万行/86MB，跨 3 个月直接 OOM（实测 SIGKILL）——改为 <code>_iter_slices</code> 按月流式加载 + groupby 切截面（同时避免逐时间戳扫全表的 O(n²)）。 ② <code>alert_model</code> 的 sklearn 改为惰性导入，使纯规则路径在无 sklearn 环境可跑。 本节全部结果走<strong>纯规则层</strong>（<code>use_model=False</code>）：新扩的 lc/cu/rb 没有训练好的 IF 模型，若让老品种走「规则+ML」而新品种只走规则，跨品种比较就不成立。 已验证纯规则在原 4 窗口上复现出与文档记录<strong>完全一致</strong>的数字，故新旧可比。</p></blockquote>
+<hr>
+<h2 id="7-12-追查-rb-判别力为负-规则引擎是探测器-不是预测器">7.12 追查 rb 判别力为负：规则引擎是探测器，不是预测器</h2>
+<p>§7.11 里 rb 黑色系判别力 −1.4pp（2025-07 焦煤窗口 −10.8pp、平均提前仅 3min）。 负判别力意味着预警比随机还差，值得追到底。</p>
+<h3 id="线索1-原始量纲的特征不可跨品种比较">线索1：原始量纲的特征不可跨品种比较</h3>
+<p><code>convexity_violation</code> 的 90 分位跨品种差近 8 倍（ag 3.96 / sc 1.78 / <strong>rb 0.73</strong> / lc 4.89 / cu 0.49），而 z-score 版本各品种都在 1.7 左右。 校准出的阈值里 R1 要求原始值 <code>&gt; r1_min2 = 1.0</code>——<strong>高于 rb 的 90 分位， R1 对 rb 几乎从不触发</strong>；R4 用原始 <code>gamma_concentration &gt; 0.12</code>， 而 rb 的 90 分位 0.147、cu 0.255、ag 只有 0.065——<strong>R4 对 rb/cu 频繁触发、对 ag 基本不触发</strong>。</p>
+<h3 id="线索2-但这不是主因-rb-的-每条-规则都是负的">线索2：但这不是主因——rb 的<strong>每条</strong>规则都是负的</h3>
+<p>逐规则拆解 rb 2025-07（基础率 30.0%）：</p>
+<div class='tw'><table><thead><tr><th>规则</th><th>触发</th><th>≥2级</th><th>命中率</th><th>判别力</th></tr></thead><tbody><tr><td>R1 凸性</td><td>37</td><td>22</td><td>18.2%</td><td>−11.9</td></tr><tr><td>R3 ATM IV z</td><td>122</td><td>44</td><td>20.5%</td><td>−9.6</td></tr><tr><td>R4 集中度</td><td>14</td><td>11</td><td>9.1%</td><td>−20.9</td></tr><tr><td>R5 无套利</td><td>25</td><td>20</td><td>15.0%</td><td>−15.0</td></tr><tr><td>R8 加速度</td><td>40</td><td>33</td><td>24.2%</td><td>−5.8</td></tr></tbody></table></div>
+<p>对照 sc 2026-03 同样的拆解：R1 +35.9、R3 +41.1、R5 +30.1、R8 +28.5 全部强正。 <strong>同一套规则在 sc 上条条有效、在 rb 上条条为负</strong>，说明不是某条规则的阈值没调好。</p>
+<p>（顺带一个跨品种都成立的发现：<strong>R4 集中度在三个窗口里全是负的</strong>—— sc −24.7、rb −20.9/−25.1。它在哪儿都有害，只是 rb/cu 的量纲让它触发得更多。）</p>
+<h3 id="根因-信号存在-但-来晚了">根因：信号存在，但<strong>来晚了</strong></h3>
+<p>把命中判定窗从「未来 120min」换成其他窗口：</p>
+<div class='tw'><table><thead><tr><th>判定窗</th><th>rb 2025-07</th><th>rb 2024-02</th><th>sc 2026-03</th></tr></thead><tbody><tr><td>赛题（未来 120min）</td><td><strong>−10.4pp</strong></td><td>+7.5pp</td><td>+23.2pp</td></tr><tr><td>对称（±120min）</td><td>+15.8pp</td><td>+13.2pp</td><td>+25.7pp</td></tr><tr><td><strong>仅过去 120min</strong></td><td><strong>+22.1pp</strong></td><td>+15.7pp</td><td>+29.2pp</td></tr></tbody></table></div>
+<p>rb 的预警与风险<strong>强相关</strong>（过去窗 +22.1pp），只是发生在风险<strong>之后</strong>—— 实测该窗口 80.4% 的预警滞后于最近风险起点，只有 2.0% 领先。</p>
+<p>机制是清楚的：规则是<strong>电平触发</strong>的（<code>atm_iv_z &gt; 3.5</code> 等于「已经高了」）， 而赛题的风险起点定义在超阈<strong>之前</strong>那一刻。</p>
+<ul>
+<li><strong>持续型行情</strong>（sc 原油、ag 白银）：高了还会更高，&quot;已经高了&quot;仍能赶上下一个风险起点</li>
+<p>→ 探测≈预测，规则有效；</p>
+<li><strong>尖峰型行情</strong>（rb 黑色系涨停接跌停）：一旦&quot;已经高了&quot;，风险起点早已过去</li>
+<p>→ 探测≠预测，规则失效。</p>
+</ul>
+<p><strong>规则引擎是个探测器，不是预测器。</strong> 它在 ag/sc 上的好成绩有一部分是行情形态给的。</p>
+<h3 id="drl-在-rb-上把这个问题解决了">DRL 在 rb 上把这个问题解决了</h3>
+<p>同一批 rb 测试集数据、同一连续标签口径：</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>基础率</th><th>规则精确率</th><th>规则判别力</th><th>DRL 精确率</th><th><strong>DRL 判别力</strong></th></tr></thead><tbody><tr><td>ag</td><td>28.7%</td><td>39.1%</td><td>+10.4</td><td>45.8%</td><td>+17.0</td></tr><tr><td>au</td><td>25.0%</td><td>40.7%</td><td>+15.6</td><td>55.4%</td><td>+30.3</td></tr><tr><td>sc</td><td>24.0%</td><td>40.3%</td><td>+16.3</td><td>51.0%</td><td>+27.0</td></tr><tr><td>si</td><td>19.3%</td><td>34.5%</td><td>+15.1</td><td>43.8%</td><td>+24.4</td></tr><tr><td>lc</td><td>19.4%</td><td>32.8%</td><td>+13.4</td><td>41.2%</td><td>+21.7</td></tr><tr><td>cu</td><td>26.7%</td><td>39.2%</td><td>+12.5</td><td>47.8%</td><td>+21.2</td></tr><tr><td><strong>rb</strong></td><td>19.1%</td><td><strong>22.3%</strong></td><td><strong>+3.1</strong></td><td><strong>45.7%</strong></td><td><strong>+26.5</strong></td></tr></tbody></table></div>
+<p><strong>rb 的问题是固定阈值规则特有的，不是数据或特征的问题。</strong> 规则在 rb 上几乎无判别力 （+3.1pp，全品种最低），而 DRL 在同一批数据上拿到 +26.5pp——虽不是全品种最高 （au +30.3pp 才是），但已与其余品种同一水平，<strong>规则与 DRL 之间 +23.4pp 的落差是 7 个品种里最大的</strong>。</p>
+<p>但要说清 DRL <strong>赢在哪里</strong>——不是「报得更早」，而是「少报但报得准」：</p>
+<div class='tw'><table><thead><tr><th>rb 测试集</th><th>预警数</th><th>领先占比</th><th>滞后占比</th><th>中位偏移</th></tr></thead><tbody><tr><td>规则</td><td>2010</td><td>32.2%</td><td>59.8%</td><td>−30min</td></tr><tr><td>DRL</td><td><strong>497</strong></td><td>25.2%</td><td>51.1%</td><td>−15min</td></tr></tbody></table></div>
+<p>DRL 只发 1/4 的预警，领先<strong>占比</strong>反而略低，中位偏移从 −30min 改善到 −15min。 增益主要来自<strong>选择性</strong>。这也解释了它在 rb 上的平均提前时间只有 23min（低于 30min 门槛）。</p>
+<h3 id="逐品种的达标情况-drl-交付配置-lean-0-35-15-seed-集成">逐品种的达标情况（DRL 交付配置 lean=0.35，15-seed 集成）</h3>
+<p><strong>au 与 sc 三项全达标</strong>（54.2%/62.5%/37min 与 54.8%/75.8%/38min）； si、lc、rb 同时卡在精确率与提前时间（25/30/23min），ag 与 cu 只卡精确率 （45.0% 与 49.2%——cu 差 0.8pp）。这比只报一个 47.41% 的总平均更有信息量： <strong>系统在原油与黄金上已经可用，在黑色系上只是&quot;能识别&quot;而非&quot;能预警&quot;。</strong></p>
+<blockquote><p>达标品种从 5-seed 时的 1/7（仅 sc）升到 <strong>2/7</strong>——au 是换用 15-seed 集成后 跨过线的，不是挑出来的结果。值得注意的是：合并口径上集成扩容毫无收益 （测试集判别力 −0.19pp），逐品种口径却多了一个达标品种。 合并口径被少数差品种（rb、lc）拖平了，这也是本项目一贯主张 <strong>逐品种报数、不只报总平均</strong>的原因。</p></blockquote>
+<h3 id="可执行的结论">可执行的结论</h3>
+<ol>
+<li><strong>R4 集中度规则应当移除或重做</strong>——三个窗口全为负判别力，它在拉低所有品种。</li>
+<li><strong>规则里的原始量纲阈值应改为分位数口径</strong>（<code>r1_min2</code>、<code>r4_warn</code> 等），</li>
+<p>否则阈值天然只适配校准品种的量纲。</p>
+<li><strong>黑色系应以 DRL 为主、规则只作解释层</strong>——规则在 rb 上的判别力（+3.1pp）</li>
+<p>不足以支撑独立使用。</p>
+<li>这条也回答了「问题3 的 DRL 到底有什么用」：它最大的价值不在总平均上多几个点，</li>
+<p>而在<strong>规则完全失效的品种上仍然有效</strong>。</p>
+</ol>
+<hr>
+<h2 id="7-13-按-7-12-的建议改造规则引擎-一条大幅有效-一条差点被误判为有害">7.13 按 §7.12 的建议改造规则引擎：一条大幅有效、一条差点被误判为有害</h2>
+<p>§7.12 提了两条可执行建议，本节把它们做了。<strong>结论与当初的预判不完全一致</strong>， 其中一条如果不做交互检验就会被错误地否定。</p>
+<h3 id="改造1-移除-r4-集中度规则-大幅有效-已设为默认">改造1：移除 R4 集中度规则 —— 大幅有效，已设为默认</h3>
+<p><code>r4_enabled</code> 现默认 <code>False</code>（<code>vol_surface/alert_rules.py</code>）。传 <code>params={&quot;r4_enabled&quot;: True}</code> 可完整回退到旧行为（实测逐位复现旧数字）。</p>
+<p>测试集全样本（7 品种、纯规则层、连续标签口径）：</p>
+<div class='tw'><table><thead><tr><th></th><th>精确率</th><th>召回</th><th>提前</th><th>判别力</th><th>预警数</th></tr></thead><tbody><tr><td>旧（R4 开）</td><td>34.93%</td><td>59.03%</td><td>47m</td><td>+10.5pp</td><td>8492</td></tr><tr><td><strong>新（R4 关）</strong></td><td><strong>40.78%</strong></td><td>48.27%</td><td>48m</td><td><strong>+16.4pp</strong></td><td>5086</td></tr></tbody></table></div>
+<p><strong>这是前沿外推，不是沿前沿滑动。</strong> 对 z 类阈值加全局缩放系数扫出 P-R 前沿后， 同召回下精确率全程更高：</p>
+<div class='tw'><table><thead><tr><th>同召回</th><th>50%</th><th>55%</th><th>60%</th><th>65%</th><th>70%</th></tr></thead><tbody><tr><td>ΔP（关 R4 − 开 R4）</td><td><strong>+7.28</strong></td><td>+6.55</td><td>+5.22</td><td>+3.54</td><td>+1.94pp</td></tr></tbody></table></div>
+<p>逐品种判别力<strong>无一下降</strong>：rb +3.1→<strong>+12.0</strong>、au +15.6→+27.3、si +15.1→+21.1、 cu +12.5→+16.8，ag/sc/lc 各约 +1pp。验证集上同样在每个工作点都更好 （34.41 vs 33.17、36.97 vs 34.78、38.38 vs 35.17…），故不是测试集特例。</p>
+<p>一个有说服力的旁证：<strong>旧配置的 P-R 前沿异常平坦</strong>——缩放系数从 0.55 扫到 1.45， 精确率只在 33.5%~35.6% 之间动。因为 R4 不受 z 阈值缩放影响，它产生的噪声预警 构成一个地板，调其他阈值都去不掉。关掉之后前沿才恢复正常的单调形状。</p>
+<p>代价要讲清楚：<strong>召回从 59.03% 掉到 48.27%</strong>。R4 贡献了大量低质量预警， 它们在拉低精确率的同时也垫高了召回。若要保住 R≥60%，需把 z 阈值放松到系数 0.75 （此时 P=40.35% / R=60.22%，仍优于旧配置同召回的 35.16%）。</p>
+<h3 id="改造2-原始量纲阈值改逐品种分位-单独用是负的-去掉-r4-后才转正">改造2：原始量纲阈值改逐品种分位 —— 单独用是负的，去掉 R4 后才转正</h3>
+<p><code>scripts/calibrate_symbol_params.py</code>：在 ag/sc（阈值原本的校准品种）的<strong>训练期</strong> 分布里求每个原始量纲阈值所处的分位，再用各品种自己<strong>训练期</strong>分布的同一分位作为新阈值。 产物 <code>data_out/symbol_params.json</code>。<strong>只用训练期标定</strong>，验证/测试期不参与。</p>
+<p><strong>第一次测的结果是负的</strong>：总体判别力 +10.5 → <strong>+8.2pp</strong>，预警反而变多（8492→8875）， rb 判别力 +3.1 → <strong>+2.4pp</strong>（更差）。若就此收手，这条建议会被判定为无效。</p>
+<p>但根因是<strong>交互</strong>：分位标定同时把 <code>r4_*</code> 阈值按品种放松了，让本就有害的 R4 在 rb/cu 上触发得更多。<strong>先关掉 R4 再看，方向就反过来了</strong>：</p>
+<div class='tw'><table><thead><tr><th>同召回</th><th>45%</th><th>50%</th><th>55%</th><th>60%</th><th>65%</th><th>70%</th></tr></thead><tbody><tr><td>ΔP（+分位 − 仅关R4）</td><td>+1.42</td><td>+0.99</td><td>+0.71</td><td>+0.59</td><td>+0.41</td><td>+0.42pp</td></tr></tbody></table></div>
+<p>验证集同向（系数 0.55/0.75/0.95 处分别 +0.36/+0.58/+1.18pp，召回基本持平）， 故采纳，但<strong>量级远小于关闭 R4</strong>（+0.4~1.4pp vs +1.9~7.3pp），属锦上添花。</p>
+<blockquote><p>方法论教训：<strong>评估一项改动时，若它与另一项已知有缺陷的组件耦合， 单独测会得到反向的结论。</strong> 这里如果不做「先关 R4 再测分位」这一步， 就会把一个有效的改动写成无效。</p></blockquote>
+<h3 id="顺带查出-r2-几乎从不触发">顺带查出：R2 几乎从不触发</h3>
+<p>分位标定的中间产物显示 <code>r2_warn</code> 的等价分位是 <strong>0.9997</strong>——阈值 0.3 高到 ag/sc 训练期只有 0.03% 的截面能超过（全 7 品种训练集 0.47%，因为 rb/lc/si 尾巴更肥）。 与诊断时观察到的「R2 每个窗口只触发 1~2 次」吻合。见 §7.14 的处理。</p>
+<blockquote><p>更正：本节初稿写的是「R2 是条死规则、等价分位 1.000」，那是显示取整造成的误读。 准确说法是<strong>几乎从不触发</strong>，不是从不触发。</p></blockquote>
+<h3 id="改造后的逐品种表现-测试集-纯规则层">改造后的逐品种表现（测试集，纯规则层）</h3>
+<div class='tw'><table><thead><tr><th>品种</th><th>判别力（原）</th><th>判别力（改造后）</th></tr></thead><tbody><tr><td>au</td><td>+15.6</td><td><strong>+27.2</strong></td></tr><tr><td>lc</td><td>+13.4</td><td>+26.5</td></tr><tr><td>cu</td><td>+12.5</td><td>+24.2</td></tr><tr><td>si</td><td>+15.1</td><td>+23.5</td></tr><tr><td>sc</td><td>+16.3</td><td>+21.6</td></tr><tr><td><strong>rb</strong></td><td><strong>+3.1</strong></td><td><strong>+17.7</strong></td></tr><tr><td>ag</td><td>+10.4</td><td>+13.7</td></tr><tr><td><strong>总体</strong></td><td><strong>+10.5</strong></td><td><strong>+20.9</strong></td></tr></tbody></table></div>
+<p>（改造后 = 关 R2/R4/R6 + 逐品种分位阈值，即 <code>data_out/symbol_params.json</code> 配置； 逐品种数字落盘于 <code>data_out/per_symbol.json</code>。含 §7.15 的 R6 改造。）</p>
+<p>rb 从「几乎无判别力」变成与其他品种同一量级。但要注意<strong>改造后最低的两个是 ag（+13.7pp） 与 rb（+17.7pp）</strong>，且 rb 规则层的 +17.7pp 仍低于 DRL 在 rb 上的 +22.7pp （口径：anchor 连续测试集，源 <code>data_out/per_symbol.json</code>）—— <strong>黑色系以 DRL 为主、规则作解释层</strong>这条建议不变。</p>
+<h3 id="复现-2">复现</h3>
+<pre><code>python scripts/calibrate_symbol_params.py     # -&gt; data_out/symbol_params.json
+# 使用：evaluate_rules(feats, params=json.load(open(&#x27;data_out/symbol_params.json&#x27;))[symbol])
+# 回退 R4：evaluate_rules(feats, params={**p, &quot;r4_enabled&quot;: True})</code></pre>
+<hr>
+<h2 id="7-14-处理-r2-重标定救不回来-应当移除">7.14 处理 R2：重标定救不回来，应当移除</h2>
+<p>§7.13 查出 R2 几乎从不触发（阈值 0.3 在 ag/sc 训练期只有 0.03% 的截面能超过）。 本节做了两件事：先问「这个特征有没有信息量」，再问「重标定后加进引擎有没有增量」。 <strong>两个问题的答案分别是「有一点」和「没有，而且是负的」。</strong></p>
+<h3 id="特征本身-有信号-但很弱">特征本身：有信号，但很弱</h3>
+<p><code>abs(term_slope_roc)</code> 对「未来 120min 内有风险起点」的判别：</p>
+<div class='tw'><table><thead><tr><th>阈值</th><th>触发占比(验证)</th><th>判别力(验证)</th><th>触发占比(测试)</th><th>判别力(测试)</th></tr></thead><tbody><tr><td>0.05</td><td>12.4%</td><td>+5.8pp</td><td>15.3%</td><td>+6.2pp</td></tr><tr><td><strong>0.08</strong></td><td>6.0%</td><td><strong>+8.9pp</strong></td><td>9.6%</td><td>+6.8pp</td></tr><tr><td>0.20</td><td>1.2%</td><td>+3.6pp</td><td>4.0%</td><td>+10.5pp</td></tr><tr><td>0.30</td><td>0.5%</td><td>+2.2pp</td><td>2.4%</td><td><strong>+12.6pp</strong></td></tr></tbody></table></div>
+<p>整体 AUC 仅 <strong>0.537（验证）/ 0.532（测试）</strong>——刚过 0.5。 注意<strong>验证集与测试集对最优阈值不一致</strong>（验证 0.08、测试 0.30）， 按诚实协议只能用验证集选，即 0.08。</p>
+<h3 id="加进引擎-任何阈值都让前沿变差">加进引擎：任何阈值都让前沿变差</h3>
+<p>同召回下精确率相对「R2 关闭」的变化（pp）：</p>
+<div class='tw'><table><thead><tr><th>召回</th><th>验证 @0.08</th><th>验证 @0.20</th><th>测试 @0.08</th><th>测试 @0.20</th></tr></thead><tbody><tr><td>50%</td><td>−3.57</td><td>−0.87</td><td>−5.53</td><td>−1.14</td></tr><tr><td>55%</td><td>−2.16</td><td>−0.73</td><td>−4.31</td><td>−0.79</td></tr><tr><td>60%</td><td>−1.22</td><td>−0.47</td><td>−2.95</td><td>−0.52</td></tr><tr><td>65%</td><td>−0.30</td><td>−0.32</td><td>−1.53</td><td>−0.24</td></tr></tbody></table></div>
+<p><strong>2 个阈值 × 2 个数据集 × 4 个召回点 = 16 格，全部为负。</strong> 且阈值越松越有害，趋势与「R2 被支配」一致。</p>
+<h3 id="为什么救不回来-结构性支配">为什么救不回来：结构性支配</h3>
+<p>R2 单独的判别力最高 +8.9pp（验证）/ +12.6pp（测试）， 而<strong>引擎整体的判别力已有 +17.4pp</strong>。把一个更弱的信号源掺进更强的组合里， 必然拉低平均。这不是阈值没调好——<strong>任何让它有意义地触发的阈值都会稀释精确率</strong>， 而任何让它不稀释的阈值都等于把它关掉。</p>
+<blockquote><p>这条给了一个可推广的判据：<strong>一条候选规则值不值得加，看的不是它自身判别力是否为正， 而是它是否高于现有组合的判别力。</strong> 低于就是负贡献，无论它单看多&quot;有道理&quot;。</p></blockquote>
+<h3 id="处理-默认关闭">处理：默认关闭</h3>
+<p><code>r2_enabled</code> 现默认 <code>False</code>。测试集（纯规则层、<code>symbol_params.json</code> 配置）：</p>
+<div class='tw'><table><thead><tr><th>配置</th><th>精确率</th><th>召回</th><th>判别力</th><th>预警数</th></tr></thead><tbody><tr><td>R2/R4 全开（原始）</td><td>32.61%</td><td>56.71%</td><td>+8.2pp</td><td>8875</td></tr><tr><td>仅关 R4</td><td>41.84%</td><td>46.41%</td><td>+17.4pp</td><td>4840</td></tr><tr><td><strong>关 R2 + 关 R4（新默认）</strong></td><td><strong>42.22%</strong></td><td>46.12%</td><td><strong>+17.8pp</strong></td><td>4747</td></tr></tbody></table></div>
+<p>关 R2 的增量只有 +0.4pp——因为分位标定后它的阈值本就极高、极少触发。 <strong>真正的价值不在这 +0.4pp，而在于确认了「把它调到真正触发会更糟」</strong>， 从而排除了「重新标定 R2 能提升系统」这条路。</p>
+<p>传 <code>params={&quot;r2_enabled&quot;: True}</code> 或 <code>{&quot;r4_enabled&quot;: True}</code> 可分别回退。</p>
+<h3 id="现存规则清单">现存规则清单</h3>
+<p>启用：R1 凸性 / R3 ATM IV z / R5 无套利 / R7 IV 急升 / R8 加速度 关闭：R2 期限斜率变化率（本节）、R4 Greek 集中度（§7.13）、R6 流动性（§7.15）</p>
+<p>7 条规则关掉 3 条后判别力从 +8.2pp 提到 +20.9pp——<strong>这套规则引擎的问题不是规则太少， 是有三条在持续注入噪声。</strong></p>
+<hr>
+<h2 id="7-15-检验-r6-不是阈值错了-是-方向假设-错了">7.15 检验 R6：不是阈值错了，是<strong>方向假设</strong>错了</h2>
+<p>R6 的逻辑是「流动性急速枯竭（<code>liquidity_z &lt; −1.5</code>）→ 危险」。 诊断时它在 rb 2024-02 触发 33 次、命中率 <strong>0%</strong>，值得单独查。</p>
+<h3 id="方向假设不成立">方向假设不成立</h3>
+<p>把 <code>liquidity_z</code> 当作「越低越危险」的信号来算 AUC（即用 −liquidity_z 排序）：</p>
+<div class='tw'><table><thead><tr><th></th><th>验证集</th><th>测试集</th></tr></thead><tbody><tr><td>AUC(−liquidity_z)</td><td><strong>0.422</strong></td><td><strong>0.452</strong></td></tr></tbody></table></div>
+<p><strong>两个都低于 0.5</strong>，意味着 <code>liquidity_z</code> 与「未来 120min 内有风险起点」是<strong>正</strong>相关—— 风险发生前流动性是<strong>上升</strong>的，不是枯竭的。逐阈值看 R6 的判别力也全为负：</p>
+<div class='tw'><table><thead><tr><th>阈值</th><th>触发占比(验证)</th><th>判别力(验证)</th><th>判别力(测试)</th></tr></thead><tbody><tr><td>&lt; −1.0</td><td>19.9%</td><td>−6.8pp</td><td>−2.7pp</td></tr><tr><td>&lt; −1.5（现用）</td><td>8.7%</td><td><strong>−9.2pp</strong></td><td>−3.0pp</td></tr><tr><td>&lt; −2.0</td><td>2.1%</td><td>−10.0pp</td><td>−0.2pp</td></tr></tbody></table></div>
+<p>这在经济上讲得通：<strong>波动来临时期权成交与持仓是放大的</strong>。「流动性枯竭」的直觉来自 危机期的流动性螺旋，不适用于本数据集里这些商品期权的常规波动率应激。</p>
+<h3 id="把方向翻过来也不行">把方向翻过来也不行</h3>
+<p>加了 <code>r6_invert</code> 开关做检验（改为「流动性异常活跃才触发」）。反向后特征确实有信号 （AUC 0.578 验证 / 0.548 测试，单独判别力最高 +12.3pp），但同召回前沿：</p>
+<div class='tw'><table><thead><tr><th>召回</th><th>验证:R6关</th><th>验证:R6反向</th><th>测试:R6关</th><th>测试:R6反向</th></tr></thead><tbody><tr><td>45%</td><td><strong>+4.34</strong></td><td>+0.56</td><td><strong>+3.03</strong></td><td>−1.56</td></tr><tr><td>50%</td><td><strong>+3.10</strong></td><td>+0.40</td><td><strong>+2.52</strong></td><td>−1.40</td></tr><tr><td>60%</td><td><strong>+1.72</strong></td><td>+0.24</td><td><strong>+1.27</strong></td><td>−0.81</td></tr></tbody></table></div>
+<p>反向版在测试集上是负的。原因与 R2 完全相同：<strong>+12.3pp 仍低于引擎整体的 +17.8pp， 属被支配。</strong> 而直接关掉 R6 在两个数据集、五个召回点上<strong>全部为正</strong>。</p>
+<h3 id="关键洞察-流动性应当做-门-不是做-触发器">关键洞察：流动性应当做「门」，不是做「触发器」</h3>
+<p>§7.7 早就实测过：<code>liquidity_ratio &lt; 0.55</code> 时<strong>抑制</strong>预警，可给规则基线 +3.10pp。 那个结论与本节发现<strong>同向</strong>（低流动性截面的预警质量差）， 而 R6 的做法恰恰相反——<strong>在低流动性截面主动发预警</strong>。</p>
+<p>两处实验此前各自独立存在、结论互相矛盾却一直没被对上。 正确的用法是：<strong>流动性用来否决预警，不用来产生预警。</strong></p>
+<h3 id="处理与累计效果">处理与累计效果</h3>
+<p><code>r6_enabled</code> 现默认 <code>False</code>（传 <code>{&quot;r6_enabled&quot;: True}</code> 回退）。 测试集（纯规则层、<code>symbol_params.json</code> 配置）：</p>
+<div class='tw'><table><thead><tr><th>配置</th><th>精确率</th><th>召回</th><th>提前</th><th>判别力</th><th>预警数</th></tr></thead><tbody><tr><td>全开（原始 7 条）</td><td>32.61%</td><td>56.71%</td><td>48m</td><td>+8.2pp</td><td>8875</td></tr><tr><td>关 R4</td><td>41.84%</td><td>46.41%</td><td>50m</td><td>+17.4pp</td><td>4840</td></tr><tr><td>关 R4+R2</td><td>42.22%</td><td>46.12%</td><td>50m</td><td>+17.8pp</td><td>4747</td></tr><tr><td><strong>关 R4+R2+R6（新默认）</strong></td><td><strong>45.36%</strong></td><td>44.03%</td><td>51m</td><td><strong>+20.9pp</strong></td><td>4149</td></tr></tbody></table></div>
+<p><strong>判别力从 +8.2pp 提到 +20.9pp（2.5 倍），预警量减少 53%。</strong></p>
+<h3 id="必须说明的代价">必须说明的代价</h3>
+<ol>
+<li><strong>召回从 56.71% 降到 44.03%。</strong> 三条规则贡献了大量低质量预警，它们在拉低精确率的</li>
+<p>同时也垫高召回。若要保住 R≥60%，需放松 z 阈值（前沿仍全程优于原配置，见上表趋势）。</p>
+<li><strong>解释性缺口</strong>：R6 是唯一覆盖「流动性风险」这一类型的规则，关掉后该维度不再产生</li>
+<p>中文触发原因。但它给出的解释此前是<strong>错的</strong>（在流动性其实在改善时说&quot;枯竭&quot;）， 保留一个方向反了的解释比没有解释更糟。</p>
+<li>本轮三次改造都只在<strong>规则层</strong>做，DRL 侧未受影响（它从 <code>liquidity_ratio</code>/<code>liquidity_z</code></li>
+<p>两维特征自行学习，不受规则开关约束）。</p>
+</ol>
+<hr>
+<h2 id="7-16-召回率不达标怎么办-两个门槛无法同时满足-只能选一头">7.16 召回率不达标怎么办：两个门槛无法同时满足，只能选一头</h2>
+<p>关闭 R2/R4/R6 后（§7.13–§7.15），18 个事件窗口的精确率过线了（51.53%）， <strong>但召回掉到 52.11%，低于赛题的 60%</strong>。这是那次改造的直接代价—— 被关掉的三条规则贡献了大量低质量预警，在拉低精确率的同时也垫高了召回。</p>
+<h3 id="先说结论-这两个门槛在当前前沿上无法同时满足">先说结论：这两个门槛在当前前沿上无法同时满足</h3>
+<p>沿 P-R 前沿放松 z 阈值（全局缩放系数），<strong>在 anchor 验证集上</strong>选「召回≥60% 且 提前≥30min 下精确率最大」的系数，得到 <strong>0.55</strong>。事件窗口只用于评估、不参与选择—— 18 个窗口里有 5 个落在训练期，在其上调参就是就地拟合。</p>
+<div class='tw'><table><thead><tr><th>配置</th><th>精确率</th><th>召回率</th><th>平均提前</th><th>判别力</th><th>三项全达标</th></tr></thead><tbody><tr><td><strong>默认</strong>（系数 1.0）</td><td><strong>51.53%</strong> ✓</td><td>52.11% ✗</td><td>45.5min ✓</td><td><strong>+23.9pp</strong></td><td>4/18</td></tr><tr><td><strong>保召回</strong>（系数 0.55）</td><td>45.17% ✗</td><td><strong>76.74%</strong> ✓</td><td>43.8min ✓</td><td>+17.5pp</td><td><strong>6/18</strong></td></tr></tbody></table></div>
+<p><strong>各达一头，没有第三个点能同时过线。</strong> 这与 §6/§7.8/§7.10 反复测到的是同一条前沿。</p>
+<h3 id="一个反直觉的发现-平均精确率跌了-逐窗口达标数反而增加">一个反直觉的发现：平均精确率跌了，逐窗口达标数反而增加</h3>
+<p>保召回配置的<strong>平均</strong>精确率更低（45.17% vs 51.53%），但<strong>三项全达标的窗口从 4 个增到 6 个</strong> （新增 ag 2024-04、cu 2024-05、cu 2025-09、sc 2024-09；失去 lc 2025-08、sc 2023-06）。</p>
+<p>原因是平均值被少数极差窗口拖累：rb 2024-01 的精确率只有 8.7%，rb 2025-07 是 36.6%， 而多数窗口的短板是「召回差一点」而非「精确率差一点」。 放松阈值让那些卡召回的窗口越过了线，代价集中在本来就差的几个上。</p>
+<p><strong>这意味着「用哪个配置」取决于评审看的是平均值还是达标窗口数</strong>， 本文两个都给出，不替评审做选择。</p>
+<h3 id="未达标窗口卡在哪-保召回配置">未达标窗口卡在哪（保召回配置）</h3>
+<p>12 个未全达标窗口中，<strong>11 个卡在精确率</strong>，只有 au 2024-04 卡在召回（57.9%）。 最差的仍是黑色系：rb 2024-01 三项全缺（P=8.7%、R=42.9%），rb 2025-07 缺精确率与提前。 这与 §7.12 的诊断一致——规则是电平触发的探测器，在尖峰型行情上救不回来。</p>
+<h3 id="落地-显式预设-不覆盖默认">落地：显式预设，不覆盖默认</h3>
+<pre><code>from vol_surface.alert_rules import RECALL_FIRST
+evaluate_rules(feats, params={**RECALL_FIRST})            # 保召回工作点
+evaluate_rules(feats, params={**symbol_params[sym], **RECALL_FIRST})  # 叠加逐品种阈值</code></pre>
+<p><code>RECALL_FIRST</code> 只缩放 12 个 z 类阈值（系数 0.55），不改规则开关。 默认配置保持不变——<strong>保召回是可选工作点，不是新默认</strong>，因为它牺牲的判别力 （+23.9 → +17.5pp）是实打实的信号质量损失。</p>
+<h3 id="还想同时达标的话">还想同时达标的话</h3>
+<p>三条路，按可行性排序：</p>
+<ol>
+<li>~~<strong>接受按品种分档交付</strong>~~——<strong>已试，不成立，见 §7.17</strong>。逐品种调参只带来</li>
+<p>+0.09pp（噪声）；且「已有多个窗口全达标」是<strong>事件窗口口径</strong>，换到 anchor 连续测试集上规则 0/7 品种达标、DRL 仅 2/7（au 与 sc）。这条建议当时混用了两个口径。</p>
+<li><strong>用 DRL 顶替规则层</strong>：问题3 的 DRL 在同一批数据上召回 74.14% ✓、</li>
+<p>判别力 +23.00pp，且在 rb 上远优于规则（+22.7pp vs +17.7pp）。 但那会让问题1 失去「可解释规则」这一定位。</p>
+<li><strong>引入赛题数据集之外的信息</strong>——这是 §7.10 得出的结论，至今没变。</li>
+</ol>
+<hr>
+<h2 id="7-17-试了-按品种分档交付-两个层面都不成立">7.17 试了「按品种分档交付」：两个层面都不成立</h2>
+<p>§7.16 结尾提的第 1 条路是「按品种给不同工作点」。本节把它做了，<strong>结论是否定的</strong>， 而且否定发生在两个不同层面上。</p>
+<h3 id="层面一-逐品种-调参-没有增益-0-09pp-噪声">层面一：逐品种<strong>调参</strong>没有增益（+0.09pp = 噪声）</h3>
+<p>对 7 个品种分别在 <strong>anchor 验证集</strong>上扫 z 阈值缩放系数，选「召回≥60% 且提前≥30min 下精确率最大」者：</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>ag</th><th>au</th><th>sc</th><th>si</th><th>lc</th><th>cu</th><th>rb</th></tr></thead><tbody><tr><td>选出系数</td><td>0.50</td><td>0.65</td><td>0.55</td><td>0.55</td><td>0.50</td><td>0.50</td><td>0.55</td></tr></tbody></table></div>
+<p>anchor 测试集上三配置对比：</p>
+<div class='tw'><table><thead><tr><th>配置</th><th>精确率</th><th>召回率</th><th>判别力</th></tr></thead><tbody><tr><td>全局默认 1.0</td><td>44.01%</td><td>45.90%</td><td>+19.6pp</td></tr><tr><td>全局保召回 0.55</td><td>37.19%</td><td>71.48%</td><td>+12.8pp</td></tr><tr><td><strong>逐品种</strong></td><td><strong>37.28%</strong></td><td>71.19%</td><td>+12.9pp</td></tr></tbody></table></div>
+<p><strong>逐品种只比全局好 +0.09pp——这是噪声，不是改进。</strong> 原因很直白： 选出的系数全挤在 0.50~0.65 的窄带里，多出来的 7 个自由度没找到全局找不到的东西。</p>
+<p>值得记一笔的是它<strong>没有严重过拟合</strong>（不像 §7.8 那次逐品种贪心阈值，验证集 51.08% 掉到测试集 44.66%）。差别在于这次只调一个标量系数、且约束相同，搜索空间小得多。 <strong>「逐品种」本身不必然过拟合，取决于放开多少自由度。</strong></p>
+<h3 id="层面二-逐品种-交付-在连续测试集上无一达标">层面二：逐品种<strong>交付</strong>在连续测试集上无一达标</h3>
+<p>§7.16 结尾我建议这条路时说「sc/cu/lc 在保召回配置下已有多个窗口全达标」。 那句话的口径是 <strong>18 个事件窗口</strong>——围绕极端事件挑的时段，命中基础率天然更高。 换到 <strong>anchor 连续测试集</strong>（2025-07~2026-04 全时段）重测（精确率/召回/平均提前）：</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>基础率</th><th>规则默认</th><th>规则保召回</th><th>DRL</th></tr></thead><tbody><tr><td>ag</td><td>28.7%</td><td>42/60/57m</td><td>37/79/56m</td><td>45/75/46m</td></tr><tr><td><strong>au</strong></td><td>25.0%</td><td>52/40/54m</td><td>41/68/53m</td><td><strong>54/62/37m ✓</strong></td></tr><tr><td><strong>sc</strong></td><td>24.0%</td><td>46/38/53m</td><td>41/70/54m</td><td><strong>55/76/38m ✓</strong></td></tr><tr><td>si</td><td>19.3%</td><td>43/44/36m</td><td>35/62/37m</td><td>48/74/25m</td></tr><tr><td>lc</td><td>19.4%</td><td>46/34/45m</td><td>34/75/37m</td><td>38/87/30m</td></tr><tr><td>cu</td><td>26.7%</td><td>51/46/49m</td><td>36/72/47m</td><td>49/74/35m</td></tr><tr><td>rb</td><td>19.1%</td><td>37/38/36m</td><td>32/69/30m</td><td>42/77/23m</td></tr></tbody></table></div>
+<p><strong>三项全达标：规则默认 0/7，规则保召回 0/7，DRL 2/7（au 与 sc）。</strong></p>
+<blockquote><p>上表为 <strong>15-seed 交付版</strong>。5-seed 时 DRL 仅 sc 一个达标（1/7），au 是换版后跨过线的。 值得注意：合并口径上集成扩容毫无收益（测试集判别力 −0.19pp），逐品种口径却多了一个达标品种—— 合并口径被 rb、lc 拖平了。这正是本项目主张<strong>逐品种报数、不只报总平均</strong>的原因。</p></blockquote>
+<p>「挑几个达标的品种交付」这条路在连续口径下<strong>根本没有可挑的</strong>。 事件窗口口径下看着可行，是因为那个口径更宽松——两个口径不能混用， <strong>§7.16 结尾的那条建议正是踩了这一点，在此更正。</strong></p>
+<h3 id="这一节真正的价值-把两个口径的差异摆出来了">这一节真正的价值：把两个口径的差异摆出来了</h3>
+<div class='tw'><table><thead><tr><th></th><th>18 个事件窗口</th><th>anchor 连续测试集</th></tr></thead><tbody><tr><td>命中基础率</td><td>28.3%</td><td>24.4%</td></tr><tr><td>规则保召回精确率</td><td>45.17%</td><td>37.19%</td></tr><tr><td>三项全达标</td><td>6/18 窗口</td><td>0/7 品种</td></tr></tbody></table></div>
+<p>事件窗口口径系统性更宽松（基础率更高，且窗口是围绕已知事件选的）。 <strong>报告任何达标数字时必须标明口径</strong>，否则同一套系统能报出两个差很多的结论。 §7.5/§7.11 用的是事件窗口口径，§7.10/§7.16/§7.17 的 anchor 口径更严格。</p>
+<h3 id="落地">落地</h3>
+<p>逐品种系数与三配置的逐品种指标落盘于 <code>data_out/per_symbol_workpoints.json</code>， <strong>但不作为推荐配置</strong>——增益是噪声。全局 <code>RECALL_FIRST</code> 仍是唯一的可选工作点。</p>
+<hr>
+<h2 id="7-18-新评测口径-命题方-2026-08-答复">7.18 新评测口径（命题方 2026-08 答复）</h2>
+<blockquote><p>本节的<strong>方法论叙述版</strong>（适合直接放进提交报告）见 <code>data_out/methodology_caliber_audit.md</code>， 记录「主动询问口径 → 发现口径自带退化 → 做退化检验 → 全面重算」的完整过程。</p></blockquote>
+<p>向命题单位确认了此前七处口径歧义，答复如下并已全部落地（<code>drl/metrics_v2.py</code>、 <code>scripts/eval_v2.py</code>，结果落盘 <code>data_out/metrics_v2.json</code>）：</p>
+<div class='tw'><table><thead><tr><th>项</th><th>旧口径</th><th>新口径（命题方澄清）</th></tr></thead><tbody><tr><td>精确率分母</td><td>每个触发的 15min 截面</td><td><strong>合并连续预警后的预警事件</strong></td></tr><tr><td>召回匹配</td><td>须落在风险起点前 120min 内</td><td><strong>不设时间上限</strong></td></tr><tr><td>平均提前时间</td><td>同 120min 上限</td><td><strong>不设上限</strong>（我们取 nearest：紧邻风险起点之前那次预警）</td></tr><tr><td>分区报告</td><td>无</td><td><strong>分高波 / 低波区</strong></td></tr><tr><td>CVaR 改善率</td><td>—</td><td>½[(CVaR_无,多−CVaR_预,多)/CVaR_无,多 + 空同理]×100%</td></tr><tr><td>指标3 评分</td><td>未定</td><td><strong>自评</strong></td></tr></tbody></table></div>
+<h3 id="结果-drl-三项全达标">结果：DRL 三项全达标</h3>
+<p>选点协议不变——<strong>只在验证集上选</strong>（可行域内精确率最大），测试集只评一次。</p>
+<blockquote><p><strong>须披露一处协议偏离</strong>：<code>lean</code> 搜索网格上限从旧口径的 1.3 扩到 10.0，选中的 7.0 在旧网格之外。 扩展的理由是事前的、与测试集无关——旧网格上限受「召回≥60% 在 lean&gt;1.3 时失效」约束， 而新口径下召回近乎免费，该约束消失，可行区间自然外延。 但必须指出：§7.10 曾以「已看过测试集曲线，扩网格与『看了测试集再改搜索空间』无法区分」 为由<strong>拒绝</strong>扩网格；本次是在同一项目里对相似操作作了不同处理。 差别在于扩展动机（口径变化 vs 想够到某个已知好点），但这个差别<strong>由我们自己判定</strong>， 故如实标出，供评审自行裁量。</p></blockquote>
+<div class='tw'><table><thead><tr><th>系统</th><th>精确率</th><th>召回</th><th>平均提前</th><th>三项全达标</th></tr></thead><tbody><tr><td><strong>DRL 智能体 @ lean=7.0</strong></td><td><strong>64.58%</strong> ✓</td><td><strong>69.16%</strong> ✓</td><td><strong>6520min</strong> ✓</td><td><strong>是</strong></td></tr><tr><td>规则引擎（同协议重标定，系数 2.0）</td><td>44.96% ✗</td><td>83.76% ✓</td><td>4247min ✓</td><td>否</td></tr></tbody></table></div>
+<p>精确率由旧口径的 47.41% 升到 64.58%，<strong>原因不是模型变好</strong>——同一批 checkpoint，未重训。</p>
+<p>但<strong>归因要说准</strong>。起初我们把它归给「合并连续预警」，那是错的：交付点上 触发截面 278 → 预警事件 271，压缩比仅 <strong>1.03:1</strong>，合并几乎不起作用。 4883 个截面是<strong>旧工作点 lean=0.35</strong> 的数，拿它去除新工作点的 271 得到的「18:1」 是跨两个工作点拼出来的，不成立。</p>
+<p>真实驱动是<strong>工作点变了</strong>：新口径下召回近乎免费（见下方退化检验）， 验证集因此选中稀疏得多的 lean=7.0——预警截面从 4883 降到 278，<strong>降了 17 倍</strong>。 <strong>是「可以只报最有把握的那一小批」带来了精确率，不是计数单位的改变。</strong></p>
+<blockquote><p>这处归因错误是独立评审查出来的。它值得记：一个听起来合理、 又恰好让结果显得无害的解释（「只是换了计数单位」）， 比明显的错误更难自己发现。</p></blockquote>
+<h3 id="该口径自带退化-必须并列平凡策略">⚠️ 该口径自带退化，必须并列平凡策略</h3>
+<p>「召回不设时间上限」的字面推论：幕内任意一次早期预警即覆盖其后<strong>全部</strong>风险起点。实测：</p>
+<div class='tw'><table><thead><tr><th>策略（<strong>不看任何特征</strong>）</th><th>预警事件数</th><th>精确率</th><th>召回</th></tr></thead><tbody><tr><td>只在开头报一次</td><td>59</td><td>47.5%</td><td>98.9%</td></tr><tr><td>只在前1%截面报</td><td>62</td><td>46.8%</td><td>98.9%</td></tr><tr><td>每3步机械报警</td><td>2961</td><td>31.4%</td><td>98.9%</td></tr><tr><td>每8步机械报警</td><td>2861</td><td>24.3%</td><td>98.9%</td></tr><tr><td>每20步机械报警</td><td>1511</td><td>25.7%</td><td>98.9%</td></tr><tr><td>恒报警</td><td>2961</td><td>40.2%</td><td>98.9%</td></tr><tr><td><strong>DRL（本系统）</strong></td><td><strong>271</strong></td><td><strong>64.6%</strong></td><td>69.2%</td></tr></tbody></table></div>
+<p><strong>所有平凡策略召回均为 98.9%，平均提前虚高至 20651min——三条门槛实际塌缩成只剩精确率。</strong> 故本口径下唯一有意义的成绩是「精确率相对最强平凡策略的增量」：</p>
+<p><strong>判别力 = +17.1pp</strong>（DRL 64.6% vs 最强平凡策略 「只在开头报一次」47.5%）。达标不是靠口径退化蒙的， 但<strong>任何引用本口径的结论都必须并列这张表</strong>——已由验证门 <strong>G10</strong> 强制， 删掉平凡策略对照、或判别力低于 5pp、或平凡策略召回不再接近 1（说明口径实现被改动）， 三种情况均触发 FAIL（已逐一实测验证）。</p>
+<p>另：平均提前 6520min（约 4.5 天）是「不设上限」的产物—— lean 高时预警稀疏，紧邻风险起点之前的那次预警自然很远。 它满足门槛，但<strong>不应按业务意义上的「提前 4.5 天预警」解读</strong>。</p>
+<h3 id="高波-低波分区-直接回应赛题自陈的痛点">高波 / 低波分区：直接回应赛题自陈的痛点</h3>
+<p>赛题原文「技术难点」写明：<strong>「固定阈值在低波动市况下频繁误报」</strong>。 分区按<strong>训练期</strong>各品种 <code>atm_iv</code> 中位数划定，<strong>不使用测试期任何信息</strong>。</p>
+<div class='tw'><table><thead><tr><th>系统</th><th>高波区精确率</th><th>低波区精确率</th></tr></thead><tbody><tr><td>DRL 智能体</td><td>65.2% ✓</td><td><strong>61.7%</strong> ✓</td></tr><tr><td>规则引擎</td><td>47.2% ✗</td><td><strong>33.7%</strong> ✗</td></tr></tbody></table></div>
+<p>规则引擎在低波区精确率仅 33.7%，DRL 为 61.7%—— <strong>命题方点名的那个问题，正是 DRL 加分项解决的</strong>。这比任何总平均都更能说明问题3 的价值。</p>
+<h3 id="问题1-的规则引擎-新口径下仍不达标-40-组配置全试过">问题1 的规则引擎：新口径下仍不达标（40 组配置全试过）</h3>
+<p>新口径下召回几乎免费，故把旧口径中<strong>因杀召回而被否决</strong>的四项提精手段全部重检 （<code>scripts/rule_v2_search.py</code>）：composite 多规则协同、cooldown 冷却去重、 流动性质量门、以及阈值系数。<strong>做 2×2×2 交叉组合而非逐项开关</strong>——这四项互相耦合 （cooldown 改变 composite 的协同判定基数，质量门与冷却窗重叠）， 逐项单独测会给出与组合相反的结论。</p>
+<p>验证集扫描 40 组配置，可行域内最优：<code>{&#x27;zmult&#x27;: 1.6, &#x27;composite&#x27;: False, &#x27;cooldown&#x27;: 8, &#x27;qgate&#x27;: False}</code></p>
+<div class='tw'><table><thead><tr><th></th><th>精确率</th><th>召回</th></tr></thead><tbody><tr><td>验证集</td><td><strong>62.60%</strong></td><td>68.29%</td></tr><tr><td>测试集</td><td><strong>43.82%</strong> ✗</td><td>78.16% ✓</td></tr><tr><td>落差</td><td><strong>-18.8pp</strong></td><td></td></tr></tbody></table></div>
+<p><strong>验证集与测试集落差 18.8pp，比 DRL 的 13.4pp 还大。</strong> 验证集上最高能到 83.3%（<code>z=3.0, cooldown=8</code>）， 但那类配置召回只有 6.8%，进不了可行域。</p>
+<p>结合 §7.12 的结论（<strong>规则是探测器不是预测器</strong>，电平触发只能事后探测）， 以及六条路径证伪的 regime 漂移，可以确定： <strong>在当前特征集下，固定规则无法达到赛题的精确率要求，而 DRL 可以。</strong> 这正是赛题设置「基础达标线 / 技术创新线」分层评审所要区分的东西—— 问题3 的加分项不是锦上添花，是<strong>唯一能过线的路径</strong>。</p>
+<blockquote><p>关于口径归属：赛题的量化指标定义在「<strong>系统 / 智能体</strong>」层面， 而「智能体架构说明」把 DRL 明确列为该智能体的<strong>优化模块</strong>。 故交付系统 = 含 DRL 优化层的智能体（三项全达标）， 纯规则版作为 §指标4 要求的固定阈值对照基线一并报出（不达标）。</p></blockquote>
+<h3 id="问题1-的事件窗口-扩到-20-个-覆盖全部-17-个极端事件">问题1 的事件窗口：扩到 <strong>20 个</strong>，覆盖全部 17 个极端事件</h3>
+<p>补上最后两个未覆盖事件后，窗口从 18 增至 20，<strong>事件覆盖 15/17 → 17/17</strong>。</p>
+<blockquote><p><strong>氧化铝事件必须说明一处替代</strong>：赛题标注的「有色金属；氧化铝」事件在 <strong>2024-01</strong>， 而 <strong>ao（氧化铝）期权 2024-08 才上市</strong>——数据上不可能覆盖。该事件同时点名「有色金属」， 故用 <strong>al（铝）</strong> 覆盖。<strong>不是挑了个更容易的品种，是氧化铝期权当时还不存在。</strong></p></blockquote>
+<p><strong>扩样的代价（如实记录）</strong>：两个新品种从未参与任何调参，表现明显差于既有窗口， 整体指标因此被拉低：</p>
+<div class='tw'><table><thead><tr><th></th><th>18 窗</th><th>20 窗</th><th>Δ</th></tr></thead><tbody><tr><td>新口径精确率</td><td>57.51%</td><td><strong>55.65%</strong></td><td><strong>-1.86pp</strong></td></tr><tr><td>新口径召回</td><td>96.09%</td><td>96.25%</td><td>+0.16pp</td></tr><tr><td>新口径判别力</td><td>+7.51pp</td><td><strong>+5.65pp</strong></td><td>-1.86pp</td></tr><tr><td>三项全达标</td><td>13/18</td><td>13/20</td><td>—</td></tr><tr><td>旧口径精确率</td><td>51.53%</td><td>50.09%</td><td>-1.44pp</td></tr></tbody></table></div>
+<p>两个新窗口的表现（新口径）：al 33.3% / 95.5%，br 44.4% / 100.0%，<strong>均未达标</strong>。</p>
+<p><strong>这是扩样该有的样子。</strong> 若扩样后指标不降反升，反而说明新样本被间接调过参。 本项目此前扩样 4→7 品种时也发生过同样的下降（55.8%→42.5%，§7.11）。</p>
+<p>逐窗口（交付配置，新口径）：</p>
+<div class='tw'><table><thead><tr><th>窗口</th><th>预警事件</th><th>精确率</th><th>召回</th><th>平均提前</th><th>三项</th></tr></thead><tbody><tr><td>ag 2024-04 贵金属</td><td>15</td><td>73.3%</td><td>95.0%</td><td>924min</td><td>✓</td></tr><tr><td>ag 2025-04 关税战</td><td>9</td><td>66.7%</td><td>100.0%</td><td>4095min</td><td>✓</td></tr><tr><td>ag 2026-01 贵金属</td><td>56</td><td>44.6%</td><td>96.6%</td><td>455min</td><td></td></tr><tr><td>au 2024-04 贵金属</td><td>15</td><td>60.0%</td><td>100.0%</td><td>1152min</td><td>✓</td></tr><tr><td>au 2026-01 贵金属</td><td>26</td><td>46.2%</td><td>93.5%</td><td>959min</td><td></td></tr><tr><td>cu 2024-05 铜逼仓</td><td>17</td><td>58.8%</td><td>100.0%</td><td>1148min</td><td>✓</td></tr><tr><td>cu 2025-09 铜矿事故</td><td>22</td><td>63.6%</td><td>97.2%</td><td>1008min</td><td>✓</td></tr><tr><td>cu 2026-01 有色</td><td>24</td><td>54.2%</td><td>100.0%</td><td>1604min</td><td>✓</td></tr><tr><td>lc 2023-12 碳酸锂</td><td>21</td><td>71.4%</td><td>100.0%</td><td>579min</td><td>✓</td></tr><tr><td>lc 2025-08 碳酸锂</td><td>22</td><td>40.9%</td><td>93.3%</td><td>1272min</td><td></td></tr><tr><td>lc 2025-12 碳酸锂</td><td>15</td><td>60.0%</td><td>100.0%</td><td>1142min</td><td>✓</td></tr><tr><td>rb 2024-01 螺纹单边</td><td>51</td><td>41.2%</td><td>100.0%</td><td>2766min</td><td></td></tr><tr><td>rb 2024-02 铁矿分化</td><td>12</td><td>41.7%</td><td>90.9%</td><td>414min</td><td></td></tr><tr><td>rb 2025-07 焦煤黑色</td><td>20</td><td>75.0%</td><td>97.4%</td><td>1362min</td><td>✓</td></tr><tr><td>sc 2023-06 能化</td><td>14</td><td>64.3%</td><td>95.5%</td><td>943min</td><td>✓</td></tr><tr><td>sc 2024-09 全板块</td><td>17</td><td>52.9%</td><td>86.8%</td><td>1371min</td><td>✓</td></tr><tr><td>sc 2026-03 原油</td><td>53</td><td>60.4%</td><td>98.8%</td><td>815min</td><td>✓</td></tr><tr><td>si 2025-04 关税战</td><td>10</td><td>60.0%</td><td>84.6%</td><td>1705min</td><td>✓</td></tr><tr><td>al 2024-01 有色/氧化铝</td><td>6</td><td>33.3%</td><td>95.5%</td><td>4034min</td><td></td></tr><tr><td>br 2023-09 合成橡胶</td><td>18</td><td>44.4%</td><td>100.0%</td><td>1492min</td><td></td></tr></tbody></table></div>
+<p><strong>判别力对照</strong>（20 窗口全算并落盘）：</p>
+<div class='tw'><table><thead><tr><th>策略（不看任何特征）</th><th>预警事件数</th><th>精确率</th><th>召回</th></tr></thead><tbody><tr><td>只在开头报一次</td><td>20</td><td>50.0%</td><td>98.6%</td></tr><tr><td>只在前1%截面报</td><td>22</td><td>50.0%</td><td>98.6%</td></tr><tr><td>恒报警</td><td>1007</td><td>49.7%</td><td>98.6%</td></tr><tr><td>每3步机械报警</td><td>1007</td><td>39.7%</td><td>98.6%</td></tr><tr><td>每8步机械报警</td><td>966</td><td>29.7%</td><td>98.6%</td></tr><tr><td>每20步机械报警</td><td>495</td><td>28.8%</td><td>98.6%</td></tr><tr><td><strong>规则引擎（本系统）</strong></td><td><strong>443</strong></td><td><strong>55.6%</strong></td><td>96.3%</td></tr></tbody></table></div>
+<p><strong>判别力 = +5.6pp</strong>（相对最强平凡策略「只在开头报一次」50.0%）。</p>
+<h3 id="第七条被证伪的路径-事件级奖励重训-判据预先登记">第七条被证伪的路径：事件级奖励重训（判据预先登记）</h3>
+<p>新口径按预警事件计精确率，而奖励仍按截面罚误报——两者不一致。故检验 「把奖励也改成事件级计价」能否更好（<code>scripts/event_reward_train.py</code>， 判据预先登记于 <code>data_out/event_reward_preregistration.md</code>， <strong>且在跑数前写明预计会失败</strong>）。</p>
+<p>新旧奖励各训 seed 42/43/44，同超参、同切分、同 epoch，各自在验证集选工作点：</p>
+<div class='tw'><table><thead><tr><th></th><th>事件级精确率</th><th>召回</th></tr></thead><tbody><tr><td>旧奖励（逐截面罚误报）</td><td><strong>71.68%</strong></td><td>76.77%</td></tr><tr><td>事件级奖励</td><td><strong>69.57%</strong></td><td>75.71%</td></tr><tr><td>差</td><td><strong>-2.11pp</strong></td><td></td></tr></tbody></table></div>
+<p>预先登记阈值 ≥+2.0pp，实测 <strong>-2.11pp</strong>——不仅没提升，还略降。 按规则<strong>未查看测试集</strong>。</p>
+<p><strong>机理（比预期更有信息量）</strong>：开启事件级计价后，训练期累计奖励从 −3904 变成 +3220， <strong>预警率从 25.2% 涨到 45.7%</strong>，单模型验证精确率从 37.2% 掉到 26.3%。 把「同段重复误报不再加罚」写进奖励，等于告诉智能体&quot;多报几条不要紧&quot;，它就学会了滥报。</p>
+<blockquote><p><strong>可复用的设计原则</strong>：奖励函数的密度应服务于<strong>学习</strong>，评测口径服务于<strong>验收</strong>， 两者对齐反而有害。稀疏化应放在推理阶段（调阈值），而不是训练阶段（改奖励）。 原先「逐截面罚误报 + 事后提高置信门槛 lean=7.0」的组合更优—— 训练用密集信号学排序，推理再用阈值稀疏化。</p></blockquote>
+<p>登记时我预判方向为负（对了），但以为原因是&quot;增量有限&quot;，实际是&quot;奖励变松导致滥报&quot;—— <strong>机理猜错了</strong>。如实记下，因为猜错的部分才是新知识。</p>
+<p>交付无影响：<code>RewardSpec.event_level_fp</code> 默认关闭，已实测交付指标逐位不变， G0–G14 全部验证门通过（G11 = CVaR 非饱和，G12 = 死区阈值安全，G13 = 否决式融合不污染公共路径，G14 = 异常分与批大小无关）。</p>
+<h3 id="cvar-公式-现有实现无需修改">CVaR 公式：现有实现无需修改</h3>
+<p>命题方给出 ½[(CVaR_无,多−CVaR_预,多)/CVaR_无,多 + 空同理]×100%，<strong>分母不取绝对值</strong>。 现有实现即此式，且该式对符号约定不敏感（分子分母同时变号，比值不变）， 故正值损失口径与有符号收益口径给出同一结果，<strong>无需改动</strong>。</p>
+<p>但<strong>「仅首次预警减仓」导致的退化依然存在</strong>：实测「全程半仓」的改善率恒为 +50.0%， 与预警质量完全无关。非退化版对照见 <code>cvar_backtest.backtest_cvar_path</code>（含随机时点对照）。</p>
+<h3 id="复现-3">复现</h3>
+<pre><code>python scripts/eval_v2.py --underlying   # 输出 data_out/metrics_v2.json
+python scripts/rule_v2_search.py --underlying  # 40 组规则配置重检 → rule_v2_search.json
+python -m drl.tests --underlying         # 11 道门（含 G10 新口径非退化）</code></pre>
+<h2 id="7-18a-借鉴另一份实现-清洗改为-可追溯逐行原因">7.18a 借鉴另一份实现：清洗改为「可追溯逐行原因」</h2>
+<p>对比了同赛题的另一份实现（五阶段流水线，110 个源文件）后，移植了一条它做得更好的设计。</p>
+<p><strong>它的做法</strong>：<code>quality_flags.annotate_quality</code> 的 docstring 明写 「Append quality fields without changing any Raw value」——<strong>只打标不删行</strong>， 把判定写成布尔列 + <code>quality_reason_codes</code>，下游自行选档，逐行可追溯。</p>
+<p><strong>我们原先的问题</strong>：<code>clean_slice</code> 直接返回删减后的 DataFrame， <code>CleaningReport</code> 只有各步汇总条数。于是「这一条为什么被删」在返回值里查不到， 排查某截面合约骤减时只能改代码打印。</p>
+<p><strong>移植方式</strong>：本项目有 <strong>21 处调用</strong>依赖 <code>clean_slice</code> 的两元组返回， 改签名代价过大且易引入回归，故改为<strong>可选开关</strong> <code>with_reasons=True</code>， 在 <code>CleaningReport.reason_codes</code> 给出逐行原因（保留的行为空列表）。 <strong>默认路径逐位不变</strong>——由 <code>tests/test_cleaning_reasons.py</code> 的 C1 断言守住， 并已实测：故意让开关路径多删一行时，C1/C3 立即 FAIL（4/4 → 2/4）。</p>
+<p><strong>顺带得到一个此前无法验证的事实：清洗规则之间零重叠。</strong> 实测 ag 2024-02 某截面 192 行中，没有任何一行被两条规则同时命中 （25 条僵尸 + 20 条 IV 越界 + 5 条邻居跳变，互不相交）。 只有汇总计数时无从判断这一点——各步计数相加恰好等于剔除总数， 既可能是零重叠，也可能是重叠被重复计数掩盖。</p>
+<h3 id="两份实现的实测对照-ag-2024-02-30-个截面">两份实现的实测对照（ag 2024-02，30 个截面）</h3>
+<div class='tw'><table><thead><tr><th></th><th>保留占比</th></tr></thead><tbody><tr><td>本项目 <code>clean_slice</code></td><td><strong>67.7%</strong></td></tr><tr><td>对方 <code>base_surface_candidate</code></td><td><strong>69.4%</strong></td></tr><tr><td>对方 <code>strict_trade_candidate</code></td><td>17.7%</td></tr></tbody></table></div>
+<p><strong>两边「基础档」只差 1.7pp</strong>——各自独立设计的清洗规则，在同一批数据上给出几乎 相同的保留率。这是一次有意义的交叉验证：说明「剔除休市、零持仓、IV 触边界」 这几条是被数据本身决定的，而非主观选择。</p>
+<p>对方的 <code>strict</code> 档额外要求 <code>volume&gt;0</code>，只剩 17.7%——商品期权深度虚值长期零成交， 这一刀会切掉大半个曲面。他们把它做成<strong>并列的第二档</strong>而非默认，这个处理是对的。</p>
+<p><strong>未移植的部分与理由</strong>：对方还有 <code>(timestamp, contract)</code> 全局主键冲突检测 （带 <code>row_hash</code> 与物理行定位）与 fail-closed 隔离区（异常须人工审批才放行）。 实测我们的数据<strong>51.5 万行零重复主键</strong>，故前者对本项目不是缺陷； 后者属生产数据平台的治理层，与赛题交付目标不匹配，未引入。</p>
+<hr>
+<h2 id="7-18b-借鉴一个教学项目-每段统计后必须跟一句-这意味着什么">7.18b 借鉴一个教学项目：每段统计后必须跟一句「这意味着什么」</h2>
+<p>来源是一个面向零基础的量化教学仓库（notebook 为主）。它本身没有可移植的模型代码， 但<strong>写作规范</strong>这一条比我们做得好。</p>
+<p><strong>它的做法</strong>：<code>docs/NOTEBOOK_TEMPLATE.md</code> 规定每个代码块后必须跟一段 「<strong>结果怎么读？</strong>」，把图表与数字翻译成读者能感知的意思，风格约束写死为 「少公式堆砌，多直觉解释」。抽查其 notebook，这条是被严格执行的，不是摆设。</p>
+<p><strong>我们原先的问题</strong>：单条传导语句平均 <strong>362 字符、含 10 个专业术语</strong> （提升度 / 下界 / 置换检验 / 基础率 / [†] / [‡] …），<strong>没有任何一句说明这些数字 对读者意味着什么</strong>。这正是七轮盲评反复点名、始终没解决的那条—— 按指标3 细则「非本领域也能懂」，没有一条够得上 5 分。</p>
+<p><strong>移植方式</strong>：<code>kg/explain.py::_plain_reading()</code>，接在 <code>_conf(p)</code> <strong>之后</strong> （先给证据、再给解读，读者可自行核对翻译是否忠实，而不是被结论牵着走）。 它<strong>不引入任何新统计量</strong>，只把已有的 <code>p_cond</code> / <code>p_conseq</code> / <code>lift</code> 换成频率说法：</p>
+<blockquote><p><strong>这意味着什么</strong>：平时每 10 次随机时点里约 2 次会在 120 分钟内出现该后果； 本形态出现后变成约 4 次——概率提高到 1.9 倍，但<strong>并非必然发生</strong>（仍有 62% 的情形不发生）。</p></blockquote>
+<p>覆盖率 121/121 条传导语句，与 <code>**传导｜</code> 段数严格 1:1；平台端 53/53、图谱可视化 59/59。 由 K8 哨兵（阈值 50 次）守住，防止后续改动把它静默切断——这个防护不是假想的， 第 7 轮就发生过「修 A 静默废掉 B」且全门皆绿。</p>
+<p><strong>顺带解决了另一条评审意见：把弱效应包装成强证据。</strong> 21 条主干边的 lift 分布是 min 1.18 / 中位 1.65 / max 4.17，<strong>13 条低于 2.0</strong>。 加解读句之前，lift=1.18 与 lift=4.17 的句式<strong>完全相同</strong>，读者无从分辨强弱； 加上末句之后，两者分别读作「仍有 78% 不发生」与「仍有 18% 不发生」，强弱自明。 注意中位数那条 lift=1.65 的边同样是「仍有 78% 不发生」——<strong>提升度翻倍不等于事件变得可能</strong>， 这一点在原文的统计口径下是看不出来的。</p>
+<p><strong>代价与它为什么可接受</strong>：单条传导语句 +40%（401→562 字符）——按<strong>去重后 45 种</strong> 完整语句取均值（文档层去重后重复语句已被换成一行引用，把它们算进均值会把该指标稀释成无意义的数）。 这与前一轮<strong>削减</strong>重复的方向相反——那一轮把两句逐条复制了 119/121 遍、 占掉 18.5% 篇幅的方法学注释提取到文首，正文只留 <code>[†]</code> 回指 （见 <code>data_out/kg/self_assessment.md</code> 与 <code>kg/explain.py::METHOD_NOTE</code>）。 两者性质不同：被削减的那部分<strong>逐条完全相同</strong>，可以提取； 本句<strong>逐条不同</strong>（每条边的数字都不一样），提取即失效。 判据是「这段字在不同边之间是否携带信息」，不是「文本是不是变长了」。</p>
+<p><strong>未移植的部分与理由</strong>：该项目的技术栈（Jupyter + akshare 日频 + 单标的回测） 与本项目无交集，其模型部分（均线/RSI 等教学策略）远低于赛题要求，均未引入。</p>
+<h3 id="盲评结果与预期相反-这一条必须写在这里">盲评结果与预期相反——这一条必须写在这里</h3>
+<p>改完后跑了第 8 位独立评审（盲评，不告知改了什么）。结果：</p>
+<div class='tw'><table><thead><tr><th>维度</th><th>第 7 轮 G</th><th>第 8 轮 H</th><th>变化</th></tr></thead><tbody><tr><td>语义清晰（<strong>本次瞄准的维度</strong>）</td><td>3.13</td><td><strong>2.90</strong></td><td><strong>−0.23</strong></td></tr><tr><td>因果逻辑（本次未动）</td><td>2.97</td><td><strong>3.57</strong></td><td><strong>+0.60</strong></td></tr><tr><td>不含交易建议（机器门保障，无判别力）</td><td>4.70</td><td>5.00</td><td>+0.30</td></tr><tr><td>总平均</td><td>3.60</td><td><strong>3.82</strong></td><td>+0.22</td></tr></tbody></table></div>
+<p><strong>总分涨了，但涨的不是我瞄准的那一维；瞄准的那一维反而跌了。</strong></p>
+<p>跌的原因是这次改动<strong>自己制造的缺陷</strong>：H 实测 <strong>19/121 条（15.7%）</strong>读成 「平时约 <strong>2</strong> 次 → 本形态后约 <strong>2</strong> 次——概率提高到 1.2 倍」。为照顾非专业读者写的句子， 在非专业读者眼里恰好读成「没变化」。复核确认无误，且比 H 说的更糟—— lift=1.4 有 7 条塌缩、另有若干条不塌缩，<strong>同一个提升度会读出两种结论</strong>。 根因是「整数次数」与「两位小数的 lift」是两套精度不兼容的表述。</p>
+<p><strong>已修</strong>：分母改为<strong>最小可区分分母</strong> N∈{10,100,1000}（<code>explain.reading_denominator</code>， 实测 102 条用 10、19 条用 100），自我抵消 <strong>19 → 0</strong>；新增验证门 <strong>K10</strong> 断言全体不塌缩。 同轮另修一处 H 指认的假陈述：抬头句「影响面最广的 N 项」与实际排序键 （<code>触发等级×10 + 最强下游权重</code>，与出边条数无关）不符，30 条样本全部误述，现已改为如实描述。</p>
+<p>涨的原因也不是我做的事：H 给「因果逻辑」加分的理由是「仍有 X% 不发生」那半句 把弱效应的弱显式化了（lift 1.18 → 「仍有 78% 不发生」，lift 4.17 → 「仍有 18%」）， 属<strong>自曝其短</strong>。我原以为这半句只是配角。</p>
+<p><strong>教训：改动的收益未必落在你瞄准的维度上，而副作用往往正落在你瞄准的那一维。</strong> 若不做这轮盲评、只按「已加解读句 → 语义清晰应该涨」写进交付材料， 就会是一处基于合理推断的假陈述——而它恰好是反的。 完整评审记录见 <code>data_out/kg/self_assessment.md</code> 的「第 10 轮」一节。</p>
+<h3 id="头号缺陷-81-逐字重复-查下去发现它惩罚的是正确的东西">头号缺陷「81% 逐字重复」：查下去发现它惩罚的是正确的东西</h3>
+<p>H 把「121 条传导语句只有 23 种、重复率 81.0%」列为最严重的系统性缺陷。 数字属实（我独立复算完全一致），但<strong>在动手压缩之前先查了重复发生在哪一层</strong>：</p>
+<div class='tw'><table><thead><tr><th>口径</th><th>实测</th><th>含义</th></tr></thead><tbody><tr><td>段落级·<strong>样本内</strong>重复</td><td><strong>0.0%</strong></td><td>同一条预警里没有任何整段重复</td></tr><tr><td>分句级·<strong>样本内</strong>重复</td><td>13.4%</td><td>有，但只占一成</td></tr><tr><td><strong>跨样本</strong>重复</td><td>81.0%</td><td>绝大部分重复在这里</td></tr><tr><td>贪心集覆盖</td><td><strong>3 条样本即覆盖全部 18 条边</strong></td><td>其余 27 条一条新边都不带</td></tr></tbody></table></div>
+<p>根源不在产品，而在<strong>这份评分文档的抽样方式</strong>：传导语句里的统计量 （条件概率、基础率、提升度、下界、置换检验、测试期复现）全部是<strong>边级</strong>的， 与所处截面无关，因此同一条边在 30 条样本里<strong>必然</strong>渲染得逐字相同。 真实用户一次只看一条预警，这种重复对他根本不存在。</p>
+<p><strong>所以去重做在文档层（<code>scripts/report_kg.py</code>），不动 <code>kg/explain.py</code>。</strong> 单条预警必须保持自足完整，否则就是为了这份评分材料的观感去损害真正的产品。 做法是<strong>无损</strong>的：同一条传导语句第一次出现印全文并编号 <code>[T*]</code>，其余位置引用编号； 因为字符串逐字相同，引用与全文承载的信息完全等价，读者可自行核对。 逐截面变化的内容（触发依据、触发量读数、方向提示、跨品种共现）<strong>一律不去重</strong>。</p>
+<p>结果：121 条传导语句 = 45 条全文 + 76 条引用，传导正文 <strong>67,961 → 29,973 字（−55.9%）</strong>。这两个数由 <code>report_kg.py</code> <strong>在去重发生的当时记账</strong> 并落盘到 <code>self_check.json</code>，不是事后从成品文档反推的——反推试过，编号标记 <code>[T*]</code> 的增删无法精确还原，算出来与直接测得差了 1,036 字。<strong>近似的审计数字等于没有。</strong></p>
+<blockquote><p><strong>压缩率从 −72.7% 降到 −53.1%，这是一次「指标变差但方向正确」的取舍，须说明。</strong> 后来为消除<strong>单条预警内部</strong>的自重复，做了两处分层：把根因块内恒等的置换检验 p 上提到根因行、把同一后果的判定口径在预警内改为首次全文+后续回指。 代价是传导语句变得<strong>因上下文而异</strong>（同一条边在「p 已上提」与「未上提」两种情形下 渲染不同），于是跨样本逐字相同的语句从 19 种增到 45 种、去重空间随之变小。 <strong>换来的是单条内分句级自重复 10.9% → 5.6%（近乎腰斩）</strong>——而后者才是真实用户 会看到的那一种重复；跨样本重复只对「把 30 条并排评分」这个场景可见。 与前面「跨样本重复率 81.0%→84.3% 但方向正确」是同一类判断： <strong>不要照着一个度量「同一条边被展示了多少遍」的指标去优化产品。</strong></p></blockquote>
+<blockquote><p><strong>一个反直觉的验证</strong>：同一轮里我还把「样本量」（根因级属性，对该根因全部传导恒等， 实测 8 个根因无一例外）与「方向提示」上提到根因层，样本内分句重复 13.4%→10.3%。 但<strong>跨样本重复率反而从 81.0% 升到 84.3%</strong>——因为传导句里剩下的全是纯边级内容， 同一条边渲染得更加一致了。<strong>指标变差，方向却是对的</strong>： 这恰好证明那个 81% 度量的是「同一条边被展示了多少遍」， 而不是「文本写得啰不啰嗦」。若照着它优化，就会把正确的结构改坏。</p></blockquote>
+<hr>
+<h2 id="7-19-结构性死区-命中窗口与风险起点的口径不一致-唯一奏效-但不是模型改进">7.19 结构性死区：命中窗口与风险起点的口径不一致（唯一奏效、但不是模型改进）</h2>
+<h3 id="缺陷">缺陷</h3>
+<p>精确率的命中窗口是<strong>墙钟分钟制</strong>的 <code>[a, a+120min]</code>（<code>drl/metrics.py:68</code>）， 而风险起点是<strong>根数制</strong>的（未来 <code>RISK_HORIZON</code>=5 根，<code>drl/dataset.py</code>）。 两者口径不一致，后果是：<strong>收盘前发出的预警，它承诺的那 120 分钟里几乎没有可交易时间， 结构上不可能命中</strong>。</p>
+<p>实测（anchor 测试集 29,696 个截面，全样本命中率 24.39%）：</p>
+<div class='tw'><table><thead><tr><th>时刻</th><th>命中率</th><th></th><th>分组（(t, t+120min] 内可交易根数）</th><th>命中率</th></tr></thead><tbody><tr><td>15:00</td><td><strong>0.65%</strong></td><td></td><td>0 根</td><td>8.8%</td></tr><tr><td>14:45</td><td>1.58%</td><td></td><td>2 根</td><td>12.5%</td></tr><tr><td>14:30</td><td>2.88%</td><td></td><td>5 根</td><td>32.6%</td></tr><tr><td>02:30</td><td>1.89%</td><td></td><td>8 根</td><td>36.6%</td></tr></tbody></table></div>
+<p>命中率随可交易根数<strong>总体上升</strong>（并非逐档单调：5 根 32.6% → 6 根 30.8% 有一处回落），这不是行情特征，是<strong>评测口径的算术后果</strong>。</p>
+<blockquote><p>⚠️ <strong>但「可交易根数」不是判别死区的充分特征</strong>：同为 0 根，15:00 是 0.65% 而 11:30 是 <strong>22.05%</strong>——差别不来自可交易根数，而来自「风险起点本身是否常落在该根上」。 故死区<strong>按「其后是否遭遇长休市」定义，而不是按可交易根数定义</strong>；上面这条梯度是<strong>佐证，不是判据</strong>。</p></blockquote>
+<h3 id="修法与那个不能随便设的阈值">修法与那个不能随便设的阈值</h3>
+<p>休市前 3 根不预警；休市判据为「到下一根的间隔 &gt; <strong>255 分钟</strong>」。</p>
+<p><strong>150 这个数不能凭印象设</strong>：实测该数据集的日内休市是 <strong>135 分钟</strong> （早市末根 11:30 → 下午首根 13:45），<strong>不是想当然的 120 分钟</strong>。 测试集 29,637 个相邻间隔里，<strong>日内间隔有两档</strong>：1075 个 135 分钟（午休 11:30→13:45） 与 1075 个 30 分钟（10:15→10:45 小节休息）；隔夜/跨节则 ≥375 分钟。 <strong>日内最大值 135 与隔夜最小值 375 之间有 240 分钟空隙</strong>，150 落在其中—— 阈值取空隙的<strong>中点 255</strong>，两侧各留 <strong>120 分钟</strong>余量。</p>
+<blockquote><p>这里有个值得记的插曲：最初取的是 <strong>150</strong>，依据是「午休 120 + 30 余量」——而午休实为 135，真实下余量只剩 15 分钟，<strong>它能用是巧合不是设计</strong>。 改到中点是<strong>可证明的空操作</strong>：全量 263 幕实测，观测间隔落在 (135, 375) 内的个数为 <strong>0</strong>，阈值 150 与 255 的死区掩码<strong>逐位差异 0 个截面</strong>，除阈值本身外所有落盘数字完全一致。</p></blockquote>
+<p>午休前的预警实测命中率 23.4%/22.8%/22.1%（11:00/11:15/11:30），接近全样本基础率 24.39%， 所以<strong>不该被过滤</strong>。但要注意原因：<strong>不是</strong>因为窗口边界上正好有一根 （<code>[11:30, 13:30]</code> 里其实一根都没有，下一根是 13:45）， 而是因为<strong>风险起点本身常常就落在 11:30 那一根上</strong>（闭区间含 <code>a</code> 自身）。</p>
+<p>若阈值取 ≤135（例如凭「午休 120 分钟」写成 130），这批预警会被误杀， 而<strong>精确率照样上升</strong>（它们命中率略低于均值）——<strong>指标变好、系统变差， 且没有任何数字门会报警</strong>。故 <strong>G12 改为从真实数据现算日内最长休市再比对</strong>， 不把 120 或 135 写死在断言里。</p>
+<p><strong>幕尾不过滤</strong>：按月切幕会让每幕最后几根也无法命中（指标逐幕评估、不跨幕匹配）， 但那是<strong>评测脚手架的产物</strong>而非市场结构，实测仅占 0.60% 截面、命中率 12.4%。 拿系统侧的过滤去补评测侧的切分 artifact 是错位的。</p>
+<h3 id="2-2-对照-测试集">2×2 对照（测试集）</h3>
+<p>过滤会改变精确率的绑定位置、进而改变验证集选出的工作点（lean 0.35 → 0.3）， 故做 2×2 而非「开/关」两格。<strong>规则引擎同样施加过滤</strong>——只给 DRL 加就不是公平对照。</p>
+<div class='tw'><table><thead><tr><th>格（工作点 × 过滤）</th><th>DRL 精确率</th><th>DRL 召回</th><th>平均提前</th><th>三项全达标</th><th>规则精确率</th><th>判别力</th></tr></thead><tbody><tr><td>旧工作点 · 过滤关</td><td>47.41%</td><td>74.14%</td><td>35.6min</td><td>✗</td><td>45.36%</td><td>+2.05pp</td></tr><tr><td>旧工作点 · 过滤开</td><td>54.45%</td><td>74.02%</td><td>35.6min</td><td>✓</td><td>52.36%</td><td>+2.09pp</td></tr><tr><td>新工作点 · 过滤关</td><td>47.13%</td><td>75.04%</td><td>36.2min</td><td>✗</td><td>45.36%</td><td>+1.77pp</td></tr><tr><td><strong>新工作点 · 过滤开（交付）</strong></td><td><strong>54.15%</strong></td><td><strong>74.93%</strong></td><td><strong>36.2min</strong></td><td><strong>✓</strong></td><td>52.36%</td><td>+1.79pp</td></tr></tbody></table></div>
+<h3 id="结论-这是全员抬升-不是模型变好">结论：这是全员抬升，不是模型变好</h3>
+<p>DRL 精确率 47.41% → <strong>54.15%</strong>（越过 50% 门），召回几乎不动 （74.14% → 74.93%）。 <strong>但同一过滤施加于规则引擎，其精确率 45.36% → 52.36%，增益同等</strong>； 判别力（预登记的 2×2 <strong>对角线</strong>口径）+2.05pp → +1.79pp，变化 <strong>−0.26pp</strong>。</p>
+<blockquote><p>⚠ 对角线把「换工作点」与「开过滤」两个效应叠在了一起。<strong>同工作点</strong>的纯过滤口径是： DRL <strong>+7.02pp</strong> vs 规则 <strong>+7.00pp</strong>，判别力仅变 <strong>+0.02pp</strong>——两者结论一致（全员抬升）， 但同工作点那组更干净，<strong>引用时请用它</strong>。见 <code>dead_zone_study.json.verdict.same_wp</code>。</p></blockquote>
+<p>判据<strong>预先登记</strong>于 <code>scripts/dead_zone_study.py</code> 的文档字符串： 判别力变化不超过 ±1pp 即判定为「全员抬升」。该判据已触发，故：</p>
+<blockquote><p><strong>凡引用死区过滤后的精确率，必须并列规则引擎的同等增益。</strong> 由 <code>check_doc_numbers.py</code> 的「死区增益均并列规则对照」门强制。</p></blockquote>
+<p>这也意味着 <strong>§12 的结论没有被推翻</strong>：七条建模路径依然全部失败， 这段<strong>判别力</strong>缺口仍是当前特征集下的样本外损失。死区过滤修的是评测口径与 系统行为之间的错位，不是模型能力。</p>
+<p>复算：<code>python scripts/dead_zone_study.py --underlying</code></p>
+<hr>
+<h2 id="7-20-cvar-口径补充研究-为-cvar-目标单独选工作点">7.20 CVaR 口径补充研究：为 CVaR 目标单独选工作点</h2>
+<h3 id="为什么补这一项">为什么补这一项</h3>
+<p>§12 记录的 CVaR「未通过」是在<strong>累计奖励口径选出的交付工作点</strong>（<code>lean=0.3</code>）上测的。 实测该工作点下 <strong>189/191 个交易日都有预警（99.0%）</strong>，逐品种 70.7%~87.1%。 在 <code>hold_days=5</code> 下，几乎每一天都被某个预警的持有期覆盖 ⇒ 平均仓位恒等于下限 0.5 ⇒ <code>improve</code> 对所有策略恒为 +50% ⇒ <code>excess ≈ 0</code>。</p>
+<p>佐证：<code>恒报警</code> 与 <code>每8步机械报警</code> 的 excess 当时恰为 <strong>0.00%</strong>， 而唯一 excess 显著为正的是最稀疏的「只在开头报一次」。 <strong>筛掉低等级预警也没用</strong>：level=3 占全部预警的 50.0%，只留 level≥3 后仍有 97.9% 的交易日有预警。</p>
+<p><strong>根因是工作点与目标函数错配</strong>：累计奖励口径按截面计分、奖励密集预警； CVaR 口径按仓位路径计分、奖励稀疏预警。两个目标要求相反的密度，却共用了一个工作点。</p>
+<h3 id="协议-判据写于跑数之前">协议（判据写于跑数之前）</h3>
+<p>见 <code>data_out/cvar_workpoint_preregistration.md</code>。要点：工作点<strong>只在验证集上选</strong>， 候选点须满足新口径<strong>召回≥60% 且精确率≥50%</strong>（防止塌缩到「只报一次」这种平凡策略）， 在可行点中取验证集 excess 最大者；<strong>规则引擎用完全相同的协议选它自己的点</strong>； CVaR 参数与前一份预登记完全一致（<code>hold_days=5</code> / <code>cut_to=0.5</code> / <code>n_random=200</code>）。</p>
+<h3 id="结果-预登记判据-通过-但三条限定必须一起读">结果：预登记判据<strong>通过</strong>，但三条限定必须一起读</h3>
+<div class='tw'><table><thead><tr><th></th><th>工作点</th><th>测试集 excess</th><th>正品种</th><th>improve</th><th>随机对照</th><th>平均仓位</th><th>预警日占比</th></tr></thead><tbody><tr><td>DRL</td><td>lean=7.0</td><td><strong>+7.19%</strong></td><td>6/7</td><td>+13.3%</td><td>+6.2%</td><td>0.954</td><td>16%</td></tr><tr><td>规则引擎</td><td>zmult=2.5</td><td><strong>+8.12%</strong></td><td>6/7</td><td>+17.3%</td><td>+9.2%</td><td>0.944</td><td>24%</td></tr></tbody></table></div>
+<p><strong>限定一：规则引擎更好，不是 DRL 赢了。</strong> 同协议下规则 +8.12% <strong>高于</strong> DRL 的 +7.19%。该情形<strong>在跑数前已写进预登记</strong> （<code>hold_days=1</code> 诊断时规则 +9.19% vs DRL +8.47%），如今重现。</p>
+<p><strong>限定二：验证集没预测到这个正结果。</strong> 验证集上<strong>所有可行点的 excess 全为负</strong> （DRL 最好 -1.37%、规则 -1.56%），到测试集才双双转正。 即「取验证集 excess 最大」实际退化成了「取最稀疏的可行点」—— <strong>正结果来自稀疏化本身，不是选点方法有效</strong>，与已记录的 val→test regime 变化一致。</p>
+<p><strong>限定三：退化确已解除。</strong> 平均仓位 0.954（远离下限 0.5）； 平凡策略 <code>恒报警</code> -8.74%、 <code>每8步机械报警</code> -8.74%（前一次二者恰为 0.00%）， 最强平凡策略「只在开头报一次」+4.01%—— DRL 高于它，故不是平凡策略就能拿到的。但<strong>螺纹钢 rb 两方都为负</strong>。</p>
+<h3 id="这项研究证明了什么">这项研究证明了什么</h3>
+<p><strong>证明了</strong>：前一次「未通过」的主因是工作点与目标函数错配，不是模型无能。</p>
+<p><strong>没有证明</strong>：DRL 在 CVaR 口径下优于固定阈值规则——恰恰相反，规则引擎略优。</p>
+<p>故问题3 交付<strong>仍以累计奖励口径为主</strong>（+82.7%，判别力 +20.7pp 对盲节奏 +1.0pp）， CVaR 作为第二口径如实并列。§12 的「未通过」结论<strong>依然成立且未被修改</strong>： 它说的是<strong>交付工作点上</strong>的事实，与本节各自标明工作点，两者并存。</p>
+<p>复算：<code>python scripts/cvar_workpoint.py --underlying</code></p>
+<hr>
+<h2 id="7-21-纯规则-为何在连续口径上够不到-是前沿问题-不是调参问题">7.21 <strong>纯规则</strong>为何在连续口径上够不到——是前沿问题，不是调参问题</h2>
+<p>死区过滤开启后，规则引擎在 anchor 连续<strong>测试集</strong>上最接近目标的点是 <code>zmult=0.70</code>：召回 60.50% 刚过线、<strong>精确率 49.05%，差 0.95pp</strong>。 那么把已知的两个杠杆（冷却去抖、流动性门）开起来能不能补上？</p>
+<h3 id="先说清要区分什么">先说清要区分什么</h3>
+<p>两个杠杆都是「过滤预警」类操作，<strong>必然用召回换精确率</strong>——而只调 <code>zmult</code> 也能换。 所以「精确率涨了」毫无信息量。必须问：<strong>在同一召回水平上，精确率是否更高？</strong> 那才叫<strong>移动前沿</strong>；否则只是把工作点<strong>沿同一条曲线</strong>挪位置，对达标毫无帮助。</p>
+<p>判据<strong>预先写定</strong>于 <code>data_out/rule_frontier_preregistration.md</code>。</p>
+<h3 id="结果-36-个配置-验证集上一个可行点都没有">结果：36 个配置，验证集上一个可行点都没有</h3>
+<p><code>cooldown ∈ {0,4,8}</code> × <code>qgate ∈ {关,开}</code> × <code>zmult ∈ 6 档</code>， <strong>验证集上没有任何一个</strong>同时满足 P≥50%、R≥60%、lead≥30min。 按预登记协议<strong>未进行测试集评估</strong>——没有可行点就是结论。</p>
+<p>验证集召回 ≈60% 处的精确率对比：</p>
+<div class='tw'><table><thead><tr><th>配置</th><th>P@R60</th><th>相对基线</th><th>判定</th></tr></thead><tbody><tr><td>冷却0 门关（基线）</td><td>42.76%</td><td>—</td><td>—</td></tr><tr><td>冷却0 门<strong>开</strong></td><td>43.08%</td><td><strong>+0.32pp</strong></td><td>几乎无效</td></tr><tr><td>冷却4 门关</td><td>39.08%</td><td><strong>-3.69pp</strong></td><td><strong>有害</strong></td></tr><tr><td>冷却4 门开</td><td>39.39%</td><td>-3.37pp</td><td>有害</td></tr><tr><td>冷却8 门关</td><td>39.65%</td><td>-3.11pp</td><td>有害</td></tr><tr><td>冷却8 门开</td><td>39.97%</td><td>-2.80pp</td><td>有害</td></tr></tbody></table></div>
+<p><strong>流动性门 +0.32pp，等于没有。</strong> 本文档早前记载它对规则基线值 <strong>+3.10pp</strong>——那是<strong>旧口径、死区过滤之前</strong>的数， <strong>不迁移到当前口径</strong>，此处已证伪。</p>
+<p><strong>冷却去抖是负的（−2.8 ~ −3.7pp）。</strong> 这条尤其值得记：早前的结论是 「冷却对 DRL 是纯负收益，<strong>与对规则引擎相反</strong>」，即当时认为它<strong>帮</strong>规则引擎—— 现在<strong>翻转</strong>了。合理解释是与<strong>死区过滤耦合</strong>：死区已经清掉了收盘前那批注定误报的预警， 冷却再去抖时删掉的就不再是垃圾而是有效预警。这正是 §7.13 记过的 「改动与另一组件耦合会给出反向结论」，只不过这次是<strong>旧结论被新组件推翻</strong>。</p>
+<h3 id="基线前沿-验证集">基线前沿（验证集）</h3>
+<div class='tw'><table><thead><tr><th>zmult</th><th>精确率</th><th>召回</th><th>平均提前</th><th>预警数</th></tr></thead><tbody><tr><td>0.40</td><td>35.82%</td><td>77.83%</td><td>50.8min</td><td>8,014</td></tr><tr><td>0.55</td><td>42.76%</td><td>63.69%</td><td>51.6min</td><td>4,885</td></tr><tr><td>0.70</td><td>48.66%</td><td>50.97%</td><td>51.9min</td><td>3,128</td></tr><tr><td>0.85</td><td>53.63%</td><td>42.05%</td><td>51.8min</td><td>2,040</td></tr><tr><td>1.00</td><td>55.99%</td><td>33.39%</td><td>51.8min</td><td>1,393</td></tr><tr><td>1.30</td><td>60.73%</td><td>22.26%</td><td>52.0min</td><td>764</td></tr></tbody></table></div>
+<p>前沿从 (35.8%, 77.8%) 单调走到 (60.7%, 22.3%)，<strong>目标角点 (50%, 60%) 落在曲线外侧</strong>。</p>
+<blockquote><p>注：验证集比测试集更难——同一基线在测试集 R≈60% 处是 49.05%，验证集只有 42.76%。 本研究的选择全部基于验证集，不受此影响；但引用「差 0.95pp」时要标明那是<strong>测试集</strong>上的数。</p></blockquote>
+<h3 id="结论与必须并列的对照">结论与必须并列的对照</h3>
+<p><strong>纯规则在 anchor 连续口径上的 P-R 前沿不包含目标角点，且过滤类杠杆不能移动它。</strong> 按预登记约定，不再试其他过滤类杠杆（同属一族）。</p>
+<blockquote><p>⚠️ <strong>本节结论的适用范围是「纯规则」。</strong> §7.23 用<strong>加信息</strong>类杠杆 （规则 + ML 否决式融合，模型只在 anchor 训练集上训练）把前沿推动了 <strong>+4.81pp</strong>（同召回量级），测试集三项全达标。 但那<strong>不推翻本节</strong>：纯规则的前沿依旧够不到，且那已不是固定阈值系统。</p></blockquote>
+<p>同一口径、同样的死区过滤、同样三条门槛下，<strong>DRL 三项全达标</strong>： P=54.15% / R=74.93% / 36.2min（lean=0.3）。</p>
+<blockquote><p>⚠️ 别把这读成「死区过滤让 DRL 达标了」：那个过滤对<strong>两方增益同等</strong> （规则引擎在其默认工作点上同样从 45.36% 升到 <strong>52.36%</strong>；同工作点下 DRL +7.02pp vs 规则 +7.00pp， 判别力仅变 <strong>+0.02pp</strong>，见 §7.19）。 本节说的是<strong>另一件事</strong>——规则引擎即便吃到同样的增益、又把整条前沿扫了一遍， <strong>仍然没有任何一点能同时过三条门槛</strong>，而 DRL 有。</p></blockquote>
+<p><strong>这是「固定阈值僵化、需要自适应」最直接的证据</strong>——规则引擎的<strong>整条前沿</strong>都够不到， 差别不在阈值调得好不好，而在于规则是<strong>电平触发的探测器</strong>， 风险起点却定义在超阈<strong>之前</strong>那一刻。</p>
+<p>复算：<code>python scripts/rule_frontier.py --underlying</code></p>
+<hr>
+<h2 id="7-22-逐品种为何只有-4-7-达标-不是工作点选错-是提前时间够不到">7.22 逐品种为何只有 4/7 达标——不是工作点选错，是提前时间够不到</h2>
+<p>交付工作点（全局 <code>lean=0.3</code>）下逐品种三项全达标 <strong>4/7</strong>（白银、黄金、原油、铜）， 工业硅卡提前时间、碳酸锂卡精确率、螺纹钢两项都卡。 自然的问题是：<strong>换成逐品种工作点能不能修好？</strong></p>
+<h3 id="先说方法上的一个坑">先说方法上的一个坑</h3>
+<p>在<strong>测试集</strong>上扫逐品种 <code>lean</code> 曲线时，工业硅看起来能过——<code>lean=0</code> 处 精确率 51.2%、召回 76.5%、提前 <strong>恰好 30.0min</strong>。但这是<strong>看了测试集才发现的</strong>， 且工业硅只有 <strong>4 幕</strong>测试样本（7 个品种里最少）、提前时间正好压在门槛上。 按本项目规矩，工作点只能在<strong>验证集</strong>上选。</p>
+<h3 id="结果-验证集上四个品种都没有可行点">结果：验证集上四个品种都没有可行点</h3>
+<div class='tw'><table><thead><tr><th>品种</th><th>验证集可行点</th><th>测试集可行点</th><th>P、R 均达标处的最高 lead</th><th>绑定约束</th></tr></thead><tbody><tr><td>白银 ag</td><td>5</td><td>7</td><td>36.8min</td><td>—</td></tr><tr><td>黄金 au</td><td>6</td><td>5</td><td>35.6min</td><td>—</td></tr><tr><td>原油 sc</td><td>6</td><td>7</td><td>36.8min</td><td>—</td></tr><tr><td>铜 cu</td><td>0</td><td>7</td><td>27.2min</td><td><strong>提前时间</strong></td></tr><tr><td>工业硅 si</td><td>0</td><td>1</td><td>21.4min</td><td><strong>提前时间</strong></td></tr><tr><td>碳酸锂 lc</td><td>0</td><td>0</td><td>20.1min</td><td><strong>提前时间</strong></td></tr><tr><td>螺纹钢 rb</td><td>0</td><td>0</td><td>29.7min</td><td><strong>提前时间</strong></td></tr></tbody></table></div>
+<blockquote><p><strong>「整条曲线的最高 lead」是个会骗人的量。</strong> 铜在 <code>lean=5.0</code> 处 lead=36.7min 达标， 但那里召回只剩 14.4%。据此说「铜不受提前时间约束」每个字都真、合起来是假。 表中给的是<strong>在精确率与召回都已达标的子区间内</strong>的最高 lead——那才是「还差多少」的正确度量。</p></blockquote>
+<p><strong>铜最能说明问题</strong>：它在测试集上有 <strong>7 个</strong>可行点、在全局交付工作点下也达标， 但<strong>验证集上一个都没有</strong>。即：<strong>它的「达标」并非验证集所能支持的</strong>， 计入 4/7 时应当知道这一点。</p>
+<h3 id="机制-lean-换不出提前时间">机制：<code>lean</code> 换不出提前时间</h3>
+<p><code>lean</code> 是置信度门槛，调它只能在<strong>精确率与召回之间</strong>换—— <strong>换不出提前时间</strong>。平均提前时间由「信号相对风险起点何时出现」决定， 是<strong>特征与标签的性质</strong>，不是阈值能调的。</p>
+<p>这与 §7.12 记的「规则是探测器不是预测器」是同一个机制： 预警<strong>来得太晚</strong>，而不是太少或太吵。区别只在于那里是规则引擎、全品种， 这里是 DRL、只在部分品种上。</p>
+<h3 id="结论">结论</h3>
+<p><strong>逐品种选工作点修不了任何一个未达标品种</strong>， 因为四个都卡在提前时间，而提前时间不在 <code>lean</code> 的作用域内。</p>
+<p>要动这一项，只能改<strong>特征</strong>（让信号更早出现）或改<strong>标签口径</strong>（放宽提前时间门槛）， 前者属已证伪的七条路径之一（加特征，配对 t 检验 p≈0.263 不显著）， 后者是改评测规则，不做。</p>
+<p>复算：<code>python scripts/per_symbol_frontier.py --underlying</code></p>
+<hr>
+<h2 id="7-23-问题1-达标了-靠的是加信息-不是调阈值">7.23 问题1 达标了——靠的是加信息，不是调阈值</h2>
+<p>§7.21 证伪了全部<strong>过滤类</strong>杠杆。剩下只有<strong>加信息</strong>这一类： 赛题问题1 本就要求「规则 + ML 融合」，而当前所有 anchor 连续口径评测跑的都是 <code>model=None</code>（纯规则）。</p>
+<p><strong>既有 ML 模型不能用</strong>：<code>train_anchor_predictor.py</code> 训练区间「2023–2025 四品种」 <strong>覆盖了测试期</strong> 2025-07~2026-04；且 <code>alert_engine</code> 的融合是 <code>level = max(rule, ml)</code>，<strong>只加不减</strong>，与「缺精确率」方向相反。</p>
+<p>故：<strong>只用 anchor 训练集重训</strong>（2023-01~2024-12、7 品种、与 DRL 同一批 32 维特征）</p>
+<ul>
+<li><strong>改成否决式融合</strong>（<code>ml_prob &lt; thr → level = 0</code>）。</li>
+<p>判据<strong>预先写定</strong>于 <code>data_out/rule_ml_preregistration.md</code>。</p>
+</ul>
+<h3 id="泄漏门通过">泄漏门通过</h3>
+<p>验证集 AUC <strong>0.7580</strong>，打乱训练标签后重训 <strong>0.4838</strong>（判据 0.5±0.05）。</p>
+<h3 id="结果-三项全达标">结果：三项全达标</h3>
+<p>验证集选中 <code>zmult=0.4</code> / <code>thr=0.35</code>，测试集只评一次：</p>
+<div class='tw'><table><thead><tr><th></th><th>精确率</th><th>召回</th><th>平均提前</th><th>预警数</th></tr></thead><tbody><tr><td><strong>规则+ML 融合</strong></td><td><strong>53.86%</strong> ✓</td><td><strong>62.25%</strong> ✓</td><td><strong>48.1min</strong> ✓</td><td>6,493</td></tr><tr><td>同 zmult 纯规则</td><td>39.27% ✗</td><td>82.12% ✓</td><td>49.1min ✓</td><td>12,339</td></tr><tr><td>纯规则 R≈60% 处</td><td>49.05% ✗</td><td>60.50% ✓</td><td>49.2min ✓</td><td>6,100</td></tr></tbody></table></div>
+<p><strong>同召回量级上 +4.81pp</strong> —— 移动前沿，不是沿前沿滑动。</p>
+<p>验证集 P=54.99% → 测试集 P=53.86%，落差仅 <strong>-1.14pp</strong>。 与 §7.20 CVaR 那次「验证集全负、测试集才转正」形成对照：那次正结果不是选点方法带来的，<strong>这次是</strong>。</p>
+<h3 id="三条必须一起读的限定">三条必须一起读的限定</h3>
+<p><strong>① §7.21 没有被推翻。</strong> 它说的是<strong>纯规则</strong>，那个结论依旧成立 （同 zmult 纯规则 39.27%、R≈60% 处 49.05%，都够不到 50%）。</p>
+<p><strong>② 这已不是纯固定阈值系统。</strong> 它含一个监督模型，与问题3 DRL 用同一批特征。 赛题允许问题1 用规则+ML，但<strong>引用 53.86% 时必须说明</strong>， 不得让读者以为「固定阈值也能达标」。</p>
+<p><strong>③ 这反而再次印证了「固定阈值僵化、需要学习成分」</strong>—— 过滤类杠杆全部无效，只有加入学习成分才推动了前沿。</p>
+<h3 id="补充-融合系统在-两个口径-下都达标">补充：融合系统在<strong>两个口径</strong>下都达标</h3>
+<p>概览卡引用的是<strong>新口径</strong>（事件级精确率、召回不设上限），而本研究选点用的是<strong>旧口径</strong> （截面级、120min 窗）。<strong>只报一个会让读者以为另一个也这样</strong>，故两个都给 （同一配置 <code>zmult=0.4</code> / <code>thr=0.35</code>，<strong>未重选</strong>）：</p>
+<div class='tw'><table><thead><tr><th></th><th>旧口径（截面级/120min 窗）</th><th>新口径（事件级/不设上限）</th></tr></thead><tbody><tr><td><strong>规则+ML 融合</strong></td><td>53.86% ✓ / 62.25% ✓ / 48.1min ✓</td><td><strong>54.49% ✓ / 95.02% ✓ / 1322min ✓</strong></td></tr><tr><td>同 zmult 纯规则</td><td>39.27% ✗</td><td>41.82% ✗</td></tr></tbody></table></div>
+<p><strong>两个口径下纯规则都不达标，融合后都达标。</strong></p>
+<blockquote><p>概览卡里那个 <strong>45.0%</strong> 是<strong>纯规则在另一个工作点</strong>（<code>zmult=2.0</code>）的新口径数， 与本表的 41.82%（<code>zmult=0.4</code>）是不同配置，不要混为一谈。 卡片已改为同时显示纯规则与融合两行。</p></blockquote>
+<h3 id="交付件-模型已落盘-融合已接进引擎">交付件：模型已落盘，融合已接进引擎</h3>
+<p>本研究初版<strong>只是一个评测脚本</strong>——每次运行重训、不落盘，于是「有一个达标的结果」 却「没有一个可部署的系统」：<code>scan.py</code> 与仪表板都调用不到，融合规则也只存在于脚本里。 现已补齐三件：</p>
+<ol>
+<li><strong>模型落盘</strong> <code>data_out/rule_ml_model.joblib</code>（32 维特征、</li>
+<p>87,517 行训练样本、正样本率 29.6%）， 附指纹 <code>rule_ml_model.fingerprint.json</code>（特征名与顺序、切分边界、模型参数、sklearn 版本）。 <strong>特征顺序尤其要守</strong>：模型按列序吃数，顺序变了不会报错，只会静默给出错误概率。</p>
+<li><strong>融合接进交付本体</strong> <code>vol_surface.alert_engine.evaluate(..., veto_prob=, veto_thr=)</code>。</li>
+<p><strong>不改默认行为</strong>：<code>veto_prob=None</code> 时与改动前逐位一致，问题1 既有结果不受影响。</p>
+<li><strong>两道门</strong>：</li>
+</ol>
+<ul>
+<li><code>G13</code>（<code>drl/tests.py</code>）：对 <strong>600 例金标准夹具</strong>逐位比对，确保公共路径未被改动；</li>
+<p>并验证「只给一半参数不得生效」「启用时须与 <code>rule_ml.fuse</code> 语义一致」。</p>
+<li><code>check_doc_numbers.py</code>：报告里有达标配置时，<strong>模型文件必须存在且指纹匹配</strong>。</li>
+</ul>
+<blockquote><p>G13 的 (a) 项初版是拿「带/不带 veto 参数」互比——<strong>那是自指的</strong>： 两者走同一段代码，被污染时会一起变、仍然相等。实测注入 <code>if level &gt;= 3: level = 2</code> 后该门照样通过。故改为对照<strong>改动前生成的金标准夹具</strong>。 三种注入（污染公共路径 / 语义不一致 / 只给一半参数即生效）现已全部能抓到。</p></blockquote>
+<h3 id="与同口径-drl-的对照">与同口径 DRL 的对照</h3>
+<blockquote><p>提醒：下表的融合成绩来自<strong>规则+ML</strong>，<strong>不是纯规则</strong>—— 纯规则在同一测试集上 R≈60% 处只有 49.05%，整条前沿够不到目标角点（见 §7.21）。</p></blockquote>
+<div class='tw'><table><thead><tr><th></th><th>精确率</th><th>召回</th><th>平均提前</th></tr></thead><tbody><tr><td>规则+ML 融合</td><td>53.86%</td><td>62.25%</td><td>48.1min</td></tr><tr><td>DRL（lean=0.3）</td><td>54.15%</td><td>74.93%</td><td>36.2min</td></tr></tbody></table></div>
+<p>精确率基本持平（DRL 高 +0.29pp）， 但 <strong>DRL 召回高出 +12.68pp</strong>——同样达标的前提下覆盖了明显更多风险起点。</p>
+<p>复算：<code>python scripts/rule_ml.py --underlying</code></p>
+<hr>
+<h2 id="7-24-事件窗口能否全部达标-调阈值不行-且暴露了一个判据缺陷">7.24 事件窗口能否全部达标——调阈值不行，且暴露了一个判据缺陷</h2>
+<p>交付配置下 20 个事件窗口 <strong>13 个</strong>三项全达标。未达标的 7 个 <strong>全部只卡精确率</strong>，召回 90.9%~100%（门槛 60%）——<strong>召回未达标的窗口数为 0</strong>。 即 20/20 都被覆盖到了，问题只是误报多。既然召回有 30~40pp 余量， 自然的问题是：<strong>调紧阈值换精确率能不能让更多窗口达标？</strong></p>
+<h3 id="协议-先把窗口集分开">协议：先把窗口集分开</h3>
+<p>这 20 个窗口<strong>就是问题1 的评测对象</strong>，对着它们的达标数调参就是对评测集拟合。 故按 anchor 时间切分：<strong>训练期 10 窗</strong>（唯一用于选点）/ <strong>验证期 2 窗</strong>（样本太少， 单列不参与选择）/ <strong>测试期 8 窗</strong>（只评一次）。 判据预先写定于 <code>data_out/q1_window_zmult_preregistration.md</code>。</p>
+<h3 id="结果-判据通过-但-判据本身选错了">结果：判据通过，但<strong>判据本身选错了</strong></h3>
+<p>训练期选出 <code>zmult=2.0</code>，测试期达标 <strong>5/8 → 6/8</strong>——字面通过。 但汇总指标反向：</p>
+<div class='tw'><table><thead><tr><th></th><th>zmult=1.0（交付）</th><th>zmult=2.0</th></tr></thead><tbody><tr><td>三项全达标窗口数</td><td>13/20</td><td><strong>14/20</strong> ↑</td></tr><tr><td><strong>20 窗等权平均精确率</strong></td><td><strong>55.65%</strong></td><td><strong>52.58%</strong> ↓</td></tr><tr><td>20 窗等权平均召回</td><td>96.25%</td><td>87.76% ↓</td></tr><tr><td>精确率升/降的窗口数</td><td>—</td><td><strong>7 升 / 12 降</strong></td></tr><tr><td>验证期达标</td><td>2/2</td><td><strong>1/2</strong> ↓</td></tr></tbody></table></div>
+<p><strong>达标数 +1，汇总精确率却跌了 3.07pp，12/20 个窗口精确率变差，验证段还退了一个。</strong></p>
+<p>根因是判据用了<strong>阈值计数</strong>：把每个窗口二值化后计数，<strong>丢掉幅度信息</strong>。 一个窗口 46.2%→64.3% 记 +1，另一个 33.3%→<strong>0.0%</strong> 记 0（本来就没达标）。 于是<strong>整体变差、计数反而上升</strong>。最典型的是铝 2024-01 精确率归零—— 调紧后它只剩少数几条预警、一条都没命中；逐窗口预警事件数本就小，二值化把噪声放大了。</p>
+<h3 id="结论-不采纳-交付维持-zmult-1-0">结论：不采纳，交付维持 <code>zmult=1.0</code></h3>
+<p>调紧阈值是<strong>沿 P-R 前沿滑动</strong>，而滑到的新位置整体更差。 按预登记约定，<strong>阈值方向到此为止</strong>。</p>
+<p><strong>保留的交付表述</strong>：20 个窗口中 13 个三项全达标，未达标的 7 个<strong>全部只卡精确率</strong>； <strong>卡在召回门槛（&lt;60%）的窗口数为 0</strong>。</p>
+<blockquote><p>⚠ <strong>这不等于「零漏报」</strong>——20 个窗口里有 <strong>12 个召回不足 100%</strong>（最低 84.6%）， 确实漏掉了一些风险起点，只是<strong>没有任何窗口低到 60% 的门槛线以下</strong>。 早前此处写的是「20 个窗口零漏报」，与逐窗口表里 90.9%~96.6% 的召回直接矛盾，已更正。</p></blockquote>
+<blockquote><p><strong>方法论教训（判据是我自己写的，而它选错了）</strong>： 凡以「达标个数 / 通过率」为主判据，必须<strong>同时预登记一个连续量</strong>作为<strong>否决条件</strong>—— 连续量退步时，计数上升不算改进。否则会把一次回退讲成改进。</p></blockquote>
+<p>复算：<code>python scripts/q1_window_zmult.py</code></p>
+<hr>
+<h2 id="7-25-ml-异常分恒等于-1-0-一个把四级预警压成两级的调用方式缺陷">7.25 ML 异常分恒等于 1.0：一个把四级预警压成两级的调用方式缺陷</h2>
+<blockquote><p>复算：<code>python scripts/ml_score_defect.py --verify-against &lt;修复前快照目录&gt;</code> 落盘：<code>data_out/ml_score_defect.json</code>　门：<code>G14</code></p></blockquote>
+<h3 id="现象">现象</h3>
+<p>仪表板的 7 个品种预警文件里，<strong><code>ml_score</code> 全部恰好等于 1.0000</strong>（2,191 行， 最小值 = 最大值 = 1.0），而等级分布全是 <code>{1: …, 3: …}</code>—— <strong>「0 正常」与「2 预警 WARN」两级一次都没出现过</strong>。</p>
+<h3 id="根因-批内相对归一化-单样本调用">根因：批内相对归一化 + 单样本调用</h3>
+<p><code>AlertModel.score_samples</code> 的最后一步原本是</p>
+<pre><code>norm = np.clip(-(raw + 0.1), 0, None)
+return norm / (norm.max() + 1e-9)      # ← 批内相对</code></pre>
+<p>而<strong>所有生产路径每次只传一个样本</strong>：<code>alert_engine.evaluate</code> 里是 <code>model.featurize(feats).reshape(1, -1)</code>，<code>scan.py</code>、<code>build_features.py</code> 同理。 batch=1 时 <code>norm.max()</code> 就是 <code>norm</code> 自己，比值恒为 1。</p>
+<p>于是 <code>_ml_level</code> 恒走 <code>ml_score &gt; ML_HIGH</code> 分支， <code>level = max(rule_level, ml_level)</code> 把规则层等级整体抬升：</p>
+<div class='tw'><table><thead><tr><th></th><th>规则层</th><th>旧公式融合后</th><th>新公式融合后</th></tr></thead><tbody><tr><td>0 正常</td><td>1,303</td><td><strong>0</strong></td><td>1,055</td></tr><tr><td>1 关注</td><td>597</td><td>1,900</td><td>845</td></tr><tr><td>2 预警</td><td>214</td><td><strong>0</strong></td><td>148</td></tr><tr><td>3 严重</td><td>365</td><td>579</td><td>431</td></tr></tbody></table></div>
+<p><strong>规则层本来有 1,303 个正常截面和 214 个 WARN，融合后一个都不剩。</strong> 四级预警系统显示成两级，且<strong>退化方向恒为「系统看起来一直在报警」</strong>。</p>
+<h3 id="模型本身没坏-是调用方式毁掉了它">模型本身没坏——是调用方式毁掉了它</h3>
+<p>同一个模型<strong>整批</strong>打分时分离度良好：注入的真异常点均分 <strong>0.98</strong>、正常点 <strong>0.46</strong>。 问题只在 batch=1。这也是它难以被发现的原因：任何用一批数据做的单元测试都看不出来。</p>
+<h3 id="影响范围-交付数字-不受影响">影响范围（交付数字<strong>不受影响</strong>）</h3>
+<div class='tw'><table><thead><tr><th>路径</th><th>是否受影响</th><th>依据</th></tr></thead><tbody><tr><td>问题1 事件窗口 55.65% / 13-20</td><td><strong>否</strong></td><td><code>eval_q1_windows.py</code> 两处均显式 <code>use_model=False</code></td></tr><tr><td>问题1 连续口径融合 53.86%</td><td><strong>否</strong></td><td>用的是 <code>rule_ml_model.joblib</code>（另一个模型，输出真实概率）。提醒：那是<strong>规则+ML</strong>，<strong>不是纯固定阈值</strong>——纯规则在 R≈60% 处只有 49.05%，够不到目标（§7.23）</td></tr><tr><td>问题3 DRL 全部指标</td><td><strong>否</strong></td><td>不经过 <code>AlertModel</code></td></tr><tr><td><strong>仪表板 <code>dashboard/app.py</code></strong></td><td><strong>是</strong></td><td>数据源 <code>alerts_*.parquet</code> 由 <code>build_features.py</code> 生成</td></tr><tr><td><code>scripts/scan.py</code> 在线扫描</td><td><strong>是</strong></td><td>同样是逐截面调用</td></tr><tr><td><code>backtest_report.md</code> 指标1 表</td><td>是</td><td>吃 <code>use_model</code> 默认值 True；该表已另有「旧口径」披露</td></tr></tbody></table></div>
+<p>即<strong>评委看不到错误的指标，但会打开一个从不显示「正常」的仪表板</strong>。</p>
+<h3 id="修法-让分数与批大小无关">修法：让分数与批大小无关</h3>
+<p><code>fit()</code> 时记下训练集 raw 分数的分位网格，<code>score_samples</code> 返回 「训练集里有多大比例的样本比它更正常」。同一截面单独打分与混在批里打分得到同一个数。 副产品是 <code>ML_MID=0.6 / ML_HIGH=0.8</code> 这两个原本悬空的常数有了可解释含义—— 「比训练集 60% / 80% 的样本更异常」。</p>
+<p>旧模型缺这个参照分布，<code>load()</code> <strong>不静默降级</strong>，而是在真正打分时抛出可操作的报错 （说明现象、指出要重跑哪个脚本）。7 个品种已全部重训。</p>
+<h3 id="顺带修掉的两处不一致">顺带修掉的两处不一致</h3>
+<ol>
+<li><strong>特征 schema 分裂</strong>：7/31 生成的 ag/au/sc/si 缺 4 个 z-score 列</li>
+<p>（<code>arb_score_z</code>、<code>atm_iv_vel_z</code>、<code>convexity_vel_z</code>、<code>convexity_violation_z</code>）， 而 8 月生成的 lc/cu/rb 是 31 列——<strong>仪表板同时混着两套特征口径</strong>。现已统一。</p>
+<li><strong>生成时点分裂</strong>：三个日期（7-31 / 8-19 / 8-24）。现已统一。</li>
+</ol>
+<h3 id="门-g14-两半缺一不可">门：G14（两半缺一不可）</h3>
+<ul>
+<li><strong>(a) 批不变性</strong>：逐样本打分与整批打分必须逐位相同（实测差 <code>0.0e+00</code>）。</li>
+<li><strong>(b) 交付模型未退化</strong>：(a) 只验代码，验不出「代码修好了但模型没重训」，</li>
+<p>故对仓库里<strong>实际交付的</strong> 7 个 <code>model_*.joblib</code> 逐个打分，要求分数有真实分散度。</p>
+</ul>
+<p><strong>为什么两半都必须有</strong>：反向验证时注入 <code>return np.ones(len(X))</code>—— 一个<strong>完美批不变</strong>的常数函数——(a) 的最大差是 <code>0.0e+00</code>，<strong>照样通过</strong>； 只有 (b) 抓到它。反过来注入原始的 <code>norm/norm.max()</code> 则只有 (a) 抓得到。</p>
+<p><strong>判据为什么先四舍五入</strong>：裸 <code>len(set(scores)) &gt; 1</code> <strong>会放原缺陷过去</strong>—— <code>+1e-9</code> 让 300 个样本在<strong>第 9 位小数</strong>上互不相同，唯一值数是 300 而非 1。 故判据取 <code>round(s, 4)</code> 的唯一值数并同时看极差（缺陷版极差 <code>2.3e-9</code>，修复版 <code>0.999</code>）。</p>
+<h3 id="一条方法论教训">一条方法论教训</h3>
+<p><strong>「这个数看起来正常」和「这个数有信息」是两回事。</strong> <code>ml_score = 1.0</code> 落在合法值域 <code>[0,1]</code> 内，任何范围检查、类型检查、非空检查都通过； 它甚至<strong>每一行都不同</strong>（第 9 位小数），能骗过朴素的「是不是常数」检查。 真正暴露它的是<strong>分布</strong>——min = max = 1.0。</p>
+<p><strong>可操作</strong>：凡是模型输出的分数，落盘后要看一眼<strong>分位分布</strong>，而不只是看有没有值； 凡是「批内归一化」的写法，要先问一句「调用方每次传几个样本」。</p>
+<hr>
+<h2 id="8-预警可视化仪表板-dashboard-app-py">8. 预警可视化仪表板（<code>dashboard/app.py</code>）</h2>
+<p>Streamlit + Plotly，遵循 dataviz 技能规范（深色主题、recessive 网格、tooltip+crosshair 交互）：</p>
+<ul>
+<li><strong>曲面热力图</strong>：IV(dte, moneyness)，单色相 blue 序贯 ramp</li>
+<li><strong>Greeks 截面曲线</strong>：从 archive 按需加载该截面原始数据，画 Delta/Gamma/Vega/Theta vs moneyness，call/put 双系列（固定分类色，非循环）</li>
+<li><strong>预警时间轴</strong>：0-3 级用<strong>状态色 + 图标</strong>（good/warning/serious/critical，不靠色独传），hover 显示触发原因，事件期阴影叠加</li>
+<li><strong>特征分位仪表</strong>：6 个关键特征的滚动分位 gauge</li>
+<li><strong>回放控制</strong>：时间滑块 + 播放按钮、品种/日期选择、等级过滤、回测摘要</li>
+</ul>
+<h3 id="踩过的坑-plotly-子图类型">踩过的坑：Plotly 子图类型</h3>
+<p><code>go.Indicator</code> 不兼容默认 xy 子图，需 <code>specs=[[{&quot;type&quot;:&quot;indicator&quot;}]*3]*2</code> 显式声明。surfaces parquet 里 surface 列是 object ndarray，<code>np.array(x, float)</code> 会失败，需 <code>np.stack([np.asarray(row, float) for x in surface])</code>。</p>
+<hr>
+<h2 id="8-5-问题3-drl-自适应预警策略-drl">8.5 问题3：DRL 自适应预警策略（<code>drl/</code>）</h2>
+<p>固定阈值的根本问题是<strong>静态</strong>：低波动期频繁误报、高波动期又漏报。问题3 用 Double DQN 把「什么时候报、报几级」变成一个学出来的策略。</p>
+<h3 id="mdp-设计">MDP 设计</h3>
+<ul>
+<li><strong>状态（34 维）</strong>：26 维曲面风险特征 + 6 维标的侧特征（RV 与方差风险溢价，§7.9/§7.10）</li>
+<li>2 维决策上下文（距上次预警的分钟数、上一步动作）。全部用<strong>训练集</strong>统计量归一。</li>
+<p>上下文这两维让智能体感知「我刚报过了」，从而学会抑制冗余预警——无状态的规则引擎 做不到这点。仅曲面的 28 维版本保留在 <code>data_out/drl_c26</code>，两者差异见 §7.10 （<strong>不显著</strong>，p≈0.26）。</p>
+<li><strong>动作</strong>：0/1/2/3 四级，与赛题一致。</li>
+<li><strong>奖励</strong>：事件级会计，直接映射赛题指标——首次覆盖某风险起点 <code>+6·(1+提前占比)·等级系数</code>、</li>
+<p>冗余正确 <code>+0.2</code>、误报 <code>−1.0·等级系数</code>、风险起点未被覆盖 <code>−10</code>。</p>
+<li><strong>风险起点判定</strong>：按品种<strong>跨月连续</strong>（§7.10）。逐月判定会制造结构性死区，</li>
+<p>是本项目查出的最大单项缺陷。</p>
+</ul>
+<h3 id="踩过的坑-两个都很致命">踩过的坑（两个都很致命）</h3>
+<p><strong>坑1：第一版奖励可被「闭嘴」套利。</strong> 初版用「每步下注」结构（命中 +1 / 误报 −1）。 由于风险起点基础率偏低（全量 18.14%），「恒不预警」的累计奖励反而<strong>高于</strong>规则基线 （实测 −6,253.0 vs −10,588.1）——在那种奖励下 DRL 只要学会永远不报就能赢，而召回率是 0。 改为事件级计价后该套利消失（−15,340.0 vs −5,916.2）。验证门 G4 持续守住这一性质， 但要注意 <strong>G4 检查的平凡策略集合是「恒0/恒2/恒3/随机」，不含盲节奏策略</strong>—— 盲节奏的累计奖励其实是高于规则基线的，那一条由 G8 单独把关。 该消融可用 <code>python scripts/train_drl.py --stage ablation</code> 复现 （数字取自 <code>data_out/drl_legacy_monthly/ablation_reward.json</code>，逐月口径； 消融结论与标签口径无关，故未在新口径下重跑）。</p>
+<p><strong>坑2：环境与赛题口径差半根 K 线。</strong> 环境最初用「严格晚于当前时刻的下一个风险起点」判定命中， 于是「恰好在风险起点当根 K 线发出的预警」被同时记成误报<strong>和</strong>漏报。而赛题的两个 120 分钟 窗口 <code>[rs−120, rs]</code> 与 <code>[a, a+120]</code> 都是闭区间，这类预警应算命中。修正后环境的 cover/miss 计数与赛题指标的召回/漏报数<strong>完全相等</strong>（验证门 G3），奖励优化的目标才真正 等于报告口径。</p>
+<p><strong>坑3：泄漏门的判据本身是错的。</strong> 初版 G7 判据为「打乱风险起点后，DRL 累计奖励须跌回 随机策略水平」，结果 FAIL。排查后发现不是泄漏——一个完全不看特征、只按固定节奏刷预警的 盲策略，累计奖励本来就远高于随机策略。也就是说累计奖励里混了「预警节奏优化」这一与信号 无关的成分，不能用来判泄漏。改用<strong>判别力</strong>（精确率 − hit 基础率）后：真实数据 +15.87% → 打乱后 +2.39%（塌陷至 15%），通过。</p>
+<blockquote><p>注：G6/G7 为控制耗时用的是小规模子集（G7 为 40 幕训练/12 幕验证、单 seed、3 epoch， 在验证集上评估），其绝对数值与主结果表（测试集全集、5 seed 均值）<strong>不可直接比较</strong>， 门消息里已各自标注口径。</p></blockquote>
+<h3 id="15-道验证门-python-m-drl-tests-underlying">15 道验证门（<code>python -m drl.tests --underlying</code>）</h3>
+<div class='tw'><table><thead><tr><th>门</th><th>检查内容</th></tr></thead><tbody><tr><td>G0</td><td>连续口径下幕内标签自洽，且幕首死区已消除（前 72 根内风险起点 1092/7185）</td></tr><tr><td>G1</td><td>篡改 t 之后的全部特征，t 时刻状态须逐位不变（状态无未来信息）</td></tr><tr><td>G2</td><td><code>drl.metrics</code> 与 <code>vol_surface.quant_metrics</code> 在同一输入上逐位一致</td></tr><tr><td>G3</td><td>环境 cover/redundant/miss 计数 == 赛题指标的召回/命中/漏报数</td></tr><tr><td>G4</td><td>平凡策略（<strong>仅</strong> 恒0/恒2/恒3/随机）累计奖励须劣于规则基线；盲节奏不在此列，由 G8 把关</td></tr><tr><td>G5</td><td>归一化统计量只依赖训练集</td></tr><tr><td>G6</td><td>同 seed 两次训练结果逐位相同</td></tr><tr><td>G7</td><td>打乱风险起点后<strong>判别力</strong>须塌陷（真泄漏门）</td></tr><tr><td>G8</td><td>DRL 须优于最优盲节奏策略，且精确率显著高于基础率</td></tr><tr><td>G9</td><td>断点续训与一次跑完<strong>逐位等价</strong>（漏存任一随机数发生器状态都会被抓住）</td></tr><tr><td>G10</td><td>新口径下的达标不得来自口径退化——须并列平凡策略且判别力 &gt;5pp（§7.18）</td></tr><tr><td>G11</td><td>CVaR 改善率若与「恒报警」无差别即为仓位饱和，退化时不得把 improve 当作达标证据（§12）</td></tr><tr><td>G12</td><td>死区过滤的休市阈值须 &gt; <strong>实测日内最长休市（现算，本数据集为 135min）</strong>——否则会把午休前的有效预警全部误杀，<strong>而精确率照样上升</strong>；断言不写死 120/135（§7.19）</td></tr><tr><td>G13</td><td>否决式融合：<code>veto_prob=None</code> 时行为须与改动前<strong>逐位一致</strong>（否则问题1 既有结果全部失效）；启用时须与交付脚本 <code>rule_ml.fuse</code> 语义一致——<strong>评测与交付必须走同一条代码路径</strong>（§7.23）</td></tr><tr><td>G14</td><td>异常分须<strong>与批大小无关</strong>（逐样本打分 == 整批打分），且 7 个交付模型的分数不得退化为常数——原实现 <code>norm/norm.max()</code> 是批内相对的，而生产路径每次只传 1 个样本，异常分恒为 1.0，把四级预警压成两级（§7.25）</td></tr></tbody></table></div>
+<p>交付版（<code>data_out/drl</code>，34 维状态、连续标签、15 seed）实测 <strong>15/15 通过</strong>， 落盘于 <code>data_out/drl/gates.json</code>。</p>
+<h3 id="工程选择-纯-numpy-实现-dqn">工程选择：纯 NumPy 实现 DQN</h3>
+<p>（维度口径：<strong>32 维曲面/标的特征 + 2 维决策上下文（距上次预警时长、上次等级）= 34 维状态</strong>。 文中「32 维」指特征数，「34 维」指网络输入维度，二者不是同一个量。）</p>
+<p>本项目原依赖里没有任何深度学习框架，而这里只需要一个 34→128→128→4 的小 MLP （21,508 参数）。为它引入 torch 不划算，且纯 NumPy 手写前反向可做到完全确定性复现 （G6 逐位相同）、CPU 数分钟跑完、评审复现零环境成本。<code>requirements.txt</code> 因此<strong>没有新增 任何依赖</strong>。</p>
+<h3 id="生产配置用集成">生产配置用集成</h3>
+<p>以下数字全部来自交付版 <code>data_out/drl/results.json</code>（32 维特征 + 2 维决策上下文 = 34 维状态、 连续标签、<strong>15 seed</strong>、贪心工作点）。5-seed 时期的对应数字见 <code>data_out/drl_5seed_archive/</code>。</p>
+<p>单 seed 的测试集表现方差很大：累计奖励 −551.8 ~ +3,022.2、精确率 34.18% ~ 44.33% （样本标准差 <strong>±3.13pp</strong>），根因是最优 checkpoint 出现得早、验证集选择噪声大。 15 个 seed 的 Q 值平均把累计奖励从单 seed 均值 +1,432.4 提到 <strong>+4236.4</strong>， 精确率从 39.77% 提到 <strong>45.13%</strong>。</p>
+<p>需要如实说明：<strong>集成并非在每个口径上都最优</strong>——集成精确率 45.13% 高于最好单 seed 的 44.33%，这 0.80pp 远落在种子噪声量级内（样本标准差 ±3.13pp）；集成只评估了一次、 未做方差估计，因此<strong>不宣称它在任一指标上显著更优</strong>。推荐用集成的实际理由是工程性的： 消除「挑到坏 seed」的风险，结果不依赖选种、可复现。</p>
+<p>¹ 单 seed 标准差：累计奖励 ±971.6（ddof=0）/ ±1005.7（ddof=1）； 精确率 ±3.02pp（ddof=0）/ ±3.13pp（ddof=1）。本文正文一律用样本标准差（ddof=1）。 <code>drl.api.AlertAgentAPI.from_dir()</code> 默认就是集成。</p>
+<hr>
+<h2 id="8-6-问题2-风险传导知识图谱-kg">8.6 问题2：风险传导知识图谱（<code>kg/</code>）</h2>
+<h3 id="这版要解决的问题">这版要解决的问题</h3>
+<p>知识图谱最容易滑向的失败模式，是<strong>把作者拍脑袋写的因果关系包装成「推理」</strong>。 本项目的 v1 骨架（已归档到 <code>kg/_legacy/</code>）正落在这里：主推理骨架 AMPLIFIES 的边权是 「启发式 0.6–0.8」的先验，跨品种回退权重直接写死 <code>1.0</code>（等于断言「同板块必然传导」）， 其 schema 文档自己也注明「后续可用 anchor 数据估计」——而这一步一直没做。</p>
+<h3 id="核心设计-实测层与诠释层分离">核心设计：实测层与诠释层分离</h3>
+<p>每个节点/边都带 <code>layer</code> 属性，评审可以清楚区分「哪些是数据说的，哪些是人说的」：</p>
+<div class='tw'><table><thead><tr><th>layer</th><th>内容</th><th>权重来源</th><th>参与推理打分</th></tr></thead><tbody><tr><td><code>measured</code> 实测层</td><td><code>ANOM→CONSEQ</code> 主干边、跨品种边</td><td>138,794 个真实截面标定的 lift</td><td>是</td></tr><tr><td><code>interpretive</code> 诠释层</td><td><code>MECH</code> 机制、<code>CONSTRAINT</code> 无套利约束、<code>how</code> 文本</td><td>业务先验，<strong>无权重</strong></td><td>否</td></tr></tbody></table></div>
+<p>机制不是单独的边，而是<strong>已实测边上的注解</strong>。若拆成 <code>ANOM→MECH→CONSEQ</code> 两条边， 就得给每条编一个权重——那正是 v1 的毛病。这样权重始终只有一个，且来自数据。</p>
+<h3 id="边是怎么测出来的">边是怎么测出来的</h3>
+<p>对每个「异常 A → 后果 C」组合，在训练期（2023-01..2024-12）统计：</p>
+<ul>
+<li><strong>提升度</strong> <code>lift = P(C 在未来 8 个截面内发生 | A 当前发生) / P(C)</code>，lift≈1 即无信息量</li>
+<li><strong>95% Wilson 置信下界</strong>作为边权（不用点估计，避免小样本虚高）</li>
+<li><strong>分块置换检验</strong>（200 次）：金融时序自相关强，朴素检验会把 p 值压到几乎条条边都</li>
+<p>「显著」。这里按<strong>整日为块做循环平移</strong>，只打乱 A 与 C 的时间对齐、保留 A 自身的自相关</p>
+<li><strong>测试期独立复算</strong>：只在训练期显著、测试期塌掉的边会被标出</li>
+</ul>
+<p>三条同时满足才进图：支撑度 ≥200、置换 p ≤0.05、lift 下界 &gt;1.1。 未通过的候选边<strong>不进推理图</strong>，但全部留在 <code>kg_edges.json</code> 供审计。 最终：候选 40 条 → 通过 21 条（测试期可复现 21 条）；跨品种候选 280 条 → 通过 110 条（其中<strong>跨板块 86 条</strong>、同板块 24 条 —— 见 §7.6）。</p>
+<h3 id="踩过的坑">踩过的坑</h3>
+<p><strong>坑1：教科书结论被数据否掉。</strong>「Gamma/Vega 截面集中 → 波动率跳升」（做市商 Gamma 对冲压力）实测 lift 仅 <strong>0.82</strong>（p=0.93），不足以支持，已剔除。这是几乎所有期权风险 图谱都会写进去的一条边。</p>
+<p><strong>坑2：一个差点写进报告的假传导。</strong>「白银流动性枯竭 → 黄金流动性枯竭」朴素 lift 高达 <strong>3.22</strong>。核查发现 ag/au/sc 的流动性异常 55%+ 集中在夜盘，si（广期所）不交易 夜盘（夜盘占比 0%）、异常集中在 10–14 点，三者与 si 的交易小时 Jaccard 仅 0.50 而彼此为 1.00—— 这条「传导」几乎全是「大家都在夜盘、夜盘流动性本来就薄」。改用<strong>按小时匹配的基线</strong>后 lift 降到 <strong>1.10</strong> 并被剔除；而 si→ag 的朴素 lift 只有 <strong>0.07</strong>（看似强烈负相关）， 小时匹配后是 <strong>2.27</strong>——朴素口径把方向都搞反了。扩样后跨品种边为 110/280 条。</p>
+<p><strong>坑3：同源特征与机制覆盖。</strong> 21 条通过的边里有 4 条，其根因与后果判定共用同一底层指标 （如「曲面凸性违反」与「曲面凸性破坏」都基于 <code>convexity_violation</code>）。这类边的高 lift 有相当部分来自同一指标的时间自相关，<strong>不是独立证据</strong>。已打 <code>self_feature</code> 标记， 解释文本逐条提示，不让读者误读。 另有 12/21 条实测边<strong>没有</strong>机制说明——数据观测到了关联但归纳不出机制， 解释文本会明说这一点而不硬凑，诠释层覆盖不全是如实披露的局限。</p>
+<h3 id="11-道验证门-python-m-kg-tests-emit-200-条测试期样本-11-11-通过">11 道验证门（<code>python -m kg.tests --emit</code>，200 条测试期样本，11/11 通过）</h3>
+<div class='tw'><table><thead><tr><th>门</th><th>检查内容</th></tr></thead><tbody><tr><td>K1</td><td>解释文本不得出现劝导词/交易动作词，且必带免责声明</td></tr><tr><td>K2</td><td>解释里每个数字都能回溯到特征读数或图中边统计，无孤儿数字</td></tr><tr><td>K3</td><td>实测层只含 ANOM→CONSEQ / XSYM→XSYM；无自环；诠释层边权恒 0</td></tr><tr><td>K4</td><td>同一输入两次调用输出逐字相同</td></tr><tr><td>K5</td><td>从原始 anchor 数据重算边的 lift，须与图中记录一致</td></tr><tr><td>K6</td><td>触发了但图中无通过检验出边的异常，必须明说不作推断（防幻觉）</td></tr><tr><td>K7</td><td>图中实测层不得包含未通过检验的边</td></tr><tr><td>K8</td><td>解释文案的各项功能仍在生效（方向提示/测试期披露/宽松判据标注等 10 项均不得归零）</td></tr><tr><td>K9</td><td>打印的判定不等式必须为真（「本级要求 z &gt; X，实测 z = Y」须满足 Y&gt;X 且 X 取自 <code>DEFAULT_PARAMS</code>）</td></tr><tr><td>K10</td><td>通俗解读句不得自我抵消——「平时约 a 次 → 本形态后约 b 次」必须 b &gt; a（§7.18b）</td></tr><tr><td>K11</td><td>每行的 <code>**</code> 个数须为偶数——防嵌套/悬空标记导致强调错位（§7.18b）</td></tr></tbody></table></div>
+<blockquote><p>门本身也拦下过三个 bug：K1 初版把免责声明里的「操作建议」四字误判为违规； K2 的数字提取正则把日期 <code>2026-02-12</code> 里的 <code>-02</code> 当成负数；K5 初版只在前 24 幕上复算 lift（3.04）与全训练期标定值（2.45）对不上，看着像图谱有 bug，实为测试自己取错了样本。</p></blockquote>
+<blockquote><p><strong>K8 是全链路复现后补的。</strong> K1~K7 检查的是内容合规与统计正确，没有一道会因为 「某段文案再也不出现」而失败。实测踩过：为消除 <code>atm_iv_z = −5.3294，判定为 &gt; 3.5000</code> 这类字面为假的不等式，把触发量改印 <code>|z|</code>；而方向提示的判据恰好读同一字段， 取绝对值后恒非负，提示<strong>永远不触发</strong>。两处改动各自都对、门全绿、评审读的又是 改动前生成的旧样本——三重遮蔽。K8 把「文案功能是否还在」变成机器断言， 并已验证它在回归版代码上确实 FAIL（7/8）、修复后 PASS（8/8）。</p></blockquote>
+<h3 id="关于人工评分">关于人工评分</h3>
+<p>赛题指标3 要求<strong>人工</strong> 5 分制评分 ≥4 分。本项目提供评分细则、30 条测试期随机样本与 空白评分表，但<strong>不自评达标</strong>——机器只能保证「不会明显违规」（无交易建议、证据可回溯、 无证据时拒绝推断），替代不了对语义清晰度与因果合理性的人工判断。</p>
+<hr>
+<h2 id="8-7-总览平台-data_out-platform-html">8.7 总览平台（<code>data_out/platform.html</code>）</h2>
+<p>把问题1/2/3 的全部结果汇成<strong>一个单文件 HTML</strong>，零外部依赖、离线双击即开， 适合直接发给评审或存档。由 <code>scripts/build_platform.py</code> 生成， <strong>所有数字从 <code>data_out/</code> 下的 JSON 产物读取</strong>，重跑流水线后重新执行脚本即可整体刷新。</p>
+<p>包含七个板块：总览（三问题达标状态）、数据口径（含扩样前后对照）、 问题1 曲面（设计取舍 + 7 品种真实截面热力图）、问题2 图谱（主干边/被否掉的先验/跨板块传导/解释样本）、 问题3 DRL（基线对照/各 seed/收敛曲线/奖励消融）、验证门（K1–K11 + G0–G14）、局限与待办。 顶栏有全局搜索，可按品种、指标、边名过滤。</p>
+<p>两个实现细节：<strong>曲面样例是现场重建的</strong>——不依赖 <code>surfaces_*.parquet</code>（那套只有 4 个品种）， 而是直接从 <code>archive/</code> 原始数据用 <code>fit_slice_iv</code> 重算，因此 7 个品种全覆盖；每个品种给 「平静」（无触发）与「承压」（触发最多）两个截面做对照。<strong>热力图用原生 SVG 绘制</strong>， 186 个色块各带 tooltip，不引任何图表库。</p>
+<hr>
+<h2 id="9-项目结构">9. 项目结构</h2>
+<blockquote><p><strong>关于 <code>data_out/</code> 的体积</strong>：交付产物约 <strong>77MB</strong>（15 个 agent + 图谱 + 各报告 + anchor 数据集）。 早前该目录曾达 <strong>1.9G，其中 1.78G 是训练断点 <code>_wip_*.pkl</code></strong>——每个断点含整个回放池、 单个 56MB，而 <code>train_drl.py</code> 训练完不清理，于是一份要提交的作品里 <strong>95% 是训练残渣</strong>， 且<strong>没有任何东西会提醒你</strong>：目录大小不在任何门的视野里，所有验证门照样全绿。 现已两处修复：<code>train_drl.py</code> 在成品 <code>agent_*.npz</code> 落盘<strong>之后</strong>自动删除断点 （放在保存之后，保证中途失败仍可续跑）；<code>scripts/check_doc_numbers.py</code> 增加断言， 交付目录出现 <code>_wip_*.pkl</code> 即失败。</p></blockquote>
+<pre><code>期权课题-1/
+├── vol_surface/                  # 曲面特征提取算法库（核心，~1300 行）
+│   ├── io_loader.py              # 品族/月度 parquet 读取聚合
+│   ├── cleaning.py               # 清洗（休市/僵尸/IV边界/卡死/跳变）
+│   ├── interpolation.py          # PCHIP 重建 + SVI 提参
+│   ├── arbitrage.py              # 日历/蝶式/parity 校验
+│   ├── features.py               # 10 项风险特征 + 滚动统计
+│   ├── alert_rules.py            # 8 条可解释规则（阈值经网格搜索校准，含 R8 导数提前预警）
+│   ├── alert_model.py            # IsolationForest
+│   ├── alert_engine.py           # 规则+ML 融合 0-3 级 + AlertState 状态机
+│   ├── backtest.py               # 对照极端事件回测（事件表口径）
+│   ├── quant_metrics.py          # 赛题口径量化指标（精确率/召回/提前时间）
+│   └── cvar_backtest.py          # CVaR 改善率回测（核心业务指标）
+├── kg/                           # 【问题2】风险传导知识图谱（纯 Python，无新增依赖）
+│   ├── graph.py                  # 极简有向图核（JSON 序列化，可转 NetworkX）
+│   ├── schema.py                 # 节点/边定义：实测层与诠释层分离
+│   ├── schema.md                 # Schema 文档（由 report_kg.py 自动生成）
+│   ├── calibrate.py              # 边权标定：lift + Wilson 下界 + 分块置换检验
+│   ├── build.py                  # 装配图谱，只放通过检验的边
+│   ├── reason.py                 # 传导路径推理与证据链（无证据即拒绝推断）
+│   ├── explain.py                # 中文解释生成（严格无交易建议）
+│   ├── tests.py                  # 11 道验证门 K1–K11
+│   └── _legacy/                  # v1 骨架（已归档，附归档原因）
+├── drl/                          # 【问题3】DRL 自适应预警（纯 NumPy，无新增依赖）
+│   ├── dataset.py                # anchor → episode，风险起点复现 + 标签自校验
+│   ├── env.py                    # 预警 MDP：状态/动作/事件级奖励
+│   ├── metrics.py                # 赛题口径指标（与 quant_metrics 逐位一致，G2 守）
+│   ├── baseline.py               # 规则基线（复用 alert_rules 本体）+ 盲节奏/平凡策略
+│   ├── dqn.py                    # Double DQN：手写 MLP + Adam + 回放池
+│   ├── train.py                  # 训练循环（验证集选 checkpoint）+ 基线表
+│   ├── api.py                    # 推理 API（默认多 seed 集成）
+│   └── tests.py                  # 15 道验证门 G0–G14
+├── scripts/
+│   ├── build_features.py         # 离线生成特征+预警+模型（~2-5min/品种）
+│   ├── scan.py                    # 定时增量扫描最新截面
+│   ├── grid_search.py            # 阈值网格搜索校准
+│   ├── generate_report.py        # 生成离线回测报告
+│   ├── build_kg.py               # 【问题2】标定并装配知识图谱
+│   ├── report_kg.py              # 【问题2】技术报告 + Schema 文档 + 人工评分材料
+│   ├── viz_kg.py                 # 【问题2】传导路径可视化（自包含 HTML）
+│   ├── build_platform.py         # 【总览】把三个问题汇成单文件 HTML 研究平台
+│   ├── train_drl.py              # 【问题3】DRL 训练入口（分阶段，可断点续跑）
+│   ├── report_drl.py             # 【问题3】离线回测报告生成（数字全部来自 results.json）
+│   └── validate.py               # 端到端验证
+├── dashboard/app.py              # Streamlit 仪表板
+├── data_out/                     # 生成产物（alerts/features/surfaces/model + backtest_report.md + best_params.json）
+│   ├── anchor/                   # 90k 标注截面（152 月 × 4 品种），DRL 训练数据
+│   ├── drl/                      # DRL checkpoint / 训练日志 / results.json / 收敛曲线
+│   ├── kg/                       # 图谱 JSON / 边标定统计 / 验证门 / 解释样本 / 可视化 HTML
+│   ├── platform.html             # 【总览】研究平台（单文件，双击即开）
+│   ├── kg_report.md              # 【问题2】技术报告
+│   └── drl_report.md             # 【问题3】离线回测报告
+├── archive/                      # 原始分层数据（不动）
+├── options_merged.parquet        # 整合全量（5.6GB）
+└── extreme_event.csv             # 17 个极端事件（GBK）</code></pre>
+<hr>
+<h2 id="10-快速开始">10. 快速开始</h2>
+<pre><code># 0. 依赖
+pip install pyarrow pandas numpy scipy scikit-learn streamlit plotly joblib akshare
+
+# 1. 离线生成特征与预警（约 2-5 分钟/品种）
+python scripts/build_features.py --symbols ag,si,au,sc --max-slices 400
+#    新扩的三个品种（沙箱内存/时限所限，采样密度较低，见「已知局限」）
+python scripts/build_features.py --symbols lc,cu,rb --max-slices 120
+
+# 2. 端到端验证（文件完整性 + 预警分布 + 回测 + 仪表板图表）
+python scripts/validate.py
+
+# 3. 启动仪表板
+streamlit run dashboard/app.py
+
+# 4. 扫描最新截面（单次 / 定时）
+python scripts/scan.py --symbol ag --latest 1
+python scripts/scan.py --symbol ag --interval 15        # 每 15 分钟
+
+# 5. 阈值校准（可选，事件期窗口网格搜索最优阈值，约 6 分钟）
+python scripts/grid_search.py
+
+# 6. 生成赛题口径回测报告（量化指标 + CVaR + 事件表，约 6 分钟）
+python scripts/generate_report.py        # 输出 data_out/backtest_report.md
+
+# 6b. 问题1 交付数字（平台与 README 的引用源）
+#     18 个事件窗口 × 3 配置，约 15 分钟；支持缓存与分批：
+#     加 --budget 130 可跑满 130 秒即存盘退出，反复调用直到跑完
+python scripts/eval_q1_windows.py        # 输出 data_out/q1_7sym.json
+#     anchor 连续测试集上的逐品种达标状态（约 1 分钟，依赖 drl/ 的 checkpoint）
+python scripts/eval_per_symbol.py --underlying
+#     → 输出 data_out/per_symbol.json 与 per_symbol_workpoints.json
+
+# 6c. 漂移研究：验证集→测试集的落差是模型问题还是数据问题？（约 2 分钟，不碰测试集）
+python scripts/drift_study.py --underlying   # 输出 data_out/drift_study.json
+
+# 6d. 扩展窗滚动重训对照（3 折 × 3 seed，约 20 分钟；--budget 分批可反复调用）
+python scripts/roll_retrain.py --budget 150   # 反复调用直到提示训练完成
+python scripts/roll_retrain.py --eval         # 输出 data_out/roll_retrain.json
+
+# 6e. 集成规模实验（判据预先登记于 data_out/ensemble_preregistration.md）
+python scripts/ensemble_scaling.py --budget 150      # 训练 seed 47~56，分批
+python scripts/ensemble_scaling.py --eval --budget 0 # 输出 data_out/ensemble_scaling.json
+
+# ---- 问题2：风险传导知识图谱 ----
+# 7. 标定并装配图谱（约 20s，依赖 data_out/anchor）
+python scripts/build_kg.py
+
+# 8. 跑 11 道验证门（无交易建议 / 证据可回溯 / 拒绝幻觉 / 文案功能未失效 / 不等式为真）
+python -m kg.tests --emit
+
+# 9. 生成技术报告、Schema 文档与人工评分材料
+python scripts/report_kg.py
+
+# 10. 生成传导路径可视化（自包含 HTML，双击即可打开）
+python scripts/viz_kg.py
+
+# ---- 总览平台 ----
+# 11. 把问题1/2/3 汇成一个单文件研究平台（零依赖，双击即开）
+python scripts/build_platform.py        # 输出 data_out/platform.html
+
+# ---- 问题3：DRL 自适应预警 ----
+# 7. 构造训练数据（90k 标注截面，约 30 分钟；已生成可跳过）
+python scripts/build_anchor_dataset.py
+
+# 8. 训练（超参搜索 + 5 seed，CPU 约 10 分钟，无需 GPU）
+python scripts/train_drl.py --stage all --seeds 42,43,44,45,46
+
+# 9. 跑 15 道验证门（泄漏/口径/奖励可套利性/续训等价性/新口径非退化/异常分批不变性）
+#    --underlying 必须带上：交付模型是 34 维状态（32 特征 + 2 决策上下文）
+python -m drl.tests --underlying
+
+# 10. 生成 DRL 离线回测报告
+python scripts/report_drl.py             # 输出 data_out/drl_report.md
+
+# ---- 交付前的一致性校验 ----
+# 11. 核对 README / 方法论文档里的数字与落盘 JSON 是否一致（不一致即退出码 1）
+python scripts/check_doc_numbers.py
+
+# 12. 清洗逐行原因的回归与自洽（含「默认路径逐位不变」断言）
+python -m tests.test_cleaning_reasons</code></pre>
+<p>推理接口：</p>
+<pre><code>from drl.api import AlertAgentAPI
+api = AlertAgentAPI.from_dir(&quot;data_out/drl&quot;)   # 默认多 seed 集成
+api.reset()
+out = api.predict(feats, timestamp=&quot;20260115103000&quot;, explain=True)
+# {&#x27;level&#x27;: 2, &#x27;level_name&#x27;: &#x27;预警 WARN&#x27;, &#x27;q_values&#x27;: [...], &#x27;margin&#x27;: 0.31,
+#  &#x27;agreement&#x27;: 0.8, &#x27;is_alert&#x27;: True, &#x27;triggers&#x27;: [规则引擎的中文触发原因]}</code></pre>
+<hr>
+<h2 id="11-关键设计决策小结">11. 关键设计决策小结</h2>
+<ol>
+<li><strong>清洗保信号</strong>：临到期极端 IV 是真实信号，只剔除 BS 卡死值，把&quot;近月陡峭&quot;留作特征</li>
+<li><strong>重建与提参分离</strong>：PCHIP 重建保证曲面稳健，SVI 仅提偏度/倾斜特征——避免非线性拟合陷入局部极小</li>
+<li><strong>IV 空间拟合</strong>：商品期权 IV 跨度大，必须 IV 空间残差而非 w 空间，否则 ATM 被低估</li>
+<li><strong>√T 期限插值 + 仅内插</strong>：符合无套利期限结构，避免近月极端曲线污染远月</li>
+<li><strong>无套利量化而非强制平滑</strong>：违反程度是预警信号，不强制消除</li>
+<li><strong>临到期降权</strong>：机制性常态降权 0.35，只保留突发异常，降低误报</li>
+<li><strong>规则+ML 融合取严</strong>：规则保证可解释触发原因，ML 捕捉复合畸变，<code>max</code> 融合不漏信号</li>
+<li><strong>召回按相关事件</strong>：只用覆盖该品种的事件算召回分母，避免不相关事件稀释</li>
+</ol>
+<hr>
+<h2 id="12-已知局限与改进方向">12. 已知局限与改进方向</h2>
+<ul>
+<li><strong>问题1 的 18 窗口数字为「重建」而非原样恢复</strong>：</li>
+<p><code>q1_7sym.json</code>、<code>per_symbol.json</code>、<code>per_symbol_workpoints.json</code> 三份落盘原本 <strong>只被平台读取、没有任何脚本写入</strong>——当初用临时代码跑出来，那段代码连同 18 个 事件窗口的起止日期一起丢失了。现已补回 <code>scripts/eval_q1_windows.py</code> 与 <code>scripts/eval_per_symbol.py</code>，链路闭合。</p>
+</ul>
+<p>两份 anchor 口径的落盘（<code>per_symbol*.json</code>）<strong>逐字段完全复现</strong>。 18 个事件窗口的边界无法反推（试过按事件表补边、调 <code>warmup_risk</code>、加宽区间等多组 假设，<code>n_slice</code> 能对上而 <code>n_risk</code>/<code>n_alert</code> 差约一倍），故改为<strong>写死一套统一补边 规则</strong>（事件起始前 10 日、结束后 5 日，取自 committed 4 窗口的中位补边宽度， <strong>在跑数之前定下、事后未调整</strong>）。代价是数字与归档不完全相同：</p>
+<div class='tw'><table><thead><tr><th></th><th>归档（临时代码）</th><th>重建（统一规则）</th></tr></thead><tbody><tr><td>默认工作点精确率</td><td>50.19%</td><td><strong>51.53%</strong></td></tr><tr><td>默认工作点召回</td><td>50.32%</td><td>52.11%</td></tr><tr><td>判别力</td><td>+21.8pp</td><td>+23.9pp</td></tr><tr><td>三项全达标</td><td>4/18</td><td>4/18</td></tr><tr><td>保召回精确率/召回</td><td>44.46% / 73.89%</td><td>45.17% / 76.74%</td></tr><tr><td>保召回三项全达标</td><td>6/18</td><td>6/18</td></tr></tbody></table></div>
+<p><strong>三条门槛的达标判定、两个工作点的达标窗口数均未改变</strong>，逐窗口差异多在 ±7pp 内。 原归档值保留在 <code>data_out/archive/q1_7sym_legacy.json</code>。</p>
+<blockquote><p>一个必须点破的细节：lc 2025-12 窗口精确率从 26.6% 升到 40.5%，看着是改善， 但它的<strong>判别力反而从 −0.1pp 掉到 −1.7pp</strong>——因为基础率同时从 26.7% 涨到 42.2%， 涨得比精确率更多。<strong>精确率单看会骗人</strong>，这也是全文一律并列判别力的原因。</p></blockquote>
+<ul>
+<li><strong>两份落盘曾对同名工作点用了两套规则配置</strong>：归档的</li>
+<p><code>per_symbol_workpoints.json</code> 的 <code>def</code> 档用<strong>全局 DEFAULT_PARAMS</strong>，而同时展示的 <code>per_symbol.json</code> 的 <code>rule_P</code> 用<strong>逐品种标定阈值</strong>（7/7 品种可精确区分，lc 差 9.4pp）， 两者在平台上并排却无从分辨。现统一为逐品种标定，并给两份落盘都写入 <code>_meta</code> 声明配置。 「规则 0/7、DRL 1/7」的结论不受影响。</p>
+</ul>
+<ul>
+<li><strong>精确率的 2.59pp 缺口来自测试期 regime 变化，架构与选点协议均已被实验排除</strong></li>
+<p>（第 1 条落 <code>data_out/architecture_drift.json</code>，第 2~3 条落 <code>data_out/drift_study.json</code>）：</p>
+</ul>
+<ol>
+<li><strong>漂移与模型无关</strong>。val→test 判别力（精确率 − 同数据集命中基础率）漂移：</li>
+<p>规则引擎 <strong>−7.10pp</strong>、DRL 集成 <strong>−7.33pp</strong>，差额 <strong>−0.24pp</strong>。 规则引擎零学习参数、不存在过拟合可能，却掉得几乎一样—— 说明这是数据性质而非模型缺陷，<strong>换架构改不动它</strong>。 复算：<code>python scripts/architecture_drift.py</code>。</p>
+</ol>
+<blockquote><p>⚠️ <strong>这组数字换过一次出处，须说明。</strong> 早前此处写「−6.57 / −6.56 / 差额 0.00pp， （<code>scripts/drift_study.py</code>，结果落 <code>data_out/drift_study.json</code>）」—— 交付前独立审计查出<strong>那个出处是假的</strong>：<code>drift_study.json</code> 里根本没有 rule-vs-DRL 的 val→test 对比，而 <code>drift_study.py</code> 自己声明「真测试集一次都不读」， 它<strong>结构上不可能</strong>算出这个量；三处引用（README / platform / roll_retrain 转述） 全是手写。现改由 <code>scripts/architecture_drift.py</code> <strong>真算并落盘</strong>， 数字随之从 −6.57/−6.56/0.00 更正为 −7.10/−7.33/−0.24。 <strong>结论方向不变，但原来的三个数都是错的。</strong> 这违反了本项目自己立下的规矩（§7）：「用小样本临时算出的对照数不要写进文档—— 要么落盘跑全，要么不写」。</p></blockquote>
+<ol>
+<li><strong>漂移无法从历史外推</strong>。在 2023-07~2025-06 的三对相邻半年窗上做「本窗选阈值 →</li>
+<p>下窗看表现」，漂移为 +1.34 / +0.06 / +2.59pp，<strong>三次全为正</strong>；而真实 val→test 是 −6.5pp，方向相反。故 margin 估不出来，<strong>「选点时加安全边际」也不成立</strong>。</p>
+<li><strong>验证集可行域与测试集达标区不相交</strong>。测试集上 lean=0.80 / 1.00 三项全达标</li>
+<p>（50.8%/65.8%/33.5min 与 50.9%/61.3%/32.2min），但它们在验证集上召回只有 57.7% / 55.0%；且 lean≥0.40 时验证集平均提前已跌破 30min。 验证集可行域仅剩 lean∈[0.20, 0.35]，<strong>整段在测试集上无一达标</strong>。 换用「余量均衡」协议（<code>max min(P−0.5, R−0.6)</code>）选出的仍是同一个 lean=0.35。</p>
+</ol>
+<p><strong>结论</strong>：以验证集为准的任何选点协议都够不到达标区。这不是调参不足， 是 2025-07 之后的市场状态未被 2023–2025H1 的样本覆盖。 <strong>达标区的存在不可用作成绩</strong>——按测试集表现回头挑 lean 就是用测试集调参。</p>
+<p>仍未尝试的两个数据侧杠杆（都不涉及架构）： ① ~~<strong>2022 年数据未纳入</strong>~~ → <strong>已量化，结论是不值得纳入</strong>（<code>scripts/coverage_2022.py</code>， 落盘 <code>data_out/coverage_2022.json</code>）。原先这条写着「<code>archive/</code> 下有 747 个月度文件… 补进去可增加历史 regime 覆盖」，<strong>暗示存在可观上行空间，但从未量化过</strong>。实测： 那 747 是「合约月×日历月」的<strong>文件数</strong>，按<strong>不同日历月</strong>统计，交付的 7 个品种在 2022 年 分别只有 ag 1 月、au 6 月、sc 3 月、si 1 月、<strong>lc 0 月、cu 0 月</strong>、rb 1 月—— 合计 12 个品种月，相对现有 263 幕仅 <strong>+4.6%</strong>，且 <strong>50% 来自单一品种 au</strong>， 纳入反而加剧品种不平衡。 「给首月预热滚动窗」这个潜在理由也不成立：实测各品种首月的 <code>|atm_iv_z|</code> 均值与随后 三个月同量级，<strong>唯一有冷启动迹象的是 cu（1.31 vs 0.94），而 cu 恰好是 2022 零数据的 两个品种之一——交集为空，补也补不到需要它的地方</strong>。 代价则是全量的：训练集一改，15 个 seed 全部重训、所有指标与文档数字失效、 十轮盲评的材料基线也要重来。故<strong>关闭该项</strong>，不再列为待办。 ② ~~外推距离过长~~ → <strong>已试，无效</strong>，见下条。</p>
+<ul>
+<li><strong>扩展窗滚动重训：无收益（<code>scripts/roll_retrain.py</code>）</strong>。</li>
+<p>既然 margin 估不出来，就只剩「缩短外推距离」这条路。实测把训练截止从 2024-12 推到 2025-03 / 2025-06 / 2025-09（外推距离 16 个月 → 3 个月），三折各重训 3 个 seed， 与冻结的交付模型在<strong>完全相同的评估段</strong>上对比（冻结基线同样只取 3 个 seed， 集成规模对齐；每折工作点只在该折前 3 个月的窗上选，评估段不参与选择）：</p>
+</ul>
+<div class='tw'><table><thead><tr><th>评估段</th><th>冻结 P/R/判别力</th><th>滚动 P/R/判别力</th></tr></thead><tbody><tr><td>2025-07~09</td><td>45.4% / 60.8% / +24.29%</td><td>45.7% / 65.0% / +24.53%</td></tr><tr><td>2025-10~12</td><td>49.4% / 68.4% / +23.26%</td><td>46.2% / 65.5% / +20.13%</td></tr><tr><td>2026-01~03</td><td>49.5% / 71.1% / +22.21%</td><td>48.4% / 71.8% / +21.08%</td></tr><tr><td><strong>平均判别力</strong></td><td><strong>+23.26%</strong></td><td><strong>+21.91%</strong></td></tr><tr><td>三项全达标段数</td><td>0/3</td><td>0/3</td></tr></tbody></table></div>
+<p><strong>归因</strong>：把滚动模型固定在与冻结相同的 lean 上重评，模型净差 −1.51pp， 而选点窗从 6 个月缩到 3 个月只贡献 +0.17pp——差异来自模型本身，不是选点噪声。</p>
+<p><strong>但这个 −1.5pp 不显著</strong>。9 组单 seed 配对差（3 段 × 3 seed）均值 −1.64pp、 标准差 3.10pp、标准误 1.03pp，<strong>配对 t = −1.58，p &gt; 0.05</strong>。 故正确的表述是「<strong>滚动重训没有任何可测的收益</strong>」，而不是「它更差」—— 交付模型（15 seed）单 seed 精确率样本标准差为 <strong>±3.13pp</strong>，这个量级的差异被 seed 噪声淹没。</p>
+<p><strong>这条负结果的意义</strong>：多喂 9 个月的近期数据、把外推距离压掉 13 个月， 判别力毫无改善。说明落差不是「模型没见过近期数据」，而是 <strong>2025-07 之后的风险形态与历史样本的关系本身变了</strong>——同样的特征在新时期 预测力更弱。到这一步，四条路（架构 / 选点协议 / 加特征 / 滚动重训）全部走完， 都指向同一个结论：<strong>这 2.39pp 是数据本身的样本外损失，当前特征集下无法通过 建模手段补回</strong>。</p>
+<ul>
+<li><strong>仪表板的采样密度不齐</strong>：<code>dashboard/</code> 从 <code>data_out/alerts_*.parquet</code> 自动发现品种，</li>
+<p>现已覆盖全部 7 个（此前只有 ag/au/sc/si 四个，与全文的 7 品种口径不符，已补齐）。 <strong>OOM 修复后已把 cu/rb 从 92/74 提到 296/248</strong>；ag/au/sc/si 各约 370~410； 仅 <strong>lc 仍为 122</strong>——它数据量最大（45.8 万行），两遍扫描超出单次执行时限， 在无时限环境下跑 <code>build_features.py --symbols lc --max-slices 400</code> 即可补齐。 原因是特征生成需载入该品种族全部合约，lc 有 341 个合约文件， 在 4GB 内存环境下<strong>全量 concat 直接 OOM（SIGKILL）</strong>。</p>
+</ul>
+<p>已顺带修掉这个 OOM：<code>build_features.py</code> 改为<strong>先只读排序所需的 4 列跨年汇总、 定出全局采样点，再按月载入并只保留采样截面</strong>（与 <code>quant_metrics._iter_slices</code> 同一套修法；按年仍会 OOM，粒度必须细到月）。 <strong>采样口径经验证未变</strong>——已交付的 <code>features_ag.parquet</code> 的 376 个时间戳， 是新实现采样出的 403 个的<strong>严格子集</strong>（差额为不足 15 条合约的截面，被原过滤规则剔除）。</p>
+<p>仪表板仅用于可视化演示，<strong>不参与任何评测指标</strong>，故密度差异不影响交付数字； 若要对齐，把 <code>--max-slices</code> 提到 400 重跑三个品种即可（每个约 5~8 分钟）。</p>
+<ul>
+<li><strong>集成规模：验证集有效、测试集不传导（第六条被证伪的路径）</strong></li>
+<p>（<code>scripts/ensemble_scaling.py</code>，判据<strong>预先登记</strong>于 <code>data_out/ensemble_preregistration.md</code>）。 前五条路径都在试图<strong>抵消</strong> regime 变化；这一条不同——它不消除 regime 变化， 只把整条 P-R 前沿抬高。把 seed 从 5 个加到 15 个：</p>
+</ul>
+<div class='tw'><table><thead><tr><th>N</th><th>验证集判别力</th><th>子集间标准差</th><th></th><th>测试集判别力</th></tr></thead><tbody><tr><td>5（交付版）</td><td>30.75%</td><td>±1.10</td><td></td><td>23.19%</td></tr><tr><td>15</td><td><strong>32.28%</strong></td><td>—</td><td></td><td><strong>23.00%</strong></td></tr><tr><td>差</td><td><strong>+1.53pp</strong></td><td></td><td></td><td><strong>−0.19pp</strong></td></tr></tbody></table></div>
+<p>验证集上效应真实：判别力随 N 单调上升（27.21 → 29.21 → 30.75 → 31.97 → 32.28）， <strong>且子集间标准差随 N 收缩（1.52 → 0.66）</strong>——这是方差削减的特征， 说明提升来自集成本身而非「恰好抽到几个好 seed」。提升 +1.53pp 超过预先登记的 1.0pp 阈值，故按规则执行<strong>唯一一次</strong>测试集评估： <strong>P=47.41% ✗ / R=74.14% ✓ / lead=35.6min ✓</strong>，仍未全达标。 （此后 §7.19 的死区过滤把它抬到 <strong>54.15% ✓ / 74.93% ✓ / 36.2min ✓</strong> 三项全达标， 但<strong>规则引擎获得同等增益</strong>（同工作点 DRL +7.02pp vs 规则 +7.00pp，判别力仅变 +0.02pp），故那不是模型改进。）</p>
+<p><strong>验证集 +1.53pp → 测试集 −0.19pp，传导系数 −0.13，即完全没有传导。</strong></p>
+<p>这条结论比前五条更强：前五条说明「抵消 regime 变化的手段都无效」， 这一条说明<strong>连与 regime 无关的纯质量改进也跨不过 2025-07 那道坎</strong>—— 在当前特征集下，验证期习得的任何东西（信号也好、稳定性也好） 对测试期的边际价值都接近零。</p>
+<blockquote><p>判据为何必须预先登记：此处有两个诱惑——只报验证集的漂亮曲线不提测试集， 或看到测试集没用就说「本来也没指望、不算一次尝试」。 阈值、端点、混杂控制与「过阈必须评测试集且如实报出」都写在跑数之前，两条都被堵死。</p></blockquote>
+<ul>
+<li><strong>量化指标精确率（评分公式固有前沿）</strong>：赛题口径精确率平均 47.5%（目标 50%），sc 原油窗口达标（57.6%）。</li>
+<p><strong>47.5% 并非调参不足，而是评分公式本身决定的近似上限</strong>，有三层独立证据：</p>
+</ul>
+<ol>
+<li><strong>评分结构</strong>：风险区间=2h，命中判定=[预警, 预警+120min)，<strong>召回与精确率共用同一对称 120min 窗口</strong>。</li>
+<p>对每一条风险起点都需在 120min 内有预警才算召回；每条预警若其后 120min 无风险起点则计入误报。 事件月份 IV 持续高位 → 风险起点每隔 135~420min 就出现一条 → 必须密集预警才能维持召回， 必然产生&quot;风险刚过 120min 但下一条还没到&quot;的结构性误报。</p>
+<li><strong>天花板分析</strong>（<code>scripts/optimize_precision.py diagnosis</code>）：在不损任何召回的前提下，</li>
+<p>删去全部未命中预警，四窗口精确率均可达 100%——证明上限存在而非被规则限制。 但在召回保持 ≥60% 时，该上限会塌陷到 ~48%（因为 60% 召回要求事件月密集预警， 密集预警必然把误报拉回）。</p>
+<li><strong>三种独立方法的验证</strong>：</li>
+</ol>
+<ul>
+<li>规则阈值网格搜索（6561 组合 × 6 状态机）：召回≥60% 时精确率最高 47.5%，</li>
+<p>cooldown 到 60%+ 精确率则召回掉到 54%，复合投票 64% 精确率则召回 40%。</p>
+<li>概率预测 + 混合校准（<code>scripts/train_anchor_predictor.py</code>）：HistGBT 模型</li>
+<p>AUC=0.829（G1 泄漏门 0.496、G2 学习门通过），混合校准 + 120min 冷却去抖后 9 窗口精确率 48.1%，但召回塌到 21%。</p>
+<li>事件感知抑制（confirm+decay）：所有 (confirm, decay) 组合的召回损失均</li>
+<p>≥ 精确率收益（最好一幕 +10.9pp 精确率对应 -11.5pp 召回）。 三条路径得到的 P-R 前沿形状一致——<strong>该前沿是评分公式函数本身的形状，而非规则或模型的限制</strong>。 <code>alert_engine.evaluate(composite=True)</code> 提供可选的高精确率模式（~64%，召回 40%）， 供偏好精确率的场景；默认配置按赛题主指标（召回+提前达标）交付。</p>
+<li><strong>短事件召回</strong>：2024-04 贵金属日内冲高等短促事件召回偏低（46.2%），主因采样密度。事件期加密连续截面可缓解</li>
+<li><strong>采样密度</strong>：全量 30000 时间点采样 400 个截面；赛题口径评测已在事件期跑连续截面，离线 build 仍为采样</li>
+<li><strong>品种覆盖</strong>：问题2/3 已扩到 7 个品种（ag/au/sc/si/lc/cu/rb，5 个板块，事件覆盖 15/17）；</li>
+<p><strong>问题1 已按 7 品种重跑</strong>（§7.11，18 个事件窗口）。扩样后平均精确率降到 42.9% （原 4 窗口 55.8% 偏乐观，全来自已校准的 ag/sc）；经 §7.13–§7.15 关闭 R2/R4/R6 后 回升到 <strong>51.5%</strong>、判别力 +23.9pp、三项全达标 4/18。rb 黑色系判别力从 −1.4pp 转正到 +5.1pp（事件窗口口径），在该口径下仍是最低，应以 DRL 为主（§7.12）。</p>
+<li><strong>CVaR 指标目前测不出技能</strong>（§7.11）：原 50.0% 是「全程半仓」的算术产物；</li>
+<p>换成事件驱动仓位路径 + 同等仓位占用的随机择时对照后，7 个品种<strong>无一</strong>达到 95 分位。 要让这个指标有意义，需要把预警密度降下来（当前 level≥2 几乎天天触发） 仍未覆盖的 2 个事件需要 ao/al（氧化铝）与 br（合成橡胶），各对应 1 个事件</p>
+<li><strong>BS 模型偏差</strong>：数据集用固定 3% 利率 BS 反推，近月/深度 ITM 的 IV 本身有偏差，清洗已缓解但未校准</li>
+<li><strong>ML 已探索并保留证据</strong>：HistGBT 锚点预测器（<code>scripts/train_anchor_predictor.py</code>）在 90k 截面 4 品种上</li>
+<p>训练，G1 泄漏门（打乱标签 AUC=0.496）+ G2 学习门（事件月 AUC=0.829）均通过； 但量化口径下精确率 48.1% 与召回 21% 明确证实——学习不是瓶颈，评分公式的 P-R 前沿才是。 保留 <code>data_out/anchor/</code>（152 个月 90k 标注截面）作为后续问题3（DRL 自适应预警）的训练数据。</p>
+<li><strong>精确率未达标已系统排查五条路径</strong>：调阈值（§6，6561 组网格）、清洗数据（§7.7）、</li>
+<p>改决策方式（§7.8，约 30 组配置）三者只在同一条 P-R 前沿上滑动；引入曲面外的标的已实现 波动（§7.9）曾被记为「唯一移动前沿」，<strong>该结论已被 §7.10 推翻</strong>（判别力来自位置性 假信号，配对检验 p≈0.26 不显著）；真正有效的是<strong>修掉标签缺陷</strong>（§7.10）。 要进一步突破仍需信息量更大的外部数据（成交持仓明细、资金流、跨市场联动），不在赛题数据集内</p>
+<li><strong>问题3 旧口径精确率：死区过滤后已达标，但那不是模型改进</strong>。</li>
+<p>交付版（<code>data_out/drl</code>，15 seed、连续标签、验证集选出 lean=0.30、开启结构性死区过滤） 测试集精确率 <strong>54.15% ✓</strong>（<strong>超出 4.15pp</strong>）、召回 <strong>74.93% ✓</strong>、提前 <strong>36.2min ✓</strong>，三项全达标。 过滤前是 47.41% ✗ / 74.14% ✓ / 35.6min ✓（lean=0.35）。 <strong>必须同时说的一句</strong>：同一过滤施加于规则引擎，其精确率 45.36%→52.36%， 增益同等；同工作点下 DRL +7.02pp vs 规则 +7.00pp（判别力变 +0.02pp；预登记的对角线口径为 −0.26pp，结论一致）， 即<strong>这是全员抬升，不是模型变好</strong>。详见 §7.19 与 <code>data_out/dead_zone_study.json</code>。 <strong>注：这是旧口径。</strong> 按命题方 2026-08 澄清的新口径（事件级精确率）， 同一模型在 lean=7.0 下三项全达标（64.58% / 69.16% / 6520min，判别力 +17.1pp），见 §7.18。 旧口径下卡住的不是前沿本身，而是只用验证集选工作点时的选择误差（§7.10）</p>
+<li><strong>§7.9 的结论已作废</strong>：标的已实现波动曾被记为「唯一移动前沿」，但那部分判别力</li>
+<p>源自一个位置性假信号；按 §7.10 的配对检验，标的特征增益 n=5 下不显著（p≈0.26）， 记为「疑似有效、未证实」</p>
+<li><strong>标签口径变更导致新旧数字不可比</strong>：修正后命中基础率 21.06%→24.41%，</li>
+<p>§7.10 之前所有章节的精确率都是旧口径</p>
+<li><strong>问题3 单 seed 方差大</strong>：15-seed 交付版的单 seed 测试集精确率样本标准差 <strong>±3.13pp</strong></li>
+<p>（范围 34.18%~44.33%）， 故生产配置推荐用集成——理由是消除选种风险，而非集成在指标上显著更优</p>
+<li><strong>问题3 的 CVaR 口径：已补出，但结论是「该口径在本项目的预警密度下没有判别力」</strong></li>
+<p>（<code>scripts/cvar_drl.py</code>，判据见 <code>data_out/cvar_preregistration.md</code>，<strong>跑数前写定</strong>）。 预登记参数（<code>hold_days=5</code>）下 <strong>DRL 未通过</strong>：excess 均值 +0.3%、仅 3/7 品种为正（要求 ≥4/7）。 但真正的原因不是 DRL 无效，而是<strong>这个指标又退化了一次</strong>—— <strong>恒报警也拿到 +50.0%</strong>，与 DRL 的 +49.9% 几乎相同，所有高密度策略的平均仓位都是 0.503 （紧贴仓位下限 0.5）。根因是仓位路径按<strong>日频</strong>走，而预警是 <strong>15 分钟频</strong>： 实测 ag 测试期 178 个交易日里 DRL 有 156 天报过警，<code>hold_days=5</code> 意味着 只要平均每 5 个交易日报一次，仓位就全程 0.5。 <strong>事后扫描</strong>（非预登记）显示 excess 随平均仓位趋近 0.5 单调塌向 0； 在 <code>hold_days=1</code>（口径此时非退化，恒报警恰为 +0.00%）下 DRL excess <strong>+8.47%（7/7）</strong>、 <strong>规则引擎 +9.19%（7/7）——规则略优于 DRL</strong>。 故 <strong>CVaR 口径不支持「DRL 优于规则」，与累计奖励口径结论不一致，两个口径都如实报出</strong>。 新增验证门 <strong>G11</strong> 强制：报 CVaR 必须并列「恒报警」对照，且一旦退化就不得把 improve 当作达标证据（实测三种破坏场景均会 FAIL）。</p>
+<li><strong>问题2 lift 是共现不是因果</strong>：分块置换只能排除「纯属偶然」，排除不了「同源」与</li>
+<p>「共同暴露于第三方冲击」。图谱定位是可解释的风险提示，不是因果推断结论</p>
+<li><strong>问题2 有 4 条同源特征边</strong>：根因与后果共用同一底层指标，已标注但无法根除——</li>
+<p>要根除需引入曲面之外的独立观测（标的已实现波动、成交持仓明细），当前数据集不含</p>
+<li><strong>问题2 后果集合只有 5 类</strong>且都定义在曲面特征上；「保证金压力」「跨市场传染」等</li>
+<p>业务上更关心的后果缺乏可观测代理变量，本版未纳入</p>
+<li><strong>问题2 机制层未经检验且覆盖不全</strong>：<code>MECH</code> 说明是业务先验，已标注为诠释层、不参与打分，</li>
+<p>但其正确性无独立验证手段；且 21 条实测边中只有 9 条配有机制说明</p>
+<li><strong>问题2 指标3 不宣称达标</strong>：<strong>十二轮</strong>独立盲评 3.89→…→4.39→4.16→4.30→4.28，最后四轮越过 4 分线，但<strong>不足以宣称达标</strong>——评审员与作者同源；「不含交易建议」由机器门 K1 保证必得满分、几乎无判别力；按维度分别卡 4 分则过不了（第 10~12 轮「语义清晰」3.63 / 3.80 / 3.67）（<code>data_out/kg/self_assessment.md</code>）。</li>
+<p>主因是图谱启用了规则引擎已判定为差的 R2/R4/R6 而未向读者说明、主干边的因果措辞缺少与跨品种边等价的免责。 自评不能替代真人评审</p>
+</ul>
+<hr>
+<h2 id="数据集字段速查">数据集字段速查</h2>
+<div class='tw'><table><thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>timestamp</td><td>string</td><td>YYYYMMDDHHMMSS，15min K 线结束时刻</td></tr><tr><td>contract</td><td>string</td><td>期权合约代码（带 .SF/.INE 等交易所后缀）</td></tr><tr><td>option_type</td><td>string</td><td>call / put</td></tr><tr><td>strike / dte / moneyness</td><td>float</td><td>行权价 / 距到期天数 / 行权价÷标的价格</td></tr><tr><td>iv / delta / gamma / vega / theta</td><td>float</td><td>隐含波动率与希腊字母</td></tr><tr><td>volume / open_interest</td><td>int</td><td>成交量 / 持仓量</td></tr><tr><td>suspend_flag</td><td>int8</td><td>休市标志（0 正常 / 1 休市）</td></tr></tbody></table></div>
+    <p class="foot">源文件 <code>README.md</code>　·
+      本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
+      正本仍是那份 Markdown。</p>
+  </main>
+  <nav class="toc"><div class="h">目录</div><a href="#0-这份-readme-怎么读" class="l2">0. 这份 README 怎么读</a><a href="#1-数据实测发现-一切算法决策的前提" class="l2">1. 数据实测发现（一切算法决策的前提）</a><a href="#1-1-曲面几何" class="l3">1.1 曲面几何</a><a href="#1-2-系统性数据质量问题-清洗要解决的" class="l3">1.2 系统性数据质量问题（清洗要解决的）</a><a href="#1-3-临到期的极端期限结构-最关键的判断" class="l3">1.3 临到期的极端期限结构（最关键的判断）</a><a href="#2-清洗-vol_surface-cleaning-py" class="l2">2. 清洗（`vol_surface/cleaning.py`）</a><a href="#踩过的坑-邻居跳变误杀-v-形拐点" class="l3">踩过的坑：邻居跳变误杀 V 形拐点</a><a href="#3-插值与曲面重建-vol_surface-interpolation-py" class="l2">3. 插值与曲面重建（`vol_surface/interpolation.py`）</a><a href="#踩过的坑-1-svi-在-w-空间拟合严重低估-atm" class="l3">踩过的坑 1：SVI 在 w 空间拟合严重低估 ATM</a><a href="#踩过的坑-2-近月极端曲线通过-dte-维度外推污染远月" class="l3">踩过的坑 2：近月极端曲线通过 dte 维度外推污染远月</a><a href="#踩过的坑-3-pchip-要求-x-严格递增" class="l3">踩过的坑 3：PCHIP 要求 x 严格递增</a><a href="#最终方案-重建与提参分离" class="l3">最终方案：重建与提参分离</a><a href="#4-无套利校验-vol_surface-arbitrage-py" class="l2">4. 无套利校验（`vol_surface/arbitrage.py`）</a><a href="#5-风险特征工程-vol_surface-features-py" class="l2">5. 风险特征工程（`vol_surface/features.py`）</a><a href="#迭代-临到期降权" class="l3">迭代：临到期降权</a><a href="#6-四级预警-vol_surface-alert_rules-py-alert_model-py-alert_engine-py" class="l2">6. 四级预警（`vol_surface/alert_rules.py` + `alert_model.py` + `alert_engine.py`）</a><a href="#规则层-可解释" class="l3">规则层（可解释）</a><a href="#ml-层-捕捉复合畸变" class="l3">ML 层（捕捉复合畸变）</a><a href="#融合策略" class="l3">融合策略</a><a href="#阈值校准与精度-召回前沿" class="l3">阈值校准与精度-召回前沿</a><a href="#踩过的坑-ml-升级到-4-级" class="l3">踩过的坑：ML 升级到 4 级</a><a href="#7-回测验证-vol_surface-backtest-py" class="l2">7. 回测验证（`vol_surface/backtest.py`）</a><a href="#踩过的坑-召回率口径错误" class="l3">踩过的坑：召回率口径错误</a><a href="#意外收获-主动发现未标注异常" class="l3">意外收获：主动发现未标注异常</a><a href="#7-5-赛题量化指标对照-关键" class="l2">7.5 赛题量化指标对照（关键！）</a><a href="#指标1-预警准确性与时效性-主指标" class="l3">指标1：预警准确性与时效性（主指标）</a><a href="#指标2-cvar-改善率-核心业务指标-本小节结论已被-7-11-推翻" class="l3">指标2：CVaR 改善率（核心业务指标）—— ⚠️ **本小节结论已被 §7.11 推翻**</a><a href="#指标3-解释能力-问题2-知识图谱-已完成-客观项达标-人工评分待评审" class="l3">指标3：解释能力（问题2 知识图谱）—— **已完成；客观项达标，人工评分待评审**</a><a href="#指标4-drl-决策优化-问题3-旧口径历史记录-交付结论见-7-10-7-18" class="l3">指标4：DRL 决策优化（问题3）—— **旧口径历史记录**（交付结论见 §7.10 / §7.18）</a><a href="#指标5-系统功能" class="l3">指标5：系统功能</a><a href="#成果交付对照" class="l3">成果交付对照</a><a href="#7-6-品种扩样-从-4-个到-7-个-问题2-3-已重跑-问题1-未重跑" class="l2">7.6 品种扩样：从 4 个到 7 个（问题2/3 已重跑，问题1 未重跑）</a><a href="#为什么扩" class="l3">为什么扩</a><a href="#扩样后指标是升是降-如实对照-测试集" class="l3">扩样后指标是升是降：如实对照（测试集）</a><a href="#扩样揭示的一件事-规则退化得比-drl-快" class="l3">扩样揭示的一件事：规则退化得比 DRL 快</a><a href="#一个防呆改动" class="l3">一个防呆改动</a><a href="#尚未重跑的部分-如实说明" class="l3">尚未重跑的部分（如实说明）</a><a href="#7-7-为提高精确率做的数据清洗实验-三条线索-只有一条有效" class="l2">7.7 为提高精确率做的数据清洗实验（三条线索，只有一条有效）</a><a href="#前提-精确率的靶子会自己动" class="l3">前提：精确率的靶子会自己动</a><a href="#线索1-最小合约数门槛-不成立" class="l3">线索1：最小合约数门槛 —— 不成立</a><a href="#线索2-陈价年龄-修好了一个坏规则-但不提精确率" class="l3">线索2：陈价年龄 —— 修好了一个坏规则，但不提精确率</a><a href="#线索3-流动性门-唯一有效的一条" class="l3">线索3：流动性门 —— 唯一有效的一条</a><a href="#附带发现-fit_degradation-是死特征" class="l3">附带发现：`fit_degradation` 是死特征</a><a href="#这一轮的总结" class="l3">这一轮的总结</a><a href="#7-8-改决策方式能不能把精确率推过-50-约-30-组配置的实验-结论-不能" class="l2">7.8 改决策方式能不能把精确率推过 50%：约 30 组配置的实验（结论：不能）</a><a href="#实验设置" class="l3">实验设置</a><a href="#五类规则在验证集上的表现" class="l3">五类规则在验证集上的表现</a><a href="#测试集验证-过拟合判断被证实" class="l3">测试集验证：过拟合判断被证实</a><a href="#提阈值在测试集上的实际代价" class="l3">提阈值在测试集上的实际代价</a><a href="#两个值得记录的负面结果" class="l3">两个值得记录的负面结果</a><a href="#为什么推不过去" class="l3">为什么推不过去</a><a href="#交付形态" class="l3">交付形态</a><a href="#7-9-引入曲面之外的独立信息-原标题-唯一真正移动了前沿的一条路-结论已作废" class="l2">7.9 引入曲面之外的独立信息（原标题「唯一真正移动了前沿的一条路」——**结论已作废**）</a><a href="#独立信息从哪来-反推标的价" class="l3">独立信息从哪来：反推标的价</a><a href="#新特征确实独立-也确实有判别力" class="l3">新特征确实独立，也确实有判别力</a><a href="#但-加一道门-没用-得让它参与打分" class="l3">但「加一道门」没用，得让它参与打分</a><a href="#测试集-前沿整体外推" class="l3">测试集：前沿整体外推</a><a href="#两点如实说明" class="l3">两点如实说明</a><a href="#下一步" class="l3">下一步</a><a href="#7-10-一个把精确率压低了约-5pp-的标签缺陷-本轮最重要的发现" class="l2">7.10 一个把精确率压低了约 5pp 的标签缺陷（本轮最重要的发现）</a><a href="#怎么发现的" class="l3">怎么发现的</a><a href="#根因-我自己管线里的不一致" class="l3">根因：我自己管线里的不一致</a><a href="#代价有多大-测试集-59-幕" class="l3">代价有多大（测试集，59 幕）</a><a href="#修法与验证" class="l3">修法与验证</a><a href="#修正后的数字-两句话都要说" class="l3">修正后的数字：两句话都要说</a><a href="#重训结果-7-9-计划的-26-32-维-与标签修正一并做" class="l3">重训结果（§7.9 计划的 26→32 维，与标签修正一并做）</a><a href="#标的特征到底有没有用-不能确立" class="l3">标的特征到底有没有用：不能确立</a><a href="#本轮的诚实账" class="l3">本轮的诚实账</a><a href="#7-11-问题1-按-7-品种重跑-同一个死区缺陷-以及一个被推翻的-cvar-结论" class="l2">7.11 问题1 按 7 品种重跑：同一个死区缺陷，以及一个被推翻的 CVaR 结论</a><a href="#第一件事-死区修正的净效果-原-4-窗口-预警条数完全不变" class="l3">第一件事：死区修正的净效果（原 4 窗口，预警条数完全不变）</a><a href="#第二件事-扩到-7-品种后-平均精确率-下降" class="l3">第二件事：扩到 7 品种后，平均精确率**下降**</a><a href="#第三件事-cvar-指标的原结论被推翻" class="l3">第三件事：**CVaR 指标的原结论被推翻**</a><a href="#复现" class="l3">复现</a><a href="#7-12-追查-rb-判别力为负-规则引擎是探测器-不是预测器" class="l2">7.12 追查 rb 判别力为负：规则引擎是探测器，不是预测器</a><a href="#线索1-原始量纲的特征不可跨品种比较" class="l3">线索1：原始量纲的特征不可跨品种比较</a><a href="#线索2-但这不是主因-rb-的-每条-规则都是负的" class="l3">线索2：但这不是主因——rb 的**每条**规则都是负的</a><a href="#根因-信号存在-但-来晚了" class="l3">根因：信号存在，但**来晚了**</a><a href="#drl-在-rb-上把这个问题解决了" class="l3">DRL 在 rb 上把这个问题解决了</a><a href="#逐品种的达标情况-drl-交付配置-lean-0-35-15-seed-集成" class="l3">逐品种的达标情况（DRL 交付配置 lean=0.35，15-seed 集成）</a><a href="#可执行的结论" class="l3">可执行的结论</a><a href="#7-13-按-7-12-的建议改造规则引擎-一条大幅有效-一条差点被误判为有害" class="l2">7.13 按 §7.12 的建议改造规则引擎：一条大幅有效、一条差点被误判为有害</a><a href="#改造1-移除-r4-集中度规则-大幅有效-已设为默认" class="l3">改造1：移除 R4 集中度规则 —— 大幅有效，已设为默认</a><a href="#改造2-原始量纲阈值改逐品种分位-单独用是负的-去掉-r4-后才转正" class="l3">改造2：原始量纲阈值改逐品种分位 —— 单独用是负的，去掉 R4 后才转正</a><a href="#顺带查出-r2-几乎从不触发" class="l3">顺带查出：R2 几乎从不触发</a><a href="#改造后的逐品种表现-测试集-纯规则层" class="l3">改造后的逐品种表现（测试集，纯规则层）</a><a href="#复现-2" class="l3">复现</a><a href="#7-14-处理-r2-重标定救不回来-应当移除" class="l2">7.14 处理 R2：重标定救不回来，应当移除</a><a href="#特征本身-有信号-但很弱" class="l3">特征本身：有信号，但很弱</a><a href="#加进引擎-任何阈值都让前沿变差" class="l3">加进引擎：任何阈值都让前沿变差</a><a href="#为什么救不回来-结构性支配" class="l3">为什么救不回来：结构性支配</a><a href="#处理-默认关闭" class="l3">处理：默认关闭</a><a href="#现存规则清单" class="l3">现存规则清单</a><a href="#7-15-检验-r6-不是阈值错了-是-方向假设-错了" class="l2">7.15 检验 R6：不是阈值错了，是**方向假设**错了</a><a href="#方向假设不成立" class="l3">方向假设不成立</a><a href="#把方向翻过来也不行" class="l3">把方向翻过来也不行</a><a href="#关键洞察-流动性应当做-门-不是做-触发器" class="l3">关键洞察：流动性应当做「门」，不是做「触发器」</a><a href="#处理与累计效果" class="l3">处理与累计效果</a><a href="#必须说明的代价" class="l3">必须说明的代价</a><a href="#7-16-召回率不达标怎么办-两个门槛无法同时满足-只能选一头" class="l2">7.16 召回率不达标怎么办：两个门槛无法同时满足，只能选一头</a><a href="#先说结论-这两个门槛在当前前沿上无法同时满足" class="l3">先说结论：这两个门槛在当前前沿上无法同时满足</a><a href="#一个反直觉的发现-平均精确率跌了-逐窗口达标数反而增加" class="l3">一个反直觉的发现：平均精确率跌了，逐窗口达标数反而增加</a><a href="#未达标窗口卡在哪-保召回配置" class="l3">未达标窗口卡在哪（保召回配置）</a><a href="#落地-显式预设-不覆盖默认" class="l3">落地：显式预设，不覆盖默认</a><a href="#还想同时达标的话" class="l3">还想同时达标的话</a><a href="#7-17-试了-按品种分档交付-两个层面都不成立" class="l2">7.17 试了「按品种分档交付」：两个层面都不成立</a><a href="#层面一-逐品种-调参-没有增益-0-09pp-噪声" class="l3">层面一：逐品种**调参**没有增益（+0.09pp = 噪声）</a><a href="#层面二-逐品种-交付-在连续测试集上无一达标" class="l3">层面二：逐品种**交付**在连续测试集上无一达标</a><a href="#这一节真正的价值-把两个口径的差异摆出来了" class="l3">这一节真正的价值：把两个口径的差异摆出来了</a><a href="#落地" class="l3">落地</a><a href="#7-18-新评测口径-命题方-2026-08-答复" class="l2">7.18 新评测口径（命题方 2026-08 答复）</a><a href="#结果-drl-三项全达标" class="l3">结果：DRL 三项全达标</a><a href="#该口径自带退化-必须并列平凡策略" class="l3">⚠️ 该口径自带退化，必须并列平凡策略</a><a href="#高波-低波分区-直接回应赛题自陈的痛点" class="l3">高波 / 低波分区：直接回应赛题自陈的痛点</a><a href="#问题1-的规则引擎-新口径下仍不达标-40-组配置全试过" class="l3">问题1 的规则引擎：新口径下仍不达标（40 组配置全试过）</a><a href="#问题1-的事件窗口-扩到-20-个-覆盖全部-17-个极端事件" class="l3">问题1 的事件窗口：扩到 **20 个**，覆盖全部 17 个极端事件</a><a href="#第七条被证伪的路径-事件级奖励重训-判据预先登记" class="l3">第七条被证伪的路径：事件级奖励重训（判据预先登记）</a><a href="#cvar-公式-现有实现无需修改" class="l3">CVaR 公式：现有实现无需修改</a><a href="#复现-3" class="l3">复现</a><a href="#7-18a-借鉴另一份实现-清洗改为-可追溯逐行原因" class="l2">7.18a 借鉴另一份实现：清洗改为「可追溯逐行原因」</a><a href="#两份实现的实测对照-ag-2024-02-30-个截面" class="l3">两份实现的实测对照（ag 2024-02，30 个截面）</a><a href="#7-18b-借鉴一个教学项目-每段统计后必须跟一句-这意味着什么" class="l2">7.18b 借鉴一个教学项目：每段统计后必须跟一句「这意味着什么」</a><a href="#盲评结果与预期相反-这一条必须写在这里" class="l3">盲评结果与预期相反——这一条必须写在这里</a><a href="#头号缺陷-81-逐字重复-查下去发现它惩罚的是正确的东西" class="l3">头号缺陷「81% 逐字重复」：查下去发现它惩罚的是正确的东西</a><a href="#7-19-结构性死区-命中窗口与风险起点的口径不一致-唯一奏效-但不是模型改进" class="l2">7.19 结构性死区：命中窗口与风险起点的口径不一致（唯一奏效、但不是模型改进）</a><a href="#缺陷" class="l3">缺陷</a><a href="#修法与那个不能随便设的阈值" class="l3">修法与那个不能随便设的阈值</a><a href="#2-2-对照-测试集" class="l3">2×2 对照（测试集）</a><a href="#结论-这是全员抬升-不是模型变好" class="l3">结论：这是全员抬升，不是模型变好</a><a href="#7-20-cvar-口径补充研究-为-cvar-目标单独选工作点" class="l2">7.20 CVaR 口径补充研究：为 CVaR 目标单独选工作点</a><a href="#为什么补这一项" class="l3">为什么补这一项</a><a href="#协议-判据写于跑数之前" class="l3">协议（判据写于跑数之前）</a><a href="#结果-预登记判据-通过-但三条限定必须一起读" class="l3">结果：预登记判据**通过**，但三条限定必须一起读</a><a href="#这项研究证明了什么" class="l3">这项研究证明了什么</a><a href="#7-21-纯规则-为何在连续口径上够不到-是前沿问题-不是调参问题" class="l2">7.21 **纯规则**为何在连续口径上够不到——是前沿问题，不是调参问题</a><a href="#先说清要区分什么" class="l3">先说清要区分什么</a><a href="#结果-36-个配置-验证集上一个可行点都没有" class="l3">结果：36 个配置，验证集上一个可行点都没有</a><a href="#基线前沿-验证集" class="l3">基线前沿（验证集）</a><a href="#结论与必须并列的对照" class="l3">结论与必须并列的对照</a><a href="#7-22-逐品种为何只有-4-7-达标-不是工作点选错-是提前时间够不到" class="l2">7.22 逐品种为何只有 4/7 达标——不是工作点选错，是提前时间够不到</a><a href="#先说方法上的一个坑" class="l3">先说方法上的一个坑</a><a href="#结果-验证集上四个品种都没有可行点" class="l3">结果：验证集上四个品种都没有可行点</a><a href="#机制-lean-换不出提前时间" class="l3">机制：`lean` 换不出提前时间</a><a href="#结论" class="l3">结论</a><a href="#7-23-问题1-达标了-靠的是加信息-不是调阈值" class="l2">7.23 问题1 达标了——靠的是加信息，不是调阈值</a><a href="#泄漏门通过" class="l3">泄漏门通过</a><a href="#结果-三项全达标" class="l3">结果：三项全达标</a><a href="#三条必须一起读的限定" class="l3">三条必须一起读的限定</a><a href="#补充-融合系统在-两个口径-下都达标" class="l3">补充：融合系统在**两个口径**下都达标</a><a href="#交付件-模型已落盘-融合已接进引擎" class="l3">交付件：模型已落盘，融合已接进引擎</a><a href="#与同口径-drl-的对照" class="l3">与同口径 DRL 的对照</a><a href="#7-24-事件窗口能否全部达标-调阈值不行-且暴露了一个判据缺陷" class="l2">7.24 事件窗口能否全部达标——调阈值不行，且暴露了一个判据缺陷</a><a href="#协议-先把窗口集分开" class="l3">协议：先把窗口集分开</a><a href="#结果-判据通过-但-判据本身选错了" class="l3">结果：判据通过，但**判据本身选错了**</a><a href="#结论-不采纳-交付维持-zmult-1-0" class="l3">结论：不采纳，交付维持 `zmult=1.0`</a><a href="#7-25-ml-异常分恒等于-1-0-一个把四级预警压成两级的调用方式缺陷" class="l2">7.25 ML 异常分恒等于 1.0：一个把四级预警压成两级的调用方式缺陷</a><a href="#现象" class="l3">现象</a><a href="#根因-批内相对归一化-单样本调用" class="l3">根因：批内相对归一化 + 单样本调用</a><a href="#模型本身没坏-是调用方式毁掉了它" class="l3">模型本身没坏——是调用方式毁掉了它</a><a href="#影响范围-交付数字-不受影响" class="l3">影响范围（交付数字**不受影响**）</a><a href="#修法-让分数与批大小无关" class="l3">修法：让分数与批大小无关</a><a href="#顺带修掉的两处不一致" class="l3">顺带修掉的两处不一致</a><a href="#门-g14-两半缺一不可" class="l3">门：G14（两半缺一不可）</a><a href="#一条方法论教训" class="l3">一条方法论教训</a><a href="#8-预警可视化仪表板-dashboard-app-py" class="l2">8. 预警可视化仪表板（`dashboard/app.py`）</a><a href="#踩过的坑-plotly-子图类型" class="l3">踩过的坑：Plotly 子图类型</a><a href="#8-5-问题3-drl-自适应预警策略-drl" class="l2">8.5 问题3：DRL 自适应预警策略（`drl/`）</a><a href="#mdp-设计" class="l3">MDP 设计</a><a href="#踩过的坑-两个都很致命" class="l3">踩过的坑（两个都很致命）</a><a href="#15-道验证门-python-m-drl-tests-underlying" class="l3">15 道验证门（`python -m drl.tests --underlying`）</a><a href="#工程选择-纯-numpy-实现-dqn" class="l3">工程选择：纯 NumPy 实现 DQN</a><a href="#生产配置用集成" class="l3">生产配置用集成</a><a href="#8-6-问题2-风险传导知识图谱-kg" class="l2">8.6 问题2：风险传导知识图谱（`kg/`）</a><a href="#这版要解决的问题" class="l3">这版要解决的问题</a><a href="#核心设计-实测层与诠释层分离" class="l3">核心设计：实测层与诠释层分离</a><a href="#边是怎么测出来的" class="l3">边是怎么测出来的</a><a href="#踩过的坑" class="l3">踩过的坑</a><a href="#11-道验证门-python-m-kg-tests-emit-200-条测试期样本-11-11-通过" class="l3">11 道验证门（`python -m kg.tests --emit`，200 条测试期样本，11/11 通过）</a><a href="#关于人工评分" class="l3">关于人工评分</a><a href="#8-7-总览平台-data_out-platform-html" class="l2">8.7 总览平台（`data_out/platform.html`）</a><a href="#9-项目结构" class="l2">9. 项目结构</a><a href="#10-快速开始" class="l2">10. 快速开始</a><a href="#11-关键设计决策小结" class="l2">11. 关键设计决策小结</a><a href="#12-已知局限与改进方向" class="l2">12. 已知局限与改进方向</a><a href="#数据集字段速查" class="l2">数据集字段速查</a></nav>
+</div></body></html>

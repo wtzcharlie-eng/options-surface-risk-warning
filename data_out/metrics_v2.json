@@ -1,0 +1,325 @@
+{
+  "caliber": {
+    "precision_unit": "合并连续预警后的预警事件",
+    "merge_gap_min": 120.0,
+    "hit_window_min": 120.0,
+    "recall_window_min": null,
+    "lead_mode": "nearest",
+    "vol_split_rule": "训练期每品种 atm_iv 中位数（不使用测试期信息）",
+    "source": "命题方 2026-08 答复"
+  },
+  "drl": {
+    "lean": 7.0,
+    "val": {
+      "n_episodes": 42,
+      "n_alert_event": 118,
+      "n_risk": 1132,
+      "n_hit_event": 92,
+      "n_recalled": 746,
+      "n_alert_slice": 119,
+      "precision": 0.7796610169491526,
+      "recall": 0.6590106007067138,
+      "avg_lead_min": 8171.340482573726
+    },
+    "test": {
+      "n_episodes": 59,
+      "n_alert_event": 271,
+      "n_risk": 1767,
+      "n_hit_event": 175,
+      "n_recalled": 1222,
+      "n_alert_slice": 278,
+      "precision": 0.6457564575645757,
+      "recall": 0.6915676287492926,
+      "avg_lead_min": 6519.954991816694,
+      "per_symbol": {
+        "ag": {
+          "n_episodes": 9,
+          "n_alert_event": 56,
+          "n_risk": 363,
+          "n_hit_event": 36,
+          "n_recalled": 276,
+          "n_alert_slice": 57,
+          "precision": 0.6428571428571429,
+          "recall": 0.7603305785123967,
+          "avg_lead_min": 5315.869565217391
+        },
+        "au": {
+          "n_episodes": 9,
+          "n_alert_event": 41,
+          "n_risk": 325,
+          "n_hit_event": 24,
+          "n_recalled": 238,
+          "n_alert_slice": 45,
+          "precision": 0.5853658536585366,
+          "recall": 0.7323076923076923,
+          "avg_lead_min": 9405.75630252101
+        },
+        "cu": {
+          "n_episodes": 8,
+          "n_alert_event": 39,
+          "n_risk": 270,
+          "n_hit_event": 26,
+          "n_recalled": 157,
+          "n_alert_slice": 39,
+          "precision": 0.6666666666666666,
+          "recall": 0.5814814814814815,
+          "avg_lead_min": 5850.477707006369
+        },
+        "lc": {
+          "n_episodes": 10,
+          "n_alert_event": 39,
+          "n_risk": 180,
+          "n_hit_event": 23,
+          "n_recalled": 135,
+          "n_alert_slice": 40,
+          "precision": 0.5897435897435898,
+          "recall": 0.75,
+          "avg_lead_min": 5715.666666666667
+        },
+        "rb": {
+          "n_episodes": 9,
+          "n_alert_event": 41,
+          "n_risk": 222,
+          "n_hit_event": 25,
+          "n_recalled": 156,
+          "n_alert_slice": 42,
+          "precision": 0.6097560975609756,
+          "recall": 0.7027027027027027,
+          "avg_lead_min": 5276.923076923077
+        },
+        "sc": {
+          "n_episodes": 10,
+          "n_alert_event": 45,
+          "n_risk": 339,
+          "n_hit_event": 33,
+          "n_recalled": 236,
+          "n_alert_slice": 45,
+          "precision": 0.7333333333333333,
+          "recall": 0.696165191740413,
+          "avg_lead_min": 7146.673728813559
+        },
+        "si": {
+          "n_episodes": 4,
+          "n_alert_event": 10,
+          "n_risk": 68,
+          "n_hit_event": 8,
+          "n_recalled": 24,
+          "n_alert_slice": 10,
+          "precision": 0.8,
+          "recall": 0.35294117647058826,
+          "avg_lead_min": 2570.0
+        }
+      },
+      "vol_split": {
+        "高波": {
+          "n_event": 224,
+          "precision": 0.6517857142857143
+        },
+        "低波": {
+          "n_event": 47,
+          "precision": 0.6170212765957447
+        }
+      }
+    },
+    "pass3": true
+  },
+  "rule": {
+    "zmult": 2.0,
+    "val": {
+      "n_episodes": 42,
+      "n_alert_event": 157,
+      "n_risk": 1132,
+      "n_hit_event": 95,
+      "n_recalled": 908,
+      "n_alert_slice": 283,
+      "precision": 0.6050955414012739,
+      "recall": 0.8021201413427562,
+      "avg_lead_min": 7267.863436123348
+    },
+    "test": {
+      "n_episodes": 59,
+      "n_alert_event": 625,
+      "n_risk": 1767,
+      "n_hit_event": 281,
+      "n_recalled": 1480,
+      "n_alert_slice": 1663,
+      "precision": 0.4496,
+      "recall": 0.8375778155065082,
+      "avg_lead_min": 4247.260135135135,
+      "per_symbol": {
+        "ag": {
+          "n_episodes": 9,
+          "n_alert_event": 294,
+          "n_risk": 363,
+          "n_hit_event": 108,
+          "n_recalled": 326,
+          "n_alert_slice": 1021,
+          "precision": 0.3673469387755102,
+          "recall": 0.8980716253443526,
+          "avg_lead_min": 2494.4171779141107
+        },
+        "au": {
+          "n_episodes": 9,
+          "n_alert_event": 73,
+          "n_risk": 325,
+          "n_hit_event": 44,
+          "n_recalled": 278,
+          "n_alert_slice": 153,
+          "precision": 0.6027397260273972,
+          "recall": 0.8553846153846154,
+          "avg_lead_min": 4250.6115107913665
+        },
+        "cu": {
+          "n_episodes": 8,
+          "n_alert_event": 49,
+          "n_risk": 270,
+          "n_hit_event": 26,
+          "n_recalled": 192,
+          "n_alert_slice": 91,
+          "precision": 0.5306122448979592,
+          "recall": 0.7111111111111111,
+          "avg_lead_min": 4569.21875
+        },
+        "lc": {
+          "n_episodes": 10,
+          "n_alert_event": 49,
+          "n_risk": 180,
+          "n_hit_event": 22,
+          "n_recalled": 151,
+          "n_alert_slice": 88,
+          "precision": 0.4489795918367347,
+          "recall": 0.8388888888888889,
+          "avg_lead_min": 4020.3973509933776
+        },
+        "rb": {
+          "n_episodes": 9,
+          "n_alert_event": 47,
+          "n_risk": 222,
+          "n_hit_event": 22,
+          "n_recalled": 205,
+          "n_alert_slice": 98,
+          "precision": 0.46808510638297873,
+          "recall": 0.9234234234234234,
+          "avg_lead_min": 5673.1463414634145
+        },
+        "sc": {
+          "n_episodes": 10,
+          "n_alert_event": 96,
+          "n_risk": 339,
+          "n_hit_event": 46,
+          "n_recalled": 274,
+          "n_alert_slice": 185,
+          "precision": 0.4791666666666667,
+          "recall": 0.8082595870206489,
+          "avg_lead_min": 4966.970802919708
+        },
+        "si": {
+          "n_episodes": 4,
+          "n_alert_event": 17,
+          "n_risk": 68,
+          "n_hit_event": 13,
+          "n_recalled": 54,
+          "n_alert_slice": 27,
+          "precision": 0.7647058823529411,
+          "recall": 0.7941176470588235,
+          "avg_lead_min": 5236.666666666667
+        }
+      },
+      "vol_split": {
+        "高波": {
+          "n_event": 521,
+          "precision": 0.472168905950096
+        },
+        "低波": {
+          "n_event": 104,
+          "precision": 0.33653846153846156
+        }
+      }
+    },
+    "pass3": false
+  },
+  "trivial": {
+    "只在开头报一次": {
+      "n_episodes": 59,
+      "n_alert_event": 59,
+      "n_risk": 1767,
+      "n_hit_event": 28,
+      "n_recalled": 1747,
+      "n_alert_slice": 59,
+      "precision": 0.4745762711864407,
+      "recall": 0.9886813808715337,
+      "avg_lead_min": 20650.621064682313
+    },
+    "只在前1%截面报": {
+      "n_episodes": 59,
+      "n_alert_event": 62,
+      "n_risk": 1767,
+      "n_hit_event": 29,
+      "n_recalled": 1747,
+      "n_alert_slice": 273,
+      "precision": 0.46774193548387094,
+      "recall": 0.9886813808715337,
+      "avg_lead_min": 20595.961648540357
+    },
+    "每3步机械报警": {
+      "n_episodes": 59,
+      "n_alert_event": 2961,
+      "n_risk": 1767,
+      "n_hit_event": 931,
+      "n_recalled": 1747,
+      "n_alert_slice": 9912,
+      "precision": 0.3144208037825059,
+      "recall": 0.9886813808715337,
+      "avg_lead_min": 472.7103606182026
+    },
+    "每8步机械报警": {
+      "n_episodes": 59,
+      "n_alert_event": 2861,
+      "n_risk": 1767,
+      "n_hit_event": 695,
+      "n_recalled": 1747,
+      "n_alert_slice": 3741,
+      "precision": 0.24292205522544566,
+      "recall": 0.9886813808715337,
+      "avg_lead_min": 480.7899255867201
+    },
+    "每20步机械报警": {
+      "n_episodes": 59,
+      "n_alert_event": 1511,
+      "n_risk": 1767,
+      "n_hit_event": 389,
+      "n_recalled": 1747,
+      "n_alert_slice": 1511,
+      "precision": 0.257445400397088,
+      "recall": 0.9886813808715337,
+      "avg_lead_min": 980.6582713222667
+    },
+    "恒报警": {
+      "n_episodes": 59,
+      "n_alert_event": 2961,
+      "n_risk": 1767,
+      "n_hit_event": 1189,
+      "n_recalled": 1747,
+      "n_alert_slice": 29696,
+      "precision": 0.40155352921310367,
+      "recall": 0.9886813808715337,
+      "avg_lead_min": 467.2667429879794
+    }
+  },
+  "best_trivial": {
+    "name": "只在开头报一次",
+    "precision": 0.4745762711864407
+  },
+  "discrimination_pp": 17.1180186378135,
+  "vol_threshold_train": {
+    "ag": 0.21777614579681812,
+    "au": 0.12655192848388613,
+    "cu": 0.13568780201837274,
+    "lc": 0.4029103680516468,
+    "rb": 0.1683186942412856,
+    "sc": 0.29042493983210355,
+    "si": 0.20797340635354025
+  },
+  "degeneracy_note": "召回不设时间上限 ⇒ 幕内任一次早期预警即覆盖其后全部风险起点；实测全部平凡策略召回 98.9%、平均提前最高 20651min。三条门槛实际塌缩为只剩精确率，故「判别力＝精确率−最强平凡策略精确率」是本口径下唯一有意义的成绩指标。",
+  "lead_note": "平均提前 6520min 是「不设上限」的产物（预警稀疏，紧邻风险起点之前的那次预警自然很远），满足门槛但**不应按业务意义上的提前预警时间解读**。"
+}

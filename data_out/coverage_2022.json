@@ -1,0 +1,172 @@
+{
+  "per_symbol": {
+    "ag": {
+      "months_2022": [
+        "12"
+      ],
+      "n_months_2022": 1,
+      "mb_2022": 0.8,
+      "n_months_by_year": {
+        "2022": 1,
+        "2023": 12,
+        "2024": 12,
+        "2025": 12,
+        "2026": 3
+      }
+    },
+    "au": {
+      "months_2022": [
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12"
+      ],
+      "n_months_2022": 6,
+      "mb_2022": 13.9,
+      "n_months_by_year": {
+        "2022": 6,
+        "2023": 12,
+        "2024": 12,
+        "2025": 12,
+        "2026": 3
+      }
+    },
+    "sc": {
+      "months_2022": [
+        "10",
+        "11",
+        "12"
+      ],
+      "n_months_2022": 3,
+      "mb_2022": 8.4,
+      "n_months_by_year": {
+        "2022": 3,
+        "2023": 12,
+        "2024": 12,
+        "2025": 12,
+        "2026": 4
+      }
+    },
+    "si": {
+      "months_2022": [
+        "12"
+      ],
+      "n_months_2022": 1,
+      "mb_2022": 0.8,
+      "n_months_by_year": {
+        "2022": 1,
+        "2023": 12,
+        "2024": 12,
+        "2025": 10
+      }
+    },
+    "lc": {
+      "months_2022": [],
+      "n_months_2022": 0,
+      "mb_2022": 0.0,
+      "n_months_by_year": {
+        "2023": 6,
+        "2024": 12,
+        "2025": 12,
+        "2026": 4
+      }
+    },
+    "cu": {
+      "months_2022": [],
+      "n_months_2022": 0,
+      "mb_2022": 0.0,
+      "n_months_by_year": {
+        "2023": 12,
+        "2024": 12,
+        "2025": 12,
+        "2026": 3
+      }
+    },
+    "rb": {
+      "months_2022": [
+        "12"
+      ],
+      "n_months_2022": 1,
+      "mb_2022": 1.2,
+      "n_months_by_year": {
+        "2022": 1,
+        "2023": 12,
+        "2024": 12,
+        "2025": 12,
+        "2026": 3
+      }
+    }
+  },
+  "warmup": {
+    "ag": {
+      "first_ym": "2023-01",
+      "first_abs_z_mean": 1.145,
+      "first_zero_frac": 0.0093,
+      "next3_abs_z_mean": 1.14,
+      "next3_zero_frac": 0.007
+    },
+    "au": {
+      "first_ym": "2023-01",
+      "first_abs_z_mean": 1.215,
+      "first_zero_frac": 0.0093,
+      "next3_abs_z_mean": 0.97,
+      "next3_zero_frac": 0.007
+    },
+    "cu": {
+      "first_ym": "2023-01",
+      "first_abs_z_mean": 1.309,
+      "first_zero_frac": 0.0108,
+      "next3_abs_z_mean": 0.943,
+      "next3_zero_frac": 0.0096
+    },
+    "rb": {
+      "first_ym": "2023-01",
+      "first_abs_z_mean": 1.014,
+      "first_zero_frac": 0.0139,
+      "next3_abs_z_mean": 1.065,
+      "next3_zero_frac": 0.0106
+    },
+    "sc": {
+      "first_ym": "2023-01",
+      "first_abs_z_mean": 0.824,
+      "first_zero_frac": 0.0093,
+      "next3_abs_z_mean": 1.103,
+      "next3_zero_frac": 0.007
+    },
+    "si": {
+      "first_ym": "2023-01",
+      "first_abs_z_mean": 0.812,
+      "first_zero_frac": 0.0208,
+      "next3_abs_z_mean": 1.056,
+      "next3_zero_frac": 0.0161
+    },
+    "lc": {
+      "first_ym": "2023-07",
+      "first_abs_z_mean": 0.763,
+      "first_zero_frac": 0.0556,
+      "next3_abs_z_mean": 1.01,
+      "next3_zero_frac": 0.0111
+    }
+  },
+  "summary": {
+    "n_symbol_months_2022": 12,
+    "n_episodes_now": 263,
+    "relative_gain": 0.0456,
+    "symbols_with_zero_2022": [
+      "lc",
+      "cu"
+    ],
+    "largest_contributor": {
+      "symbol": "au",
+      "n_months": 6,
+      "share": 0.5
+    },
+    "warmup_deficit_symbols": [
+      "cu"
+    ],
+    "warmup_deficit_fixable_by_2022": []
+  },
+  "verdict": "不纳入。2022 年对交付品种近乎无数据（ag 1 月、au 6 月、sc 3 月、si 1 月、lc 0 月、cu 0 月、rb 1 月），合计 12 个品种月、相对现有 263 幕仅 +4.6%；且 50% 来自单一品种 au，会加剧品种不平衡。「给首月预热滚动窗」这个理由也不成立：有冷启动迹象的品种是 ['cu']，其中 2022 有数据可补的是 无——交集为空，补也补不到需要它的地方。而代价是全量重训与全部文档数字失效。"
+}

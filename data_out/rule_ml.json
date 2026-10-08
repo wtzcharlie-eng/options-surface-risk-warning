@@ -1,0 +1,342 @@
+{
+ "preregistration": "data_out/rule_ml_preregistration.md",
+ "target": {
+  "precision": 0.5,
+  "recall": 0.6,
+  "avg_lead_min": 30.0
+ },
+ "model": "HistGradientBoostingClassifier",
+ "model_params": {
+  "max_iter": 200,
+  "learning_rate": 0.08,
+  "max_leaf_nodes": 31,
+  "random_state": 0
+ },
+ "train_span": "anchor 训练集 2023-01~2024-12（验证/测试一律不参与训练）",
+ "fusion": "否决式：ml_prob < thr → level=0（**不用 max()**）",
+ "leakage_gate": {
+  "val_auc": 0.7579916335492496,
+  "val_auc_shuffled": 0.48376159977668814,
+  "passed": true
+ },
+ "model_artifact": {
+  "path": "data_out/rule_ml_model.joblib",
+  "fingerprint": {
+   "feature_names": [
+    "atm_iv",
+    "atm_iv_z",
+    "atm_iv_vel_z",
+    "convexity_violation",
+    "convexity_violation_z",
+    "convexity_vel_z",
+    "term_slope",
+    "term_slope_roc",
+    "skew_percentile",
+    "skew_val",
+    "gamma_concentration",
+    "vega_concentration",
+    "iv_change",
+    "iv_change_rate",
+    "iv_spike",
+    "fit_degradation",
+    "arb_score",
+    "arb_score_z",
+    "arb_calendar_n",
+    "arb_butterfly_n",
+    "arb_parity_n",
+    "liquidity_ratio",
+    "liquidity_z",
+    "iv_near",
+    "iv_far",
+    "n_contracts",
+    "rv_short",
+    "rv_long",
+    "iv_rv_spread",
+    "iv_rv_ratio",
+    "spread_z",
+    "rv_accel"
+   ],
+   "n_features": 32,
+   "train_span": [
+    "2023-01",
+    "2024-12"
+   ],
+   "n_train_rows": 87517,
+   "pos_rate_train": 0.296022487059657,
+   "model_params": {
+    "max_iter": 200,
+    "learning_rate": 0.08,
+    "max_leaf_nodes": 31,
+    "random_state": 0
+   },
+   "sklearn": "1.7.2"
+  }
+ },
+ "val_grid": [
+  {
+   "zmult": 0.4,
+   "thr": 0.0,
+   "precision": 0.35824806588470176,
+   "recall": 0.7782685512367491,
+   "avg_lead_min": 50.80590238365494,
+   "n_alert": 8014,
+   "pass3": false
+  },
+  {
+   "zmult": 0.4,
+   "thr": 0.15,
+   "precision": 0.43526084223758643,
+   "recall": 0.7570671378091873,
+   "avg_lead_min": 50.2683780630105,
+   "n_alert": 6364,
+   "pass3": false
+  },
+  {
+   "zmult": 0.4,
+   "thr": 0.25,
+   "precision": 0.4996150885296382,
+   "recall": 0.7040636042402827,
+   "avg_lead_min": 50.570890840652446,
+   "n_alert": 5196,
+   "pass3": false
+  },
+  {
+   "zmult": 0.4,
+   "thr": 0.35,
+   "precision": 0.5499423298731257,
+   "recall": 0.6413427561837456,
+   "avg_lead_min": 50.86776859504132,
+   "n_alert": 4335,
+   "pass3": true
+  },
+  {
+   "zmult": 0.4,
+   "thr": 0.45,
+   "precision": 0.5895480225988701,
+   "recall": 0.5662544169611308,
+   "avg_lead_min": 51.950078003120126,
+   "n_alert": 3540,
+   "pass3": false
+  },
+  {
+   "zmult": 0.55,
+   "thr": 0.0,
+   "precision": 0.4276356192425793,
+   "recall": 0.6369257950530035,
+   "avg_lead_min": 51.59500693481276,
+   "n_alert": 4885,
+   "pass3": false
+  },
+  {
+   "zmult": 0.55,
+   "thr": 0.15,
+   "precision": 0.48459715639810425,
+   "recall": 0.6254416961130742,
+   "avg_lead_min": 51.08050847457627,
+   "n_alert": 4220,
+   "pass3": false
+  },
+  {
+   "zmult": 0.55,
+   "thr": 0.25,
+   "precision": 0.5358825159323912,
+   "recall": 0.5821554770318021,
+   "avg_lead_min": 52.16995447647952,
+   "n_alert": 3609,
+   "pass3": false
+  },
+  {
+   "zmult": 0.55,
+   "thr": 0.35,
+   "precision": 0.5778926955397543,
+   "recall": 0.5379858657243817,
+   "avg_lead_min": 52.06896551724138,
+   "n_alert": 3094,
+   "pass3": false
+  },
+  {
+   "zmult": 0.55,
+   "thr": 0.45,
+   "precision": 0.6179992275009656,
+   "recall": 0.47614840989399293,
+   "avg_lead_min": 53.62708719851577,
+   "n_alert": 2589,
+   "pass3": false
+  },
+  {
+   "zmult": 0.7,
+   "thr": 0.0,
+   "precision": 0.48657289002557547,
+   "recall": 0.5097173144876325,
+   "avg_lead_min": 51.8630849220104,
+   "n_alert": 3128,
+   "pass3": false
+  },
+  {
+   "zmult": 0.7,
+   "thr": 0.15,
+   "precision": 0.5223463687150838,
+   "recall": 0.5035335689045937,
+   "avg_lead_min": 51.36842105263158,
+   "n_alert": 2864,
+   "pass3": false
+  },
+  {
+   "zmult": 0.7,
+   "thr": 0.25,
+   "precision": 0.5685419968304279,
+   "recall": 0.4787985865724382,
+   "avg_lead_min": 51.808118081180815,
+   "n_alert": 2524,
+   "pass3": false
+  },
+  {
+   "zmult": 0.7,
+   "thr": 0.35,
+   "precision": 0.5973033707865169,
+   "recall": 0.4416961130742049,
+   "avg_lead_min": 51.78,
+   "n_alert": 2225,
+   "pass3": false
+  },
+  {
+   "zmult": 0.7,
+   "thr": 0.45,
+   "precision": 0.6321353065539113,
+   "recall": 0.3931095406360424,
+   "avg_lead_min": 54.03370786516854,
+   "n_alert": 1892,
+   "pass3": false
+  },
+  {
+   "zmult": 0.85,
+   "thr": 0.0,
+   "precision": 0.5362745098039216,
+   "recall": 0.4204946996466431,
+   "avg_lead_min": 51.838235294117645,
+   "n_alert": 2040,
+   "pass3": false
+  },
+  {
+   "zmult": 0.85,
+   "thr": 0.15,
+   "precision": 0.5636079249217936,
+   "recall": 0.4134275618374558,
+   "avg_lead_min": 51.53846153846154,
+   "n_alert": 1918,
+   "pass3": false
+  },
+  {
+   "zmult": 0.85,
+   "thr": 0.25,
+   "precision": 0.601027397260274,
+   "recall": 0.4019434628975265,
+   "avg_lead_min": 51.989010989010985,
+   "n_alert": 1752,
+   "pass3": false
+  },
+  {
+   "zmult": 0.85,
+   "thr": 0.35,
+   "precision": 0.6231699554423934,
+   "recall": 0.37279151943462896,
+   "avg_lead_min": 52.64218009478673,
+   "n_alert": 1571,
+   "pass3": false
+  },
+  {
+   "zmult": 0.85,
+   "thr": 0.45,
+   "precision": 0.6507352941176471,
+   "recall": 0.3339222614840989,
+   "avg_lead_min": 54.523809523809526,
+   "n_alert": 1360,
+   "pass3": false
+  }
+ ],
+ "picked": {
+  "zmult": 0.4,
+  "thr": 0.35,
+  "precision": 0.5499423298731257,
+  "recall": 0.6413427561837456,
+  "avg_lead_min": 50.86776859504132,
+  "n_alert": 4335,
+  "pass3": true
+ },
+ "test": {
+  "fused": {
+   "precision": 0.5385800092407208,
+   "recall": 0.622524052065648,
+   "avg_lead_min": 48.08181818181818,
+   "n_alert": 6493,
+   "pass3": true
+  },
+  "rule_only_same_zmult": {
+   "precision": 0.3926574276683686,
+   "recall": 0.821165817770232,
+   "avg_lead_min": 49.093728463128876,
+   "n_alert": 12339,
+   "pass3": false
+  },
+  "fused_v2": {
+   "precision": 0.5449398443029017,
+   "recall": 0.9501980758347481,
+   "avg_lead_min": 1322.2602739726028,
+   "pass3": true
+  },
+  "rule_only_same_zmult_v2": {
+   "precision": 0.41820469798657717,
+   "recall": 0.9824561403508771,
+   "avg_lead_min": 542.7390552995391,
+   "pass3": false
+  }
+ },
+ "test_pure_frontier": [
+  {
+   "zmult": 0.4,
+   "precision": 0.3926574276683686,
+   "recall": 0.821165817770232,
+   "avg_lead_min": 49.093728463128876,
+   "n_alert": 12339
+  },
+  {
+   "zmult": 0.55,
+   "precision": 0.44146848302932346,
+   "recall": 0.7153367289190719,
+   "avg_lead_min": 48.13291139240506,
+   "n_alert": 8662
+  },
+  {
+   "zmult": 0.7,
+   "precision": 0.4904918032786885,
+   "recall": 0.6049801924165252,
+   "avg_lead_min": 49.18147801683816,
+   "n_alert": 6100
+  },
+  {
+   "zmult": 0.85,
+   "precision": 0.5166229221347332,
+   "recall": 0.5172608941709111,
+   "avg_lead_min": 49.15207877461707,
+   "n_alert": 4572
+  }
+ ],
+ "test_p_at_recall60_pure": {
+  "zmult": 0.7,
+  "precision": 0.4904918032786885,
+  "recall": 0.6049801924165252,
+  "avg_lead_min": 49.18147801683816,
+  "n_alert": 6100
+ },
+ "frontier_gain_pp": 4.808820596203228,
+ "drl_same_caliber": {
+  "lean": 0.3,
+  "precision": 0.5415236787920384,
+  "recall": 0.7492925863044708,
+  "avg_lead_min": 36.21978851963746
+ },
+ "verdict": {
+  "passed": true,
+  "text": "**通过**：规则+ML 融合在 anchor 连续口径上三项全达标。但必须同时写明：① §7.21「纯规则够不到」的结论**仍然成立**，本结论只适用于**融合后**的系统；② 这已**不是纯固定阈值系统**；③ 这不改变「固定阈值僵化、需要学习成分」的结论——恰恰再次印证了它。"
+ }
+}

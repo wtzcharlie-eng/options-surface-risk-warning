@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方法与结果 · 期权波动率曲面风控预警系统</title>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0e1621; --panel:#151f2b; --rule:#22303f;
+  --fg:#e3eaf1; --fg2:#8fa0b2; --fg3:#5d6f82;
+  --calm:#4fb79c; --stress:#e8695e; --caveat:#d8a24a;
+  /* 与 index.html 完全一致：西文族在前走 Times，汉字回退到黑体 */
+  --sans:"Times New Roman",Times,"PingFang SC","Hiragino Sans GB",
+         "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --mono:"Times New Roman",Times,ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--calm);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--calm);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:9;background:rgba(14,22,33,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;
+  align-items:baseline;gap:16px}
+.bar .home{color:var(--fg2);font-size:13px}
+.bar h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.01em}
+.bar .sub{color:var(--fg3);font-size:12.5px;margin-left:auto}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;
+  grid-template-columns:1fr 236px;gap:44px;align-items:start}
+main{min-width:0;padding:34px 0 96px}
+
+nav.toc{position:sticky;top:66px;padding:34px 0;max-height:calc(100vh - 76px);
+  overflow:auto}
+nav.toc .h{font-size:11px;letter-spacing:.14em;color:var(--fg3);
+  margin-bottom:10px;font-family:var(--mono)}
+nav.toc a{display:block;color:var(--fg2);font-size:12.5px;line-height:1.55;
+  padding:3px 0 3px 10px;border-left:1px solid var(--rule);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--calm)}
+nav.toc a.l3{padding-left:22px;color:var(--fg3);font-size:12px}
+
+h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.35;letter-spacing:.01em}
+main h1{font-size:27px;margin:6px 0 22px}
+main h2{font-size:21px;margin:44px 0 14px;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+main h3{font-size:17px;margin:30px 0 10px;color:#f0f5fa}
+main h4{font-size:15px;margin:22px 0 8px;color:var(--fg2)}
+p{margin:13px 0}
+strong{color:#f4f8fc;font-weight:700}
+code{font-family:var(--mono);font-size:13.5px;background:#1b2735;
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:#cfe0ee}
+pre{background:var(--panel);border:1px solid var(--rule);padding:15px 17px;
+  overflow:auto;margin:16px 0}
+pre code{background:none;border:0;padding:0;font-size:13px;line-height:1.65;
+  color:#cfe0ee}
+blockquote{margin:16px 0;padding:2px 18px;border-left:3px solid var(--caveat);
+  background:#141d29;color:var(--fg2)}
+blockquote strong{color:var(--caveat)}
+blockquote p{margin:10px 0}
+ul,ol{margin:13px 0;padding-left:24px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:34px 0}
+.tw{overflow-x:auto;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--rule);padding:8px 11px;text-align:left;
+  vertical-align:top}
+th{background:#1a2532;color:var(--fg);font-weight:700;white-space:nowrap}
+td{color:var(--fg2)}
+tbody tr:nth-child(even) td{background:#121b26}
+td code,th code{font-size:12.5px}
+
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--fg3);line-height:1.9}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:0 0 20px}
+}
+</style></head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="../index.html">← 交付入口</a>
+  <h1>方法与结果</h1>
+  <span class="sub">学术结构正文：摘要 / 数据与口径 / 方法 / 实验与结果 / 验证与可复现 / 局限与讨论。</span>
+</div></div>
+<div class="shell">
+  <main><h1 id="期权波动率曲面风控预警系统-方法与结果">期权波动率曲面风控预警系统 · 方法与结果</h1>
+<blockquote><p>本文是<strong>学术结构的正文</strong>，约定：每个结论与其对照并列给出， 每个数值都可回溯到 <code>data_out/</code> 下的落盘 JSON。 完整的逐轮工程记录（含被推翻的结论）见文末附录。</p>
+<p>本文由 <code>scripts/build_paper.py</code> 从落盘数据生成，<strong>无手写数值</strong>。</p></blockquote>
+<hr>
+<h2 id="摘要">摘要</h2>
+<p>本文针对商品期权隐含波动率曲面，构建了一套从数据清洗、曲面重建、异常识别 到分级预警的完整链路，并在此之上做了两项扩展：一是把异常之间的传导关系 标定成知识图谱，二是用深度强化学习替代固定阈值来决定何时预警。</p>
+<p>数据为 263 个品种月切片、 7 个品种的 15 分钟频期权行情，按时间先后切分为 训练 162 / 验证 42 / 测试 59 幕，测试集完全晚于训练集。</p>
+<p>主要结果：在命题方 2026-08 明确的评测口径（事件级精确率、召回不设时间上限）下， 规则引擎在 20 个极端事件窗口上达到精确率 55.65%、 召回 96.25%、平均提前 1462 分钟，13/20 个窗口三项全达标；DRL 智能体在连续测试集上达到 64.58% / 69.16% / 6520 分钟。</p>
+<p><strong>但该口径自带退化</strong>：由于召回不设时间上限，不看任何特征的平凡策略也能取得很高召回， 三条门槛实际塌缩成只剩精确率一条。因此本文对每一项成绩都并列给出<strong>判别力</strong> （精确率减去最强平凡策略的精确率）：问题1 为 +5.6pp， 问题3 为 +17.1pp。<strong>前者在双比例检验下不显著 （z=0.50），后者显著（z=2.45）</strong>——这一区别在正文第 3 节详述。</p>
+<hr>
+<h2 id="1-数据与评测口径">1 数据与评测口径</h2>
+<h3 id="1-1-数据">1.1 数据</h3>
+<div class='tw'><table><thead><tr><th>划分</th><th>幕数</th><th>风险起点数</th><th>用途</th></tr></thead><tbody><tr><td>训练</td><td>162</td><td>4,286</td><td>拟合网络与归一化统计量</td></tr><tr><td>验证</td><td>42</td><td>1,132</td><td>选超参、选 checkpoint、选工作点</td></tr><tr><td>测试</td><td>59</td><td>1,767</td><td>只评一次，不参与任何选择</td></tr></tbody></table></div>
+<p>一「幕」为一个（品种，月）切片，共 263 幕。 数据未纳入 2022 年：实测该年只增加 12 个品种月 （+4.6%），且集中在少数品种， 详见 <code>data_out/coverage_2022.json</code>。</p>
+<h3 id="1-2-两套评测口径">1.2 两套评测口径</h3>
+<p>本文所有数字都标注口径，且<strong>两套口径的数字不可相减</strong>。</p>
+<div class='tw'><table><thead><tr><th></th><th>旧口径</th><th>新口径（命题方 2026-08 答复）</th></tr></thead><tbody><tr><td>精确率单位</td><td>每个 15min 截面</td><td>合并 120min 内连续预警后的<strong>预警事件</strong></td></tr><tr><td>召回匹配</td><td>120min 命中窗</td><td><strong>不设时间上限</strong></td></tr><tr><td>提前时间</td><td>同上</td><td>同上</td></tr></tbody></table></div>
+<h3 id="1-3-该口径为何自带退化">1.3 该口径为何自带退化</h3>
+<p>召回不设上限意味着「在序列开头报一次」就能覆盖其后全部风险起点。 实测各平凡策略（问题1，20 窗等权）：</p>
+<div class='tw'><table><thead><tr><th>策略</th><th>预警事件数</th><th>事件级精确率</th></tr></thead><tbody><tr><td>只在开头报一次</td><td>20</td><td>50.00%</td></tr><tr><td>只在前1%截面报</td><td>22</td><td>50.00%</td></tr><tr><td>恒报警</td><td>1,007</td><td>49.67%</td></tr><tr><td>每3步机械报警</td><td>1,007</td><td>39.72%</td></tr><tr><td>每8步机械报警</td><td>966</td><td>29.75%</td></tr><tr><td>每20步机械报警</td><td>495</td><td>28.80%</td></tr><tr><td><strong>规则引擎（本系统）</strong></td><td><strong>443</strong></td><td><strong>55.65%</strong></td></tr></tbody></table></div>
+<p>最强平凡策略「只在开头报一次」精确率 50.00%，<strong>恰好等于 50% 达标线</strong>。 故本口径下「达标」本身不构成证据，唯一有意义的量是判别力。</p>
+<hr>
+<h2 id="2-方法">2 方法</h2>
+<h3 id="2-1-曲面重建与特征">2.1 曲面重建与特征</h3>
+<p>原始行情经缺失/异常报价清洗后，按 moneyness × 到期天数网格重建隐含波动率曲面， 并计算 32 维风险特征：曲面形态类（凸性违反、偏度、期限结构 斜率及其变化率）、集中度类（Gamma/Vega 集中度）、水平类（ATM IV 及其 z-score、 变化率）、质量类（拟合退化、无套利违反分、流动性比）以及标的侧特征。</p>
+<h3 id="2-2-四级预警-问题1">2.2 四级预警（问题1）</h3>
+<p>规则层由若干条可解释规则组成，每条给出触发等级与触发原因；ML 层用 IsolationForest 给出异常分。两层融合后输出 0/1/2/3 四级。</p>
+<p>交付配置在连续口径上采用<strong>否决式融合</strong>：监督模型认为不像风险前兆时把等级压到 0。 这与「取两层更严者」方向相反——后者只能增加预警，而该场景缺的是精确率。</p>
+<h3 id="2-3-风险传导知识图谱-问题2">2.3 风险传导知识图谱（问题2）</h3>
+<p>图谱的边权<strong>全部实测标定</strong>，无人工赋值：对每条候选边计算条件概率与提升度， 并做显著性检验，未通过的候选一并落盘。当前保留主干边 21 / 40 条、 跨品种边 110 / 280 条。</p>
+<h3 id="2-4-drl-自适应预警-问题3">2.4 DRL 自适应预警（问题3）</h3>
+<p>状态为 32 维风险特征加 2 维决策上下文（距上次预警的分钟数、 上一步动作），动作为四个预警等级，奖励按事件级会计直接映射赛题指标。 算法为 Double DQN + 经验回放 + Huber 损失，网络 34 → 128 → 128 → 4， 纯 NumPy 实现。交付版为 15 个独立种子的集成。</p>
+<hr>
+<h2 id="3-实验与结果">3 实验与结果</h2>
+<h3 id="3-1-问题1-事件窗口">3.1 问题1：事件窗口</h3>
+<p>20 个极端事件窗口（覆盖 17 个已知极端行情）上，交付配置取得</p>
+<div class='tw'><table><thead><tr><th>指标</th><th>结果</th><th>门槛</th><th></th></tr></thead><tbody><tr><td>事件级精确率</td><td>55.65%</td><td>≥50%</td><td>达标</td></tr><tr><td>召回率</td><td>96.25%</td><td>≥60%</td><td>达标</td></tr><tr><td>平均提前</td><td>1462 min</td><td>≥30min</td><td>达标</td></tr><tr><td>三项全达标窗口</td><td>13 / 20</td><td>—</td><td>—</td></tr><tr><td><strong>判别力</strong></td><td><strong>+5.6pp</strong></td><td>—</td><td>对照「只在开头报一次」50.00%</td></tr></tbody></table></div>
+<p><strong>判别力的显著性</strong>：本系统 443 个预警事件对照方 20 个，双比例检验 z=0.50。 两者差异在 5% 水平上<strong>不显著</strong>——即这 +5.6pp 的领先，以现有样本量还不足以断言不是偶然。 这一点必须写明：对照方只产生 20 个事件，样本极小。</p>
+<p>未达标的 7 个窗口：</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>事件</th><th>精确率</th><th>召回</th><th>提前(min)</th></tr></thead><tbody><tr><td>al</td><td>2024-01 有色/氧化铝</td><td>33.33%</td><td>95.45%</td><td>4034</td></tr><tr><td>lc</td><td>2025-08 碳酸锂</td><td>40.91%</td><td>93.33%</td><td>1272</td></tr><tr><td>rb</td><td>2024-01 螺纹单边</td><td>41.18%</td><td>100.00%</td><td>2766</td></tr><tr><td>rb</td><td>2024-02 铁矿分化</td><td>41.67%</td><td>90.91%</td><td>414</td></tr><tr><td>br</td><td>2023-09 合成橡胶</td><td>44.44%</td><td>100.00%</td><td>1492</td></tr><tr><td>ag</td><td>2026-01 贵金属</td><td>44.64%</td><td>96.55%</td><td>455</td></tr><tr><td>au</td><td>2026-01 贵金属</td><td>46.15%</td><td>93.48%</td><td>959</td></tr></tbody></table></div>
+<p>全部只卡精确率；卡召回门槛（&lt;60%）的窗口数为 0。 <strong>但这不等于零漏报</strong>——12 个窗口召回不足 100%（最低 84.6%）， 确实漏掉了一些风险起点，只是没有任何窗口低到门槛线以下。</p>
+<h3 id="3-2-问题1-连续测试集与融合">3.2 问题1：连续测试集与融合</h3>
+<p>同一套规则换到 anchor 连续测试集上只有 44.96%（新口径）。 两个数<strong>不可相减</strong>：口径不同，且工作点也不同。</p>
+<p>纯规则在连续口径上<strong>整条 P-R 前沿都够不到目标角点</strong>： 6 组配置在验证集上无一可行点， 流动性门增益 +0.32pp（近似无效）， 冷却去抖为负。这不是调参问题，是前沿问题。</p>
+<p>加入学习成分后达标（否决式融合，旧口径）：</p>
+<div class='tw'><table><thead><tr><th>配置</th><th>精确率</th><th>召回</th><th>平均提前</th></tr></thead><tbody><tr><td><strong>规则+ML 融合</strong></td><td><strong>53.86%</strong></td><td>62.25%</td><td>48.1 min</td></tr><tr><td>同 zmult 纯规则</td><td>39.27%</td><td>82.12%</td><td>49.1 min</td></tr><tr><td>纯规则 R≈60% 处</td><td>42.76%</td><td>≈60%（该点的定义）</td><td>未落盘</td></tr></tbody></table></div>
+<p>同召回量级上提升 +11.09pp， 即<strong>移动了前沿</strong>而非沿前沿滑动。泄漏门：验证集 AUC 0.7580，打乱训练标签后 0.4838。</p>
+<p><strong>必须并列的限定</strong>：纯规则的结论未被推翻——它在两个口径下都够不到； 达标的是<strong>加了学习成分</strong>的系统，不是固定阈值系统。</p>
+<h3 id="3-3-问题3-连续测试集">3.3 问题3：连续测试集</h3>
+<div class='tw'><table><thead><tr><th>指标</th><th>DRL</th><th>规则引擎</th><th>最强平凡策略</th></tr></thead><tbody><tr><td>事件级精确率</td><td><strong>64.58%</strong></td><td>44.96%</td><td>47.46%</td></tr><tr><td>召回率</td><td>69.16%</td><td>83.76%</td><td>98.87%</td></tr><tr><td>平均提前</td><td>6520 min</td><td>4247 min</td><td>20651 min</td></tr><tr><td>预警事件数</td><td>271</td><td>625</td><td>59</td></tr></tbody></table></div>
+<p>判别力 +17.1pp，双比例检验 z=2.45 （显著）。全部平凡策略对照：</p>
+<div class='tw'><table><thead><tr><th>策略</th><th>预警事件数</th><th>事件级精确率</th></tr></thead><tbody><tr><td>只在开头报一次</td><td>59</td><td>47.46%</td></tr><tr><td>只在前1%截面报</td><td>62</td><td>46.77%</td></tr><tr><td>恒报警</td><td>2,961</td><td>40.16%</td></tr><tr><td>每3步机械报警</td><td>2,961</td><td>31.44%</td></tr><tr><td>每20步机械报警</td><td>1,511</td><td>25.74%</td></tr><tr><td>每8步机械报警</td><td>2,861</td><td>24.29%</td></tr></tbody></table></div>
+<p><strong>高低波分区</strong>（按训练期 ATM IV 中位数划分，不使用测试期信息）： 规则引擎低波区 33.65%、 高波区 47.22%； DRL 分别为 61.70% 与 65.18%。 赛题「技术难点」原文指出固定阈值在低波市况下频繁误报，该差异正对应这一点。 <strong>但低波区样本量小</strong>：DRL 仅 47 个预警事件， 规则 104 个，读该结论时须连同不确定性一起看。</p>
+<p><strong>逐品种</strong>（在与规则同召回的工作点上比较，而非各自默认工作点）：</p>
+<div class='tw'><table><thead><tr><th>品种</th><th>规则 P</th><th>规则 R</th><th>DRL P</th><th>DRL R</th><th>同召回增益(pp)</th></tr></thead><tbody><tr><td>rb</td><td>44.90%</td><td>38.29%</td><td>49.53%</td><td>77.48%</td><td>+17.78</td></tr><tr><td>sc</td><td>51.42%</td><td>38.05%</td><td>60.90%</td><td>76.40%</td><td>+15.98</td></tr><tr><td>si</td><td>55.56%</td><td>44.12%</td><td>53.08%</td><td>73.53%</td><td>+12.44</td></tr><tr><td>au</td><td>59.76%</td><td>40.31%</td><td>62.89%</td><td>63.08%</td><td>+12.31</td></tr><tr><td>cu</td><td>59.14%</td><td>45.56%</td><td>56.32%</td><td>75.56%</td><td>+10.81</td></tr><tr><td>ag</td><td>48.36%</td><td>59.78%</td><td>50.81%</td><td>76.58%</td><td>+7.05</td></tr><tr><td>lc</td><td>53.12%</td><td>34.44%</td><td>44.41%</td><td>86.67%</td><td>+1.71</td></tr></tbody></table></div>
+<p>7/7 个品种为正；最高 rb +17.78pp， 最低 lc +1.71pp。</p>
+<p><strong>种子方差</strong>：15 个种子的测试集精确率标准差 ±3.13pp。 采用集成的理由是工程性的——消除「挑到坏种子」的风险， 而非声称集成在任一指标上显著更优。</p>
+<h3 id="3-4-结构性死区-一次增益-但不是模型改进">3.4 结构性死区：一次增益，但不是模型改进</h3>
+<p>风险起点按 K 线索引定义，而命中窗按自然时间计算，导致收盘前发出的预警 <strong>结构上无法命中</strong>。加入死区过滤后（固定在交付工作点，仅切换过滤开关）：</p>
+<div class='tw'><table><thead><tr><th></th><th>过滤前</th><th>过滤后</th><th>增益</th></tr></thead><tbody><tr><td>DRL</td><td>47.13%</td><td>54.15%</td><td>+7.02pp</td></tr><tr><td>规则引擎</td><td>45.36%</td><td>52.36%</td><td>+7.00pp</td></tr></tbody></table></div>
+<p>判别力变化仅 +0.02pp。<strong>规则引擎获得同等增益，故这是全员抬升， 不构成模型改进</strong>——引用该数字时必须并列规则侧。</p>
+<hr>
+<h2 id="4-验证与可复现">4 验证与可复现</h2>
+<h3 id="4-1-验证门">4.1 验证门</h3>
+<p>问题3 共 15 道、问题2 共 11 道可执行断言， 任一不过即视为结果不可用。当前 15/15 与 11/11 全部通过。</p>
+<p>门覆盖的失败模式包括：标签可复现性、状态不含未来信息、指标实现与赛题口径逐位一致、 奖励不可被平凡策略套利、归一化统计量只来自训练集、打乱标签后判别力塌陷、 断点续训与一次跑完逐位等价、新口径的达标不来自口径退化、CVaR 改善不来自仓位饱和。</p>
+<p><strong>门本身也被反向验证</strong>：每道门都注入过它应当拦住的缺陷、确认返回非零退出码、 还原后复跑确认恢复。本项目记录了四次「门在该失败时通过」的事故及其修法。</p>
+<h3 id="4-2-一处已修复的实现缺陷">4.2 一处已修复的实现缺陷</h3>
+<p><code>AlertModel.score_samples</code> 曾采用批内相对归一化，而所有生产路径每次只传一个样本， 导致异常分<strong>恒等于 1.0</strong>（实测 2,479 个截面， 仅 1 个不同取值）。 后果是四级预警塌缩成两级：规则层本有 1,303 个正常截面与 214 个预警截面，融合后全部消失。</p>
+<p>该缺陷<strong>不影响任何交付指标</strong>（问题1 的事件窗口评测显式关闭 ML 层， 问题3 不经过该模型），但影响仪表板展示。已修复并加门守住， 修复后四级分布为 {&#x27;0&#x27;: 1055, &#x27;1&#x27;: 845, &#x27;2&#x27;: 148, &#x27;3&#x27;: 431}。</p>
+<h3 id="4-3-已证伪的路径">4.3 已证伪的路径</h3>
+<p>为提高精确率试过并<strong>全部证伪</strong>的方向，逐条给出对照与检验：</p>
+<div class='tw'><table><thead><tr><th>路径</th><th>结果</th><th>关键证据</th></tr></thead><tbody><tr><td>换架构</td><td>无效</td><td>规则引擎（零学习参数）与 DRL 的验证→测试判别力漂移差额 -0.24pp</td></tr><tr><td>改选点协议</td><td>无效</td><td>验证集可行域与测试集达标区不相交</td></tr><tr><td>加标的侧特征</td><td>不显著</td><td>配对检验 p≈0.263</td></tr><tr><td>扩样到 2022 年</td><td>不可行</td><td>仅增 12 个品种月，且与冷启动品种交集为空</td></tr><tr><td>滚动重训</td><td>无效</td><td>见 <code>roll_retrain.json</code></td></tr><tr><td>集成规模</td><td>边际递减</td><td>见 <code>ensemble_scaling.json</code></td></tr><tr><td>调紧窗口阈值</td><td>回退</td><td>达标窗口数 +1，但 20 窗汇总精确率下降，多数窗口变差</td></tr></tbody></table></div>
+<p>最后一条值得单独说明：其预登记判据（「测试期达标窗口数增加」）在字面上被满足， 但该统计量是阈值计数、丢失幅度信息，可以在整体质量下降时上升。 <strong>判据本身选错了</strong>，故未采纳。</p>
+<h3 id="4-4-可复现">4.4 可复现</h3>
+<p>全部结果由脚本从落盘数据生成，报告与平台中无手写数值，并有一道文档门 逐条比对文档里的数字与落盘 JSON。交付包内可直接执行验证门、 专题实验复算与平台重建，命令见 <code>PACKAGE.md</code>。</p>
+<hr>
+<h2 id="5-局限与讨论">5 局限与讨论</h2>
+<p><strong>评测口径的退化不可回避。</strong> 新口径下召回与提前时间的门槛形同虚设， 1462 分钟的平均提前不应读作「提前 1.0 天预警」， 它是召回不设上限的副产物。本文对此的处理是并列判别力与平凡策略， 但这只能揭示问题，不能消除。</p>
+<p><strong>问题1 的判别力不显著。</strong> z=0.50，对照方样本量仅 20 个事件。 增加事件窗口数量是唯一的解法，而窗口由已知极端事件决定，数量受数据期限约束。</p>
+<p><strong>CVaR 口径在预登记参数下退化。</strong> 首次预警后持有至期末的设定， 在实测预警密度下使仓位全程贴合下限，改善率对所有策略恒为约 +50%。 为该目标单独选点后 DRL 取得 +0.26% 的超额， <strong>但规则引擎为 +8.12%，不劣于 DRL</strong>—— 该结论已在预登记中写明预期并如实报出。</p>
+<p><strong>逐品种仍有 3 个品种未三项全达标</strong>， 其绑定约束是平均提前时间，而该量由「信号相对风险起点何时出现」决定， 不受置信度阈值支配，换工作点从原理上修不了。</p>
+<p><strong>评审员与作者同源。</strong> 问题2 的人工 5 分制采用自评形式（命题方确认）， 偏向风险无法完全消除，故本文只报自评过程与分数分布，<strong>不主张该项达标</strong>。</p>
+<hr>
+<h2 id="附录-完整工程记录">附录：完整工程记录</h2>
+<p>本文是结论与证据的学术整理。<strong>完整的逐轮工程记录</strong>——每一次改动的动机、 所用对照、以及被推翻的结论——见 <code>README.md</code>（3056 行）。 那份记录包含本文未展开的内容：四次「门在该失败时通过」的事故、 两次预登记判据本身选错的记录、以及每一处写死数字变成假话的过程。</p>
+<p>保留它的理由是：<strong>一份只呈现成功路径的报告，读者无从判断结论的稳健性。</strong></p>
+<div class='tw'><table><thead><tr><th>产物</th><th>位置</th></tr></thead><tbody><tr><td>研究总览平台</td><td><code>data_out/platform.html</code></td></tr><tr><td>问题3 回测报告</td><td><code>data_out/drl_report.md</code></td></tr><tr><td>问题2 图谱报告</td><td><code>data_out/kg_report.md</code></td></tr><tr><td>完整工程记录</td><td><code>README.md</code></td></tr><tr><td>交付包说明与复现命令</td><td><code>PACKAGE.md</code></td></tr><tr><td>预登记判据（4 份）</td><td><code>data_out/*_preregistration.md</code></td></tr></tbody></table></div>
+    <p class="foot">源文件 <code>方法与结果.md</code>　·
+      本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
+      正本仍是那份 Markdown。</p>
+  </main>
+  <nav class="toc"><div class="h">目录</div><a href="#摘要" class="l2">摘要</a><a href="#1-数据与评测口径" class="l2">1 数据与评测口径</a><a href="#1-1-数据" class="l3">1.1 数据</a><a href="#1-2-两套评测口径" class="l3">1.2 两套评测口径</a><a href="#1-3-该口径为何自带退化" class="l3">1.3 该口径为何自带退化</a><a href="#2-方法" class="l2">2 方法</a><a href="#2-1-曲面重建与特征" class="l3">2.1 曲面重建与特征</a><a href="#2-2-四级预警-问题1" class="l3">2.2 四级预警（问题1）</a><a href="#2-3-风险传导知识图谱-问题2" class="l3">2.3 风险传导知识图谱（问题2）</a><a href="#2-4-drl-自适应预警-问题3" class="l3">2.4 DRL 自适应预警（问题3）</a><a href="#3-实验与结果" class="l2">3 实验与结果</a><a href="#3-1-问题1-事件窗口" class="l3">3.1 问题1：事件窗口</a><a href="#3-2-问题1-连续测试集与融合" class="l3">3.2 问题1：连续测试集与融合</a><a href="#3-3-问题3-连续测试集" class="l3">3.3 问题3：连续测试集</a><a href="#3-4-结构性死区-一次增益-但不是模型改进" class="l3">3.4 结构性死区：一次增益，但不是模型改进</a><a href="#4-验证与可复现" class="l2">4 验证与可复现</a><a href="#4-1-验证门" class="l3">4.1 验证门</a><a href="#4-2-一处已修复的实现缺陷" class="l3">4.2 一处已修复的实现缺陷</a><a href="#4-3-已证伪的路径" class="l3">4.3 已证伪的路径</a><a href="#4-4-可复现" class="l3">4.4 可复现</a><a href="#5-局限与讨论" class="l2">5 局限与讨论</a><a href="#附录-完整工程记录" class="l2">附录：完整工程记录</a></nav>
+</div></body></html>
