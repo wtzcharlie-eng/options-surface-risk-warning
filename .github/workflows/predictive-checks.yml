@@ -1,0 +1,52 @@
+name: Predictive risk checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  predictive-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RISK_LLM_PROVIDER: local
+      RISK_LLM_API_KEY: ''
+      OPENAI_API_KEY: ''
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-predictive.lock.txt
+      - name: Install tested dependencies
+        run: python -m pip install -r requirements-predictive.lock.txt
+      - name: Test predictive causality and grounded assistant
+        run: python -m pytest tests/test_predictive.py tests/test_predictive_independent.py tests/test_risk_assistant.py -q
+      - name: Verify model and algorithm provenance
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          root = Path('.')
+          report = json.loads((root / 'data_out/predictive/report.json').read_text())
+          for file, field in [('data_out/predictive/model.json', 'model_sha256'),
+                              ('vol_surface/predictive.py', 'algorithm_source_sha256')]:
+              assert hashlib.sha256((root / file).read_bytes()).hexdigest() == report[field], file
+          print('Model and algorithm checksums verified')
+          PY
+      - name: Smoke test interactive dashboard
+        run: python scripts/smoke_dashboard.py

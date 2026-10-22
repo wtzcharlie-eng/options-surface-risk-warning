@@ -1,0 +1,540 @@
+{
+  "status": "degraded",
+  "symbol": "sc",
+  "as_of": "2026-04-14T23:59:59",
+  "data_timestamp": "2026-04-14T15:00:00",
+  "age_minutes": 539.9833333333333,
+  "target_description": "在已完成交易日日盘15:00收盘后，预测未来1–5个观测交易日内，任一日的ATM隐波或凸性违反代理最大值超过预测日前最近60个完整交易日（至少20日）的95%分位阈值。阈值在预测时点冻结；包括异常状态延续。交易日依据实测日盘日期，夜盘归下一观测日盘；缺日和超过7自然日断档窗口排除，不将自然日当作交易日，也不冒充官方交易所日历。这是市场曲面异常代理概率，不是持仓损失、VaR或CVaR。",
+  "horizons": [
+    {
+      "days": 1,
+      "evaluation": {
+        "n": 117,
+        "positives": 39,
+        "prevalence": 0.3333333333333333,
+        "brier": 0.12678439263583421,
+        "baseline_brier": 0.2608218937765887,
+        "brier_skill": 0.5139043321860339,
+        "roc_auc": 0.8750821827744905,
+        "average_precision": 0.8388406076554955,
+        "precision": 0.8235294117647058,
+        "recall": 0.717948717948718,
+        "alert_rate": 0.2905982905982906,
+        "alerts": 34,
+        "mode": "logistic",
+        "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+        "current_state_baseline_brier": 0.15823389993723755,
+        "skill_vs_current_state_baseline": 0.19875328430808803
+      },
+      "probability": 2.8237800806901335e-05,
+      "threshold": 0.3043071544927341,
+      "alert": false,
+      "model_status": "logistic",
+      "baseline_probability": 0.1368653421633554,
+      "top_contributions": [
+        {
+          "feature": "atm_iv_daily_max",
+          "value": 0.70546401834166,
+          "imputed": false,
+          "log_odds_contribution": -5.095027650781748
+        },
+        {
+          "feature": "atm_iv_lag1d",
+          "value": 0.9014722224532445,
+          "imputed": false,
+          "log_odds_contribution": -4.570701201906428
+        },
+        {
+          "feature": "convexity_violation_daily_max",
+          "value": 8.757729981346454,
+          "imputed": false,
+          "log_odds_contribution": -2.900455087080819
+        },
+        {
+          "feature": "atm_iv_mean5d",
+          "value": 0.7490465349925833,
+          "imputed": false,
+          "log_odds_contribution": 2.3347573019258023
+        },
+        {
+          "feature": "convexity_violation_mean5d",
+          "value": 3.1417023910110076,
+          "imputed": false,
+          "log_odds_contribution": 1.7706854855037544
+        },
+        {
+          "feature": "atm_iv_change1d",
+          "value": -0.5788352715847145,
+          "imputed": false,
+          "log_odds_contribution": 1.3960373031659832
+        }
+      ],
+      "intercept_log_odds": -2.6899293186062656,
+      "total_log_odds": -10.474820785281882,
+      "forecast_origin": "2026-04-14T15:00:00",
+      "horizon_basis": "以数据截至的已完成收盘为原点，之后的观测交易日；未来确切日期未知",
+      "interpretation": "未来观测交易日窗口曲面代理超阈值概率",
+      "heldout_skill_status": "positive",
+      "incremental_skill_vs_state_status": "positive",
+      "ood_fraction": 0.21428571428571427,
+      "ood_features": [
+        "convexity_violation",
+        "arb_score",
+        "arb_butterfly_n"
+      ],
+      "contribution_sum": -7.7848914666756155,
+      "model_alert_before_operational_gate": false,
+      "alert_suppressed_reason": "cross_horizon_inconsistency"
+    },
+    {
+      "days": 2,
+      "evaluation": {
+        "n": 115,
+        "positives": 50,
+        "prevalence": 0.43478260869565216,
+        "brier": 0.19059956649892817,
+        "baseline_brier": 0.3038367002579137,
+        "brier_skill": 0.37269076995262085,
+        "roc_auc": 0.8113846153846154,
+        "average_precision": 0.8447157900751521,
+        "precision": 0.7954545454545454,
+        "recall": 0.7,
+        "alert_rate": 0.3826086956521739,
+        "alerts": 44,
+        "mode": "logistic",
+        "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+        "current_state_baseline_brier": 0.17809977883007516,
+        "skill_vs_current_state_baseline": -0.07018418411838145
+      },
+      "probability": 6.905383150335868e-06,
+      "threshold": 0.2065751155504184,
+      "alert": false,
+      "model_status": "logistic",
+      "baseline_probability": 0.19376391982182628,
+      "top_contributions": [
+        {
+          "feature": "atm_iv_lag1d",
+          "value": 0.9014722224532445,
+          "imputed": false,
+          "log_odds_contribution": -4.280056673999152
+        },
+        {
+          "feature": "atm_iv_daily_max",
+          "value": 0.70546401834166,
+          "imputed": false,
+          "log_odds_contribution": -4.256732240764806
+        },
+        {
+          "feature": "convexity_violation_daily_max",
+          "value": 8.757729981346454,
+          "imputed": false,
+          "log_odds_contribution": -3.8488936695585654
+        },
+        {
+          "feature": "atm_iv_mean5d",
+          "value": 0.7490465349925833,
+          "imputed": false,
+          "log_odds_contribution": 3.609694802727745
+        },
+        {
+          "feature": "arb_score_lag1d",
+          "value": 90.6268382262716,
+          "imputed": false,
+          "log_odds_contribution": -2.3558608883985728
+        },
+        {
+          "feature": "convexity_violation_mean5d",
+          "value": 3.1417023910110076,
+          "imputed": false,
+          "log_odds_contribution": 1.7886319392462178
+        }
+      ],
+      "intercept_log_odds": -1.8918721901021343,
+      "total_log_odds": -11.883202378410584,
+      "forecast_origin": "2026-04-14T15:00:00",
+      "horizon_basis": "以数据截至的已完成收盘为原点，之后的观测交易日；未来确切日期未知",
+      "interpretation": "未来观测交易日窗口曲面代理超阈值概率",
+      "heldout_skill_status": "positive",
+      "incremental_skill_vs_state_status": "nonpositive",
+      "ood_fraction": 0.21428571428571427,
+      "ood_features": [
+        "convexity_violation",
+        "arb_score",
+        "arb_butterfly_n"
+      ],
+      "contribution_sum": -9.99133018830845,
+      "model_alert_before_operational_gate": false,
+      "alert_suppressed_reason": "cross_horizon_inconsistency"
+    },
+    {
+      "days": 3,
+      "evaluation": {
+        "n": 113,
+        "positives": 54,
+        "prevalence": 0.4778761061946903,
+        "brier": 0.21699984620859192,
+        "baseline_brier": 0.30481991971604544,
+        "brier_skill": 0.2881047721200838,
+        "roc_auc": 0.7630257376020088,
+        "average_precision": 0.8133142360203456,
+        "precision": 0.7083333333333334,
+        "recall": 0.6296296296296297,
+        "alert_rate": 0.4247787610619469,
+        "alerts": 48,
+        "mode": "logistic",
+        "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+        "current_state_baseline_brier": 0.18046203396365285,
+        "skill_vs_current_state_baseline": -0.20246813937771657
+      },
+      "probability": 7.232633715035832e-05,
+      "threshold": 0.23917227882549746,
+      "alert": false,
+      "model_status": "logistic",
+      "baseline_probability": 0.24269662921348314,
+      "top_contributions": [
+        {
+          "feature": "convexity_violation_daily_max",
+          "value": 8.757729981346454,
+          "imputed": false,
+          "log_odds_contribution": -5.639206549046973
+        },
+        {
+          "feature": "atm_iv_daily_max",
+          "value": 0.70546401834166,
+          "imputed": false,
+          "log_odds_contribution": -4.162224063869184
+        },
+        {
+          "feature": "arb_score_std5d",
+          "value": 53.226886296204285,
+          "imputed": false,
+          "log_odds_contribution": -2.337163764672309
+        },
+        {
+          "feature": "convexity_violation_mean5d",
+          "value": 3.1417023910110076,
+          "imputed": false,
+          "log_odds_contribution": 1.9346835438711114
+        },
+        {
+          "feature": "atm_iv_mean5d",
+          "value": 0.7490465349925833,
+          "imputed": false,
+          "log_odds_contribution": 1.7646591986551727
+        },
+        {
+          "feature": "convexity_violation_daily_std",
+          "value": 1.9126129648577133,
+          "imputed": false,
+          "log_odds_contribution": 1.5845284633450947
+        }
+      ],
+      "intercept_log_odds": -1.575136967548496,
+      "total_log_odds": -9.534249890240535,
+      "forecast_origin": "2026-04-14T15:00:00",
+      "horizon_basis": "以数据截至的已完成收盘为原点，之后的观测交易日；未来确切日期未知",
+      "interpretation": "未来观测交易日窗口曲面代理超阈值概率",
+      "heldout_skill_status": "positive",
+      "incremental_skill_vs_state_status": "nonpositive",
+      "ood_fraction": 0.21428571428571427,
+      "ood_features": [
+        "convexity_violation",
+        "arb_score",
+        "arb_butterfly_n"
+      ],
+      "contribution_sum": -7.959112922692039,
+      "model_alert_before_operational_gate": false,
+      "alert_suppressed_reason": "cross_horizon_inconsistency"
+    },
+    {
+      "days": 4,
+      "evaluation": {
+        "n": 111,
+        "positives": 58,
+        "prevalence": 0.5225225225225225,
+        "brier": 0.24122972279655472,
+        "baseline_brier": 0.30773936507658567,
+        "brier_skill": 0.2161232842716726,
+        "roc_auc": 0.7241379310344828,
+        "average_precision": 0.8114707392791835,
+        "precision": 0.7446808510638298,
+        "recall": 0.603448275862069,
+        "alert_rate": 0.42342342342342343,
+        "alerts": 47,
+        "mode": "logistic",
+        "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+        "current_state_baseline_brier": 0.17606556608549936,
+        "skill_vs_current_state_baseline": -0.37011301051002166
+      },
+      "probability": 0.0002172557579479116,
+      "threshold": 0.26060275046661346,
+      "alert": false,
+      "model_status": "logistic",
+      "baseline_probability": 0.2811791383219955,
+      "top_contributions": [
+        {
+          "feature": "atm_iv_daily_max",
+          "value": 0.70546401834166,
+          "imputed": false,
+          "log_odds_contribution": -4.4780420631416
+        },
+        {
+          "feature": "convexity_violation_daily_max",
+          "value": 8.757729981346454,
+          "imputed": false,
+          "log_odds_contribution": -4.027159752281595
+        },
+        {
+          "feature": "arb_score_std5d",
+          "value": 53.226886296204285,
+          "imputed": false,
+          "log_odds_contribution": -2.804169089721888
+        },
+        {
+          "feature": "convexity_violation_mean5d",
+          "value": 3.1417023910110076,
+          "imputed": false,
+          "log_odds_contribution": 2.25045645343457
+        },
+        {
+          "feature": "convexity_violation_lag1d",
+          "value": 4.098925084698742,
+          "imputed": false,
+          "log_odds_contribution": 1.7592427137238067
+        },
+        {
+          "feature": "arb_score",
+          "value": 151.08176058047187,
+          "imputed": false,
+          "log_odds_contribution": -1.5743851129558653
+        }
+      ],
+      "intercept_log_odds": -1.3225611416063237,
+      "total_log_odds": -8.434218011020738,
+      "forecast_origin": "2026-04-14T15:00:00",
+      "horizon_basis": "以数据截至的已完成收盘为原点，之后的观测交易日；未来确切日期未知",
+      "interpretation": "未来观测交易日窗口曲面代理超阈值概率",
+      "heldout_skill_status": "positive",
+      "incremental_skill_vs_state_status": "nonpositive",
+      "ood_fraction": 0.21428571428571427,
+      "ood_features": [
+        "convexity_violation",
+        "arb_score",
+        "arb_butterfly_n"
+      ],
+      "contribution_sum": -7.111656869414413,
+      "model_alert_before_operational_gate": false,
+      "alert_suppressed_reason": "cross_horizon_inconsistency"
+    },
+    {
+      "days": 5,
+      "evaluation": {
+        "n": 109,
+        "positives": 58,
+        "prevalence": 0.5321100917431193,
+        "brier": 0.2475685316351242,
+        "baseline_brier": 0.2967588139695664,
+        "brier_skill": 0.1657584544042786,
+        "roc_auc": 0.6903313049357674,
+        "average_precision": 0.7973310198668607,
+        "precision": 0.6666666666666666,
+        "recall": 0.6206896551724138,
+        "alert_rate": 0.4954128440366973,
+        "alerts": 54,
+        "mode": "logistic",
+        "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+        "current_state_baseline_brier": 0.17669463772503843,
+        "skill_vs_current_state_baseline": -0.40110947803846475
+      },
+      "probability": 0.00036420183136149595,
+      "threshold": 0.2756872620552939,
+      "alert": false,
+      "model_status": "logistic",
+      "baseline_probability": 0.3135011441647597,
+      "top_contributions": [
+        {
+          "feature": "convexity_violation_daily_max",
+          "value": 8.757729981346454,
+          "imputed": false,
+          "log_odds_contribution": -4.718401488723234
+        },
+        {
+          "feature": "atm_iv_daily_max",
+          "value": 0.70546401834166,
+          "imputed": false,
+          "log_odds_contribution": -4.327239973251188
+        },
+        {
+          "feature": "convexity_violation_mean5d",
+          "value": 3.1417023910110076,
+          "imputed": false,
+          "log_odds_contribution": 2.9788589413363087
+        },
+        {
+          "feature": "arb_score_std5d",
+          "value": 53.226886296204285,
+          "imputed": false,
+          "log_odds_contribution": -2.94315723898793
+        },
+        {
+          "feature": "arb_score",
+          "value": 151.08176058047187,
+          "imputed": false,
+          "log_odds_contribution": -2.552817304056627
+        },
+        {
+          "feature": "convexity_violation_lag1d",
+          "value": 4.098925084698742,
+          "imputed": false,
+          "log_odds_contribution": 1.4421500330711072
+        }
+      ],
+      "intercept_log_odds": -0.9692392002042163,
+      "total_log_odds": -7.917438094064437,
+      "forecast_origin": "2026-04-14T15:00:00",
+      "horizon_basis": "以数据截至的已完成收盘为原点，之后的观测交易日；未来确切日期未知",
+      "interpretation": "未来观测交易日窗口曲面代理超阈值概率",
+      "heldout_skill_status": "positive",
+      "incremental_skill_vs_state_status": "nonpositive",
+      "ood_fraction": 0.21428571428571427,
+      "ood_features": [
+        "convexity_violation",
+        "arb_score",
+        "arb_butterfly_n"
+      ],
+      "contribution_sum": -6.94819889386022,
+      "model_alert_before_operational_gate": false,
+      "alert_suppressed_reason": "cross_horizon_inconsistency"
+    }
+  ],
+  "signals": {
+    "atm_iv": 0.32263695086853006,
+    "convexity_violation": 5.395760123529051,
+    "term_slope": 0.0,
+    "skew_val": 0.02187756883556652,
+    "gamma_concentration": 0.5134218697920261,
+    "vega_concentration": 0.05762094157104293,
+    "arb_score": 151.08176058047187,
+    "arb_calendar_n": 0.0,
+    "arb_butterfly_n": 54.0,
+    "arb_parity_n": 180.0,
+    "liquidity_ratio": 0.6,
+    "iv_near": 0.32263695086853006,
+    "iv_far": 0.32263695086853006,
+    "n_contracts": 80.0,
+    "atm_iv_past_q95": 1.4001670896900433,
+    "convexity_violation_past_q95": 34.6801126059266,
+    "currently_exceeding": false,
+    "atm_iv_daily_max": 0.70546401834166,
+    "convexity_violation_daily_max": 8.757729981346454,
+    "signal_description": "观测值和历史阈值；模型贡献另以校准后的log-odds列示，均不代表因果作用。"
+  },
+  "warnings": [
+    "[2, 3, 4, 5]日复杂模型在保留测试段未超过简单状态基准，不能宣称增量预测能力。",
+    "部分观测超出训练期99%范围，需谨慎解读概率。",
+    "各期限累计概率出现非单调，违反嵌套事件的一致性；保留原始估计供研究查看，全部预警已被运行时一致性检查暂停。"
+  ],
+  "quality": {
+    "last_completed_session_snapshots": 37,
+    "newer_completed_dates_without_symbol": [],
+    "pending_incomplete_session_snapshots": 0,
+    "past_observations": 60,
+    "raw_feature_missing_fraction": 0.0,
+    "maximum_ood_fraction": 0.21428571428571427,
+    "horizon_probabilities_consistent": false
+  },
+  "evaluation": {
+    "1": {
+      "n": 117,
+      "positives": 39,
+      "prevalence": 0.3333333333333333,
+      "brier": 0.12678439263583421,
+      "baseline_brier": 0.2608218937765887,
+      "brier_skill": 0.5139043321860339,
+      "roc_auc": 0.8750821827744905,
+      "average_precision": 0.8388406076554955,
+      "precision": 0.8235294117647058,
+      "recall": 0.717948717948718,
+      "alert_rate": 0.2905982905982906,
+      "alerts": 34,
+      "mode": "logistic",
+      "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+      "current_state_baseline_brier": 0.15823389993723755,
+      "skill_vs_current_state_baseline": 0.19875328430808803
+    },
+    "2": {
+      "n": 115,
+      "positives": 50,
+      "prevalence": 0.43478260869565216,
+      "brier": 0.19059956649892817,
+      "baseline_brier": 0.3038367002579137,
+      "brier_skill": 0.37269076995262085,
+      "roc_auc": 0.8113846153846154,
+      "average_precision": 0.8447157900751521,
+      "precision": 0.7954545454545454,
+      "recall": 0.7,
+      "alert_rate": 0.3826086956521739,
+      "alerts": 44,
+      "mode": "logistic",
+      "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+      "current_state_baseline_brier": 0.17809977883007516,
+      "skill_vs_current_state_baseline": -0.07018418411838145
+    },
+    "3": {
+      "n": 113,
+      "positives": 54,
+      "prevalence": 0.4778761061946903,
+      "brier": 0.21699984620859192,
+      "baseline_brier": 0.30481991971604544,
+      "brier_skill": 0.2881047721200838,
+      "roc_auc": 0.7630257376020088,
+      "average_precision": 0.8133142360203456,
+      "precision": 0.7083333333333334,
+      "recall": 0.6296296296296297,
+      "alert_rate": 0.4247787610619469,
+      "alerts": 48,
+      "mode": "logistic",
+      "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+      "current_state_baseline_brier": 0.18046203396365285,
+      "skill_vs_current_state_baseline": -0.20246813937771657
+    },
+    "4": {
+      "n": 111,
+      "positives": 58,
+      "prevalence": 0.5225225225225225,
+      "brier": 0.24122972279655472,
+      "baseline_brier": 0.30773936507658567,
+      "brier_skill": 0.2161232842716726,
+      "roc_auc": 0.7241379310344828,
+      "average_precision": 0.8114707392791835,
+      "precision": 0.7446808510638298,
+      "recall": 0.603448275862069,
+      "alert_rate": 0.42342342342342343,
+      "alerts": 47,
+      "mode": "logistic",
+      "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+      "current_state_baseline_brier": 0.17606556608549936,
+      "skill_vs_current_state_baseline": -0.37011301051002166
+    },
+    "5": {
+      "n": 109,
+      "positives": 58,
+      "prevalence": 0.5321100917431193,
+      "brier": 0.2475685316351242,
+      "baseline_brier": 0.2967588139695664,
+      "brier_skill": 0.1657584544042786,
+      "roc_auc": 0.6903313049357674,
+      "average_precision": 0.7973310198668607,
+      "precision": 0.6666666666666666,
+      "recall": 0.6206896551724138,
+      "alert_rate": 0.4954128440366973,
+      "alerts": 54,
+      "mode": "logistic",
+      "mode_reason": "minimum validation Brier among constant/state/logistic; ties prefer simpler candidate",
+      "current_state_baseline_brier": 0.17669463772503843,
+      "skill_vs_current_state_baseline": -0.40110947803846475
+    }
+  },
+  "age_calendar_days": 0.37498842592592596,
+  "trading_date": "2026-04-14"
+}

@@ -25,3 +25,7 @@ headless = true
 
 [browser]
 gatherUsageStats = false
+
+[client]
+# The new predictive workbench has its own tabs; legacy competition pages remain in source.
+showSidebarNavigation = false
