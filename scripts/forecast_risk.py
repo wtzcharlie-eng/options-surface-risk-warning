@@ -18,14 +18,15 @@ def main():
     parser.add_argument('--as-of', help='ISO timestamp, Shanghai local time; omitted means current time')
     parser.add_argument('--days', type=int, choices=[1, 2, 3, 4, 5], default=3)
     parser.add_argument('--anchor-dir', type=Path, default=ROOT / 'data_out' / 'anchor')
-    parser.add_argument('--model-dir', type=Path, default=ROOT / 'data_out' / 'predictive')
+    parser.add_argument('--model-dir', type=Path, help='Explicit artifact directory; otherwise select the requested version')
+    parser.add_argument('--version', choices=['auto', 'v1', 'v2'], default='auto')
     parser.add_argument('--question', help='Optional risk question; remote provider requires environment settings')
     parser.add_argument('--out', type=Path)
     args = parser.parse_args()
     try:
         from dotenv import load_dotenv
         load_dotenv(ROOT / '.env', override=False)
-        snapshot, report = get_snapshot(args.symbol, args.as_of, args.anchor_dir, args.model_dir)
+        snapshot, report = get_snapshot(args.symbol, args.as_of, args.anchor_dir, args.model_dir, args.version)
         result = {'snapshot': snapshot}
         if args.question:
             response = answer(args.question, build_evidence(snapshot, args.days, report), config=LLMConfig.from_env())

@@ -34,7 +34,7 @@ jobs:
       - name: Install tested dependencies
         run: python -m pip install -r requirements-predictive.lock.txt
       - name: Test predictive causality and grounded assistant
-        run: python -m pytest tests/test_predictive.py tests/test_predictive_independent.py tests/test_risk_assistant.py -q
+        run: python -m pytest tests/test_predictive*.py tests/test_risk_assistant.py tests/test_v2_assistant_evidence.py -q
       - name: Verify model and algorithm provenance
         run: |
           python - <<'PY'
@@ -46,7 +46,12 @@ jobs:
           for file, field in [('data_out/predictive/model.json', 'model_sha256'),
                               ('vol_surface/predictive.py', 'algorithm_source_sha256')]:
               assert hashlib.sha256((root / file).read_bytes()).hexdigest() == report[field], file
-          print('Model and algorithm checksums verified')
+          report_v2 = json.loads((root / 'data_out/predictive_v2/report.json').read_text())
+          assert hashlib.sha256((root / 'data_out/predictive_v2/model.json').read_bytes()).hexdigest() == report_v2['model_sha256']
+          for name, expected in report_v2['algorithm_source_sha256'].items():
+              assert hashlib.sha256((root / 'vol_surface' / name).read_bytes()).hexdigest() == expected, name
+          assert hashlib.sha256((root / 'scripts/train_predictive_v2.py').read_bytes()).hexdigest() == report_v2['training_script_sha256']
+          print('Frozen V1 and current V2 model/source checksums verified')
           PY
       - name: Smoke test interactive dashboard
         run: python scripts/smoke_dashboard.py

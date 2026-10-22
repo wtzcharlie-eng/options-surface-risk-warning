@@ -234,6 +234,16 @@ _LABELS = {
     "fallback_to_symbol_baseline": "是否回退品种整体基础率",
     "training_observations_in_state": "该状态的训练样本数",
     "alert_suppressed_reason": "预警暂缓原因",
+    "model_version": "预测版本", "prediction_task": "本次预测任务",
+    "prediction_task_definition": "任务定义", "evaluation_baseline": "评估对照基线",
+    "hazard_step": "条件风险率对应的未来交易日", "contribution_scale": "贡献尺度",
+    "evaluation_context": "评估时间口径",
+    "probability_coverage": "概率可用率（含统计基准）",
+    "predictive_signal_coverage": "增量模型覆盖率",
+    "recall_all_origins": "召回率（全部预测原点，含弃权）",
+    "false_alarms": "误报数", "abstentions": "弃权原点数",
+    "abstentions_count_as_non_alerts": "弃权按未预警计入",
+    "n_total": "全部预测原点数", "n_available": "概率可用原点数",
 }
 
 
@@ -242,11 +252,18 @@ def _display(value: Any, path: str) -> str:
         return "暂不可用"
     if isinstance(value, bool):
         return "是" if value else "否"
+    if path.endswith('prediction_task'):
+        return {'onset':'正常状态下的新异常出现',
+                'persistence':'当前异常后的再次超阈值',
+                'mixed_exceedance':'新异常与延续混合'}.get(str(value), str(value))
     if path.endswith("model_status"):
         return {"baseline_only": "训练期历史基础发生率", "state_baseline": "简单状态条件概率模型",
-                "logistic": "校准逻辑回归", "out_of_distribution": "超出训练分布，已暂停"}.get(str(value), str(value))
+                "logistic": "校准逻辑回归", "out_of_distribution": "超出训练分布，已暂停",
+                "hazard_baseline": "同任务的条件风险率统计基准",
+                "joint_logistic": "联合期限风险率模型",
+                "joint_logistic_decay": "带时间衰减的联合期限风险率模型"}.get(str(value), str(value))
     if isinstance(value, float):
-        if any(word in path.lower() for word in ("probability", "precision", "recall", "event_rate", "prevalence", "alert_rate")) and 0 <= value <= 1:
+        if any(word in path.lower() for word in ("probability", "precision", "recall", "event_rate", "prevalence", "alert_rate", "coverage")) and 0 <= value <= 1:
             return f"{value:.2%}"
         return f"{value:.6g}"
     return str(value)
@@ -255,15 +272,22 @@ def _display(value: Any, path: str) -> str:
 def _local_answer(question: str, fields: dict[str, Any], history: list[dict[str, str]]) -> tuple[str, list[str]]:
     if not fields:
         return ("当前使用本地证据解读，未调用大模型。尚无可用预测快照，请先生成预测与时间外评估结果。无法据此判断未来风险。", [])
-    evaluation = bool(re.search(r"评估|回测|效果|准确|可靠|校准|泛化|过拟合|brier|auc|precision|recall", question, re.I))
+    evaluation_pattern = r"评估|回测|效果|准确|可靠|校准|泛化|过拟合|覆盖|可用率|弃权|运行|召回|误报|精确率|brier|auc|precision|recall|coverage|abstain|operational"
+    operational_pattern = r"覆盖|可用率|弃权|运行|召回|误报|精确率|coverage|abstain|operational|precision|recall"
+    evaluation = bool(re.search(evaluation_pattern, question, re.I))
+    operational_question = bool(re.search(operational_pattern, question, re.I))
     if re.search(r"继续|为什么|解释|那个|这个|具体", question) and history:
-        evaluation = evaluation or any(re.search(r"评估|回测|效果|准确|brier|auc", entry["content"], re.I) for entry in history[-2:])
-    identity = [key for key in fields if key in {"symbol", "as_of", "timestamp", "data_timestamp", "horizon", "horizon_bars", "horizon_steps", "horizon_days", "horizon_trading_days"}]
+        evaluation = evaluation or any(re.search(evaluation_pattern, entry["content"], re.I) for entry in history[-2:])
+        operational_question = operational_question or any(re.search(operational_pattern, entry["content"], re.I) for entry in history[-2:])
+    identity = [key for key in fields if key in {"symbol", "as_of", "timestamp", "data_timestamp", "horizon", "horizon_bars", "horizon_steps", "horizon_days", "horizon_trading_days", "model_version", "prediction_task"}]
     direct_forecast = [key for key in fields if key.startswith("forecast.") and key.count(".") == 1]
     state_fallback_path = "forecast.state_condition.fallback_to_symbol_baseline"
     state_fallback = fields.get(state_fallback_path) is True
     suppressed_path = "forecast.alert_suppressed_reason"
     critical = [suppressed_path] if fields.get(suppressed_path) else []
+    critical += [key for key in ('prediction_task_definition',) if key in fields]
+    if evaluation:
+        critical += [key for key in ('evaluation_context', 'evaluation_baseline') if key in fields]
     if state_fallback:
         critical += [key for key in (state_fallback_path, "forecast.state_condition.training_observations_in_state") if key in fields]
     if evaluation:
@@ -271,9 +295,25 @@ def _local_answer(question: str, fields: dict[str, Any], history: list[dict[str,
         canonical = [key for key in fields if key.startswith("evaluation.")]
         candidates = canonical or [key for key in fields if any(word in key.lower() for word in ("evaluation", "metric", "brier", "auc", "precision", "recall", "test_", "calibrat"))]
         relevant = sorted(candidates, key=lambda key: preferred.index(key.rsplit(".", 1)[-1]) if key.rsplit(".", 1)[-1] in preferred else len(preferred))
+        operational_preferred = ('probability_coverage', 'predictive_signal_coverage', 'recall_all_origins',
+                                 'precision', 'false_alarms', 'abstentions', 'abstentions_count_as_non_alerts',
+                                 'n_total', 'n_available', 'alerts')
+        operational = [f'operational_evaluation.{name}' for name in operational_preferred
+                       if f'operational_evaluation.{name}' in fields]
+        if operational_question and operational:
+            relevant = operational + relevant
+        elif fields.get('model_version') == 'v2' and operational:
+            # Keep both probability skill and deployed coverage/decisions in a
+            # short reliability answer.  Do not substitute raw alert recall for
+            # the system's recall after operational abstentions.
+            raw_core = [f'evaluation.{name}' for name in ('n', 'brier', 'baseline_brier', 'brier_skill')
+                        if f'evaluation.{name}' in fields]
+            relevant = list(dict.fromkeys(raw_core + operational[:5] + relevant))
     else:
         preferred = ("probability", "model_status", "threshold", "alert", "baseline_probability", "interpretation")
         relevant = sorted(direct_forecast, key=lambda key: preferred.index(key.rsplit(".", 1)[-1]) if key.rsplit(".", 1)[-1] in preferred else len(preferred))[:6]
+        if fields.get('forecast.model_status') == 'hazard_baseline':
+            relevant = [key for key in relevant if key != 'forecast.threshold']
         if state_fallback:
             relevant = [key for key in relevant if key != "forecast.interpretation"]
         relevant += [key for key in fields if key in {"target_definition", "event_definition", "risk_scope", "mode"}]
@@ -282,7 +322,7 @@ def _local_answer(question: str, fields: dict[str, Any], history: list[dict[str,
         if not direct_forecast:
             relevant += [key for key in fields if any(word in key.lower() for word in ("predict", "probability", "signal", "risk_level", "threshold", "risk_status"))]
         if re.search(r"为什么|原因|信号|特征|贡献|解释", question):
-            contributions = [key for key in fields if re.match(r"forecast\.top_contributions\.0\.(feature|value|log_odds_contribution)$", key)]
+            contributions = [key for key in fields if re.match(r"forecast\.top_contributions\.0\.(feature|value|log_odds_contribution|hazard_step|contribution_scale)$", key)]
             target_fields = [key for key in relevant if key in {"target_definition", "event_definition"}]
             relevant = list(dict.fromkeys(relevant[:6] + target_fields + contributions + relevant[6:]))
     quality = [key for key in fields if any(word in key.lower() for word in ("warning", "data_quality", "stale", "quality_ok"))]
@@ -297,6 +337,12 @@ def _local_answer(question: str, fields: dict[str, Any], history: list[dict[str,
             label = "显示概率（训练期历史基础率）"
         elif path == "forecast.probability" and state_fallback:
             label = "显示概率（该品种整体历史基础率）"
+        elif path == 'forecast.baseline_probability' and fields.get('model_version') == 'v2':
+            label = '同任务已校准条件基准概率'
+        if fields.get('model_version') == 'v2' and path.startswith('evaluation.'):
+            label = f'保护前研究 · {label}'
+        elif path.startswith('operational_evaluation.'):
+            label = f'运行保护后 · {label}'
         lines.append(f"- {label}：{_display(fields[path], path)} [{path}]")
     if fields.get("forecast.model_status") == "baseline_only":
         lines += ["", "当前期限仅展示训练期历史基础发生率，验证结果未支持启用增量预测模型，因此不会发出预测预警。[forecast.model_status]"]
@@ -309,17 +355,33 @@ def _local_answer(question: str, fields: dict[str, Any], history: list[dict[str,
             lines += ["", "当前采用简单状态条件概率模型：按品种及当前是否已超阈值，使用训练期拟合的条件发生率。它不代表复杂模型带来了增量提升。[forecast.model_status]"]
         if "forecast.model_status" not in selected:
             selected.append("forecast.model_status")
+    elif fields.get('forecast.model_status') == 'hazard_baseline':
+        lines += ['', '当前采用与本次任务一致的条件风险率统计基准，完整期限曲线由同一组条件风险率计算。统计参考，预测预警关闭；它不代表特征模型已获得增量预测能力。[forecast.model_status]']
+        if 'forecast.model_status' not in selected:
+            selected.append('forecast.model_status')
     if fields.get(suppressed_path):
         lines += ["", f"当前预警已暂缓，须按上列抑制原因排查后再解读预警状态。[{suppressed_path}]"]
     if evaluation:
         lines += ["", "Brier 分数越低越好；应与同一测试集的基线比较。ROC AUC 衡量排序，不能单独证明概率可靠；精确率和召回率取决于阈值及测试事件数量。未提供的指标不能推断。"]
+        if fields.get('model_version') == 'v2':
+            lines += ['“保护前研究”是运行保护前的原始预测统计；“运行保护后”统计保留全部预测原点，区别于仅在概率可用样本上计算的表现。']
+            abstention_path = 'operational_evaluation.abstentions_count_as_non_alerts'
+            if fields.get(abstention_path) is True:
+                lines += [f'运行召回率把弃权视为未发出预警，弃权原点仍计入事件分母。[{abstention_path}]']
+                if abstention_path not in selected:
+                    selected.append(abstention_path)
+            if operational_question and not any(key.startswith('operational_evaluation.') for key in fields):
+                lines += ['当前快照未提供运行保护后的覆盖率、弃权或运行召回统计，不能用保护前研究指标代替。']
         skill_path = next((key for key in selected if key.rsplit(".", 1)[-1] in {"brier_skill", "brier_skill_score"}), None)
         if skill_path and isinstance(fields[skill_path], (float, int)) and fields[skill_path] <= 0:
-            lines += [f"当前测试技巧分数未显示优于基础率基线，不能据此宣称有可用增量预测能力。[{skill_path}]"]
+            lines += [f"当前测试技巧分数未显示优于报告所用基线，不能据此宣称有可用增量预测能力。[{skill_path}]"]
     else:
         lines += ["", "这些数值对应快照的品种、时点和预测视窗。预测概率表示已定义风险事件的估计概率，不代表价格涨跌、持仓损失或必然发生。"]
     if not evaluation and any("top_contributions" in key for key in selected):
-        lines += ["特征贡献仅解释模型内部的对数几率分解，不代表因果关系。"]
+        if fields.get('model_version') == 'v2':
+            lines += ['贡献只解释指定交易日条件风险率的对数几率，不是累计风险概率的直接加总，也不代表因果。']
+        else:
+            lines += ["特征贡献仅解释模型内部的对数几率分解，不代表因果关系。"]
     if re.search(r"价格|涨|跌|收益|盈亏|p.?&.?l|买|卖|开仓|下单|交易", question, re.I):
         lines += ["快照未提供经过验证的价格方向或持仓盈亏模型，不能生成目标价、盈亏数字或交易指令。"]
     return "\n".join(lines), selected
@@ -335,9 +397,14 @@ _SYSTEM_PROMPT = """你是中文期权曲面风险解释助手。唯一事实来
 事件概率不是价格方向或损失概率。说明事件定义、样本时点、视窗、数据质量；不要把回测表现说成未来保证。
 若 forecast.model_status 为 baseline_only，显示值仅是训练期历史基础发生率，不得称为已验证的增量预测；该模式不会发预测预警。
 若 forecast.model_status 为 state_baseline，使用的是按品种与当前是否已超阈值拟合的简单状态条件概率模型；可以有风险概率与按验证阈值发出的预警，但不能称为复杂模型的增量提升。
+若 forecast.model_status 为 hazard_baseline，使用的是同任务、经过独立校准的条件风险率统计基准：统计参考，预测预警关闭，不能称为复杂特征模型的增量提升。该模式的 threshold 是关闭预警的占位值，不是真实验证阈值，不展示也不据此解释为“未达到预警阈值”。
+model_version 为 v2 时，forecast.baseline_probability 是同任务已校准条件基准概率，不是未经校准的训练期历史基础发生率。
+prediction_task 为 onset 表示当前正常时预测未来新异常；为 persistence 表示当前已异常时未来窗口至少一次再次超阈值，不代表全程异常，更不是恢复时长预测。
+联合期限模型的 top_contributions 对应其 hazard_step 的条件风险率对数几率，不能当作累计概率的贡献加总。
 若 forecast.state_condition.fallback_to_symbol_baseline 为 true，当前状态在训练期没有观测，显示概率已回退品种整体基础率；不能解释为同状态条件发生率。
 若 forecast.alert_suppressed_reason 非空，优先说明该预警抑制原因。alert=false 可以是由于跨期限冲突等约束而暂缓，不能自动说概率未达到阈值。
 对于评估：Brier 越低越好，要与同集基线比较；AUC 仅衡量排序；不能仅凭单项指标宣称可部署。
+evaluation 是运行保护前的研究统计；operational_evaluation 是运行保护后的统计。回答覆盖率、弃权、运行召回或运行误报问题时优先使用 operational_evaluation，不得把 evaluation.recall 当作运行召回。probability_coverage 包含统计基准；predictive_signal_coverage 只含增量模型通过保护的原点，两者不能混用。若 abstentions_count_as_non_alerts 为 true，运行召回包含所有原点，弃权按未发出预警计入分母。解释评估时保留 evaluation_context 中的事后统计时间口径。
 测试 Brier 技巧分数不为正时，须说明该测试未支持超越基线的增量预测能力。
 给出简洁有用的风险排查建议，不能建议具体买卖、数量、杠杆或执行交易。不要输出凭据。
 严格输出 JSON 对象，只有 answer（中文字符串）和 cited_fields（字段ID字符串数组）两个键。

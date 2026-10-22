@@ -8,6 +8,8 @@ sys.path.insert(0,str(root))
 at=AppTest.from_file(str(root/'dashboard/predictive_app.py'), default_timeout=90).run()
 assert not at.exception, [x.message for x in at.exception]
 assert len(at.metric)==3, [(m.label,m.value) for m in at.metric]
+if (root/'data_out/predictive_v2/model.json').exists():
+    assert at.sidebar.radio[0].value == 'v2'
 print('metrics',[(m.label,m.value) for m in at.metric])
 at.button[0].click().run()
 assert not at.exception, [x.message for x in at.exception]
@@ -30,3 +32,14 @@ assert any('4000' in e.value for e in at.error)
 at.chat_input[0].set_value('   ').run()
 assert not at.exception, [x.message for x in at.exception]
 print('long and blank questions handled without crashing')
+
+if (root/'data_out/predictive_v2/model.json').exists():
+    at.sidebar.radio[0].set_value('v1').run()
+    assert not at.exception, [x.message for x in at.exception]
+    assert at.session_state['risk_chat_history'] == []
+    assert len(at.metric) == 3
+    at.sidebar.radio[0].set_value('v2').run()
+    assert not at.exception, [x.message for x in at.exception]
+    assert at.session_state['risk_chat_history'] == []
+    assert any('联合模型共享一条' in c.value for c in at.caption)
+    print('V2/V1 version switching and evidence context reset verified')

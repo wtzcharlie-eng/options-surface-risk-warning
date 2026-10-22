@@ -11,8 +11,8 @@ if [[ ! -x .venv/bin/python ]]; then
     .venv/bin/python -m pip install -r requirements-predictive.lock.txt
   fi
 fi
-if [[ ! -f data_out/predictive/model.json ]]; then
-  .venv/bin/python scripts/train_predictive.py
+if [[ ! -f data_out/predictive_v2/model.json ]]; then
+  .venv/bin/python scripts/train_predictive_v2.py
 fi
 open http://127.0.0.1:8502
 exec .venv/bin/python -m streamlit run dashboard/predictive_app.py --server.address 127.0.0.1 --server.port 8502
