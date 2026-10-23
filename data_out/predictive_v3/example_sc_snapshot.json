@@ -1,0 +1,1526 @@
+{
+  "snapshot": {
+    "status": "degraded",
+    "symbol": "sc",
+    "as_of": "2026-04-14T23:59:59",
+    "model_version": "v3",
+    "target_description": "已完成日盘收盘后，联合预测未来1–5个观测交易日内首次未来超阈值的累计概率。ATM隐波或凸性违反代理任一日最大值超过预测日前最近60个完整交易日（至少20日）95%分位即为事件；阈值在预测原点冻结。当前正常与已异常状态分开建模。所有期限共享一条离散时间风险率曲线，累计概率为1−∏(1−风险率)。这是曲面异常代理，不是持仓亏损概率或VaR。观测交易日不是官方交易所日历。",
+    "data_timestamp": "2026-04-14T15:00:00",
+    "age_minutes": 539.9833333333333,
+    "horizons": [
+      {
+        "days": 1,
+        "probability": 0.03199251591943131,
+        "hazard_probability": 0.03199251591943132,
+        "threshold": 0.0884148512003924,
+        "alert": false,
+        "model_status": "joint_logistic_shrunk",
+        "baseline_probability": 0.06321114713694809,
+        "prediction_task": "onset",
+        "prediction_task_definition": "当前两项曲面代理均未超阈值，预测未来窗口内首次出现超阈值。",
+        "evaluation": {
+          "n": 74,
+          "positives": 11,
+          "prevalence": 0.14864864864864866,
+          "brier": 0.1325127662007258,
+          "baseline_brier": 0.13385179456814109,
+          "brier_skill": 0.010003813335006217,
+          "roc_auc": 0.468975468975469,
+          "average_precision": 0.18474406209257282,
+          "precision": 0.2777777777777778,
+          "recall": 0.45454545454545453,
+          "alert_rate": 0.24324324324324326,
+          "alerts": 18,
+          "mean_probability": 0.07113992174085407,
+          "log_loss": 0.4637358632690744,
+          "calibration_bias": -0.07750872690779459,
+          "ece_5_fixed_bins": 0.07750872690779459,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 74,
+              "mean_probability": 0.07113992174085407,
+              "event_rate": 0.14864864864864866
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.13385179456814109,
+          "skill_vs_current_state_baseline": 0.010003813335006217,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "heldout_skill_status": "positive",
+        "incremental_skill_vs_state_status": "positive",
+        "forecast_origin": "2026-04-14T15:00:00",
+        "horizon_basis": "之后的观测交易日；未来确切日期未知",
+        "ood_fraction": 0.2222222222222222,
+        "ood_features": [
+          "convexity_violation",
+          "arb_score"
+        ],
+        "interpretation": "特征与统计风险率保守融合后合成的未来窗口累计概率",
+        "top_contributions": [],
+        "intercept_log_odds": null,
+        "total_log_odds": null,
+        "contribution_scale": "not_additive_after_hazard_mixture",
+        "contribution_hazard_step": 1,
+        "feature_hazard_weight": 0.5
+      },
+      {
+        "days": 2,
+        "probability": 0.05885367318741053,
+        "hazard_probability": 0.027748914868661784,
+        "threshold": 0.16156945319694582,
+        "alert": false,
+        "model_status": "joint_logistic_shrunk",
+        "baseline_probability": 0.11447914895839795,
+        "prediction_task": "onset",
+        "prediction_task_definition": "当前两项曲面代理均未超阈值，预测未来窗口内首次出现超阈值。",
+        "evaluation": {
+          "n": 74,
+          "positives": 17,
+          "prevalence": 0.22972972972972974,
+          "brier": 0.18030372944492568,
+          "baseline_brier": 0.1902366773761643,
+          "brier_skill": 0.052213632345973426,
+          "roc_auc": 0.5128998968008256,
+          "average_precision": 0.3907386272639551,
+          "precision": 0.4444444444444444,
+          "recall": 0.47058823529411764,
+          "alert_rate": 0.24324324324324326,
+          "alerts": 18,
+          "mean_probability": 0.13211499450009195,
+          "log_loss": 0.5670987181305247,
+          "calibration_bias": -0.0976147352296378,
+          "ece_5_fixed_bins": 0.0976147352296378,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 65,
+              "mean_probability": 0.11492233197277817,
+              "event_rate": 0.18461538461538463
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 9,
+              "mean_probability": 0.2562842238640248,
+              "event_rate": 0.5555555555555556
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.1902366773761643,
+          "skill_vs_current_state_baseline": 0.052213632345973426,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "heldout_skill_status": "positive",
+        "incremental_skill_vs_state_status": "positive",
+        "forecast_origin": "2026-04-14T15:00:00",
+        "horizon_basis": "之后的观测交易日；未来确切日期未知",
+        "ood_fraction": 0.2222222222222222,
+        "ood_features": [
+          "convexity_violation",
+          "arb_score"
+        ],
+        "interpretation": "特征与统计风险率保守融合后合成的未来窗口累计概率",
+        "top_contributions": [],
+        "intercept_log_odds": null,
+        "total_log_odds": null,
+        "contribution_scale": "not_additive_after_hazard_mixture",
+        "contribution_hazard_step": 2,
+        "feature_hazard_weight": 0.5
+      },
+      {
+        "days": 3,
+        "probability": 0.0832657165709294,
+        "hazard_probability": 0.0259386268511465,
+        "threshold": 0.20425035733092037,
+        "alert": false,
+        "model_status": "joint_logistic_shrunk",
+        "baseline_probability": 0.1597435354830009,
+        "prediction_task": "onset",
+        "prediction_task_definition": "当前两项曲面代理均未超阈值，预测未来窗口内首次出现超阈值。",
+        "evaluation": {
+          "n": 74,
+          "positives": 20,
+          "prevalence": 0.2702702702702703,
+          "brier": 0.19797203648267547,
+          "baseline_brier": 0.2094404103810407,
+          "brier_skill": 0.054757216515669005,
+          "roc_auc": 0.5120370370370371,
+          "average_precision": 0.4114048031504255,
+          "precision": 0.42857142857142855,
+          "recall": 0.45,
+          "alert_rate": 0.28378378378378377,
+          "alerts": 21,
+          "mean_probability": 0.18627732488695145,
+          "log_loss": 0.5996511375267387,
+          "calibration_bias": -0.08399294538331883,
+          "ece_5_fixed_bins": 0.08399294538331885,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 53,
+              "mean_probability": 0.14282098847580696,
+              "event_rate": 0.20754716981132076
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 19,
+              "mean_probability": 0.28274916108020615,
+              "event_rate": 0.42105263157894735
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 2,
+              "mean_probability": 0.42138779594636006,
+              "event_rate": 0.5
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.2094404103810407,
+          "skill_vs_current_state_baseline": 0.054757216515669005,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "heldout_skill_status": "positive",
+        "incremental_skill_vs_state_status": "positive",
+        "forecast_origin": "2026-04-14T15:00:00",
+        "horizon_basis": "之后的观测交易日；未来确切日期未知",
+        "ood_fraction": 0.2222222222222222,
+        "ood_features": [
+          "convexity_violation",
+          "arb_score"
+        ],
+        "interpretation": "特征与统计风险率保守融合后合成的未来窗口累计概率",
+        "top_contributions": [],
+        "intercept_log_odds": null,
+        "total_log_odds": null,
+        "contribution_scale": "not_additive_after_hazard_mixture",
+        "contribution_hazard_step": 3,
+        "feature_hazard_weight": 0.5
+      },
+      {
+        "days": 4,
+        "probability": 0.10359853983259748,
+        "hazard_probability": 0.022179625687841206,
+        "threshold": 0.24743907844427737,
+        "alert": false,
+        "model_status": "joint_logistic_shrunk",
+        "baseline_probability": 0.1963785358176915,
+        "prediction_task": "onset",
+        "prediction_task_definition": "当前两项曲面代理均未超阈值，预测未来窗口内首次出现超阈值。",
+        "evaluation": {
+          "n": 74,
+          "positives": 23,
+          "prevalence": 0.3108108108108108,
+          "brier": 0.2119538990708841,
+          "baseline_brier": 0.22730219625403802,
+          "brier_skill": 0.06752375223862916,
+          "roc_auc": 0.5021312872975278,
+          "average_precision": 0.48704488533777346,
+          "precision": 0.43478260869565216,
+          "recall": 0.43478260869565216,
+          "alert_rate": 0.3108108108108108,
+          "alerts": 23,
+          "mean_probability": 0.23315972495212015,
+          "log_loss": 0.6292323909402056,
+          "calibration_bias": -0.07765108585869068,
+          "ece_5_fixed_bins": 0.10958077599204764,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 37,
+              "mean_probability": 0.16048350962892613,
+              "event_rate": 0.32432432432432434
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 30,
+              "mean_probability": 0.2727132844978069,
+              "event_rate": 0.23333333333333334
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 7,
+              "mean_probability": 0.44779017932177345,
+              "event_rate": 0.5714285714285714
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.22730219625403802,
+          "skill_vs_current_state_baseline": 0.06752375223862916,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "heldout_skill_status": "positive",
+        "incremental_skill_vs_state_status": "positive",
+        "forecast_origin": "2026-04-14T15:00:00",
+        "horizon_basis": "之后的观测交易日；未来确切日期未知",
+        "ood_fraction": 0.2222222222222222,
+        "ood_features": [
+          "convexity_violation",
+          "arb_score"
+        ],
+        "interpretation": "特征与统计风险率保守融合后合成的未来窗口累计概率",
+        "top_contributions": [],
+        "intercept_log_odds": null,
+        "total_log_odds": null,
+        "contribution_scale": "not_additive_after_hazard_mixture",
+        "contribution_hazard_step": 4,
+        "feature_hazard_weight": 0.5
+      },
+      {
+        "days": 5,
+        "probability": 0.12264207709164199,
+        "hazard_probability": 0.021244429092616784,
+        "threshold": 0.293531936137543,
+        "alert": false,
+        "model_status": "joint_logistic_shrunk",
+        "baseline_probability": 0.2299186853381472,
+        "prediction_task": "onset",
+        "prediction_task_definition": "当前两项曲面代理均未超阈值，预测未来窗口内首次出现超阈值。",
+        "evaluation": {
+          "n": 74,
+          "positives": 24,
+          "prevalence": 0.32432432432432434,
+          "brier": 0.21649742235718597,
+          "baseline_brier": 0.22805048164828318,
+          "brier_skill": 0.05066009599100607,
+          "roc_auc": 0.4866666666666667,
+          "average_precision": 0.4835385433979927,
+          "precision": 0.43478260869565216,
+          "recall": 0.4166666666666667,
+          "alert_rate": 0.3108108108108108,
+          "alerts": 23,
+          "mean_probability": 0.2757144659311825,
+          "log_loss": 0.6359410767376185,
+          "calibration_bias": -0.04860985839314178,
+          "ece_5_fixed_bins": 0.17162370950759143,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 26,
+              "mean_probability": 0.179641927126396,
+              "event_rate": 0.4230769230769231
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 35,
+              "mean_probability": 0.2729003568924182,
+              "event_rate": 0.14285714285714285
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 12,
+              "mean_probability": 0.4639842811911277,
+              "event_rate": 0.5833333333333334
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 1,
+              "mean_probability": 0.6128565080930435,
+              "event_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.22805048164828318,
+          "skill_vs_current_state_baseline": 0.05066009599100607,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "heldout_skill_status": "positive",
+        "incremental_skill_vs_state_status": "positive",
+        "forecast_origin": "2026-04-14T15:00:00",
+        "horizon_basis": "之后的观测交易日；未来确切日期未知",
+        "ood_fraction": 0.2222222222222222,
+        "ood_features": [
+          "convexity_violation",
+          "arb_score"
+        ],
+        "interpretation": "特征与统计风险率保守融合后合成的未来窗口累计概率",
+        "top_contributions": [],
+        "intercept_log_odds": null,
+        "total_log_odds": null,
+        "contribution_scale": "not_additive_after_hazard_mixture",
+        "contribution_hazard_step": 5,
+        "feature_hazard_weight": 0.5
+      }
+    ],
+    "signals": {
+      "atm_iv": 0.32263695086853006,
+      "convexity_violation": 5.395760123529051,
+      "term_slope": 0.0,
+      "skew_val": 0.02187756883556652,
+      "gamma_concentration": 0.5134218697920261,
+      "vega_concentration": 0.05762094157104293,
+      "arb_score": 151.08176058047187,
+      "arb_calendar_n": 0.0,
+      "arb_butterfly_n": 54.0,
+      "arb_parity_n": 180.0,
+      "liquidity_ratio": 0.6,
+      "iv_near": 0.32263695086853006,
+      "iv_far": 0.32263695086853006,
+      "n_contracts": 80.0,
+      "atm_iv_past_q95": 1.4001670896900433,
+      "convexity_violation_past_q95": 34.6801126059266,
+      "currently_exceeding": false,
+      "atm_iv_daily_max": 0.70546401834166,
+      "convexity_violation_daily_max": 8.757729981346454,
+      "signal_description": "曲面观测与严格历史阈值；本版融合风险率后生成累计概率，未提供可相加的线性特征贡献。"
+    },
+    "warnings": [
+      "部分观测超出训练期99%范围，请结合数据质量解读。"
+    ],
+    "quality": {
+      "last_completed_session_snapshots": 37,
+      "past_observations": 60,
+      "newer_completed_dates_without_symbol": [],
+      "pending_incomplete_session_snapshots": 0,
+      "horizon_probabilities_consistent": true,
+      "raw_feature_missing_fraction": 0.0,
+      "maximum_ood_fraction": 0.2222222222222222,
+      "ood_features": [
+        "convexity_violation",
+        "arb_score"
+      ],
+      "constant_features_violated": [],
+      "whole_curve_gate_reason": null
+    },
+    "evaluation": {
+      "1": {
+        "n": 74,
+        "positives": 11,
+        "prevalence": 0.14864864864864866,
+        "brier": 0.1325127662007258,
+        "baseline_brier": 0.13385179456814109,
+        "brier_skill": 0.010003813335006217,
+        "roc_auc": 0.468975468975469,
+        "average_precision": 0.18474406209257282,
+        "precision": 0.2777777777777778,
+        "recall": 0.45454545454545453,
+        "alert_rate": 0.24324324324324326,
+        "alerts": 18,
+        "mean_probability": 0.07113992174085407,
+        "log_loss": 0.4637358632690744,
+        "calibration_bias": -0.07750872690779459,
+        "ece_5_fixed_bins": 0.07750872690779459,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.2,
+            "n": 74,
+            "mean_probability": 0.07113992174085407,
+            "event_rate": 0.14864864864864866
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.4,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.6,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.8,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 1.0,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          }
+        ],
+        "current_state_baseline_brier": 0.13385179456814109,
+        "skill_vs_current_state_baseline": 0.010003813335006217,
+        "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+      },
+      "2": {
+        "n": 74,
+        "positives": 17,
+        "prevalence": 0.22972972972972974,
+        "brier": 0.18030372944492568,
+        "baseline_brier": 0.1902366773761643,
+        "brier_skill": 0.052213632345973426,
+        "roc_auc": 0.5128998968008256,
+        "average_precision": 0.3907386272639551,
+        "precision": 0.4444444444444444,
+        "recall": 0.47058823529411764,
+        "alert_rate": 0.24324324324324326,
+        "alerts": 18,
+        "mean_probability": 0.13211499450009195,
+        "log_loss": 0.5670987181305247,
+        "calibration_bias": -0.0976147352296378,
+        "ece_5_fixed_bins": 0.0976147352296378,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.2,
+            "n": 65,
+            "mean_probability": 0.11492233197277817,
+            "event_rate": 0.18461538461538463
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.4,
+            "n": 9,
+            "mean_probability": 0.2562842238640248,
+            "event_rate": 0.5555555555555556
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.6,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.8,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 1.0,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          }
+        ],
+        "current_state_baseline_brier": 0.1902366773761643,
+        "skill_vs_current_state_baseline": 0.052213632345973426,
+        "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+      },
+      "3": {
+        "n": 74,
+        "positives": 20,
+        "prevalence": 0.2702702702702703,
+        "brier": 0.19797203648267547,
+        "baseline_brier": 0.2094404103810407,
+        "brier_skill": 0.054757216515669005,
+        "roc_auc": 0.5120370370370371,
+        "average_precision": 0.4114048031504255,
+        "precision": 0.42857142857142855,
+        "recall": 0.45,
+        "alert_rate": 0.28378378378378377,
+        "alerts": 21,
+        "mean_probability": 0.18627732488695145,
+        "log_loss": 0.5996511375267387,
+        "calibration_bias": -0.08399294538331883,
+        "ece_5_fixed_bins": 0.08399294538331885,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.2,
+            "n": 53,
+            "mean_probability": 0.14282098847580696,
+            "event_rate": 0.20754716981132076
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.4,
+            "n": 19,
+            "mean_probability": 0.28274916108020615,
+            "event_rate": 0.42105263157894735
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.6,
+            "n": 2,
+            "mean_probability": 0.42138779594636006,
+            "event_rate": 0.5
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.8,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 1.0,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          }
+        ],
+        "current_state_baseline_brier": 0.2094404103810407,
+        "skill_vs_current_state_baseline": 0.054757216515669005,
+        "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+      },
+      "4": {
+        "n": 74,
+        "positives": 23,
+        "prevalence": 0.3108108108108108,
+        "brier": 0.2119538990708841,
+        "baseline_brier": 0.22730219625403802,
+        "brier_skill": 0.06752375223862916,
+        "roc_auc": 0.5021312872975278,
+        "average_precision": 0.48704488533777346,
+        "precision": 0.43478260869565216,
+        "recall": 0.43478260869565216,
+        "alert_rate": 0.3108108108108108,
+        "alerts": 23,
+        "mean_probability": 0.23315972495212015,
+        "log_loss": 0.6292323909402056,
+        "calibration_bias": -0.07765108585869068,
+        "ece_5_fixed_bins": 0.10958077599204764,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.2,
+            "n": 37,
+            "mean_probability": 0.16048350962892613,
+            "event_rate": 0.32432432432432434
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.4,
+            "n": 30,
+            "mean_probability": 0.2727132844978069,
+            "event_rate": 0.23333333333333334
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.6,
+            "n": 7,
+            "mean_probability": 0.44779017932177345,
+            "event_rate": 0.5714285714285714
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.8,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 1.0,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          }
+        ],
+        "current_state_baseline_brier": 0.22730219625403802,
+        "skill_vs_current_state_baseline": 0.06752375223862916,
+        "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+      },
+      "5": {
+        "n": 74,
+        "positives": 24,
+        "prevalence": 0.32432432432432434,
+        "brier": 0.21649742235718597,
+        "baseline_brier": 0.22805048164828318,
+        "brier_skill": 0.05066009599100607,
+        "roc_auc": 0.4866666666666667,
+        "average_precision": 0.4835385433979927,
+        "precision": 0.43478260869565216,
+        "recall": 0.4166666666666667,
+        "alert_rate": 0.3108108108108108,
+        "alerts": 23,
+        "mean_probability": 0.2757144659311825,
+        "log_loss": 0.6359410767376185,
+        "calibration_bias": -0.04860985839314178,
+        "ece_5_fixed_bins": 0.17162370950759143,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.2,
+            "n": 26,
+            "mean_probability": 0.179641927126396,
+            "event_rate": 0.4230769230769231
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.4,
+            "n": 35,
+            "mean_probability": 0.2729003568924182,
+            "event_rate": 0.14285714285714285
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.6,
+            "n": 12,
+            "mean_probability": 0.4639842811911277,
+            "event_rate": 0.5833333333333334
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.8,
+            "n": 1,
+            "mean_probability": 0.6128565080930435,
+            "event_rate": 1.0
+          },
+          {
+            "lower": 0.8,
+            "upper": 1.0,
+            "n": 0,
+            "mean_probability": null,
+            "event_rate": null
+          }
+        ],
+        "current_state_baseline_brier": 0.22805048164828318,
+        "skill_vs_current_state_baseline": 0.05066009599100607,
+        "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+      }
+    },
+    "prediction_task": "onset",
+    "prediction_task_definition": "当前两项曲面代理均未超阈值，预测未来窗口内首次出现超阈值。",
+    "age_calendar_days": 0.37498842592592596,
+    "trading_date": "2026-04-14",
+    "evaluation_details": {
+      "1": {
+        "test": {
+          "n": 74,
+          "positives": 11,
+          "prevalence": 0.14864864864864866,
+          "brier": 0.1325127662007258,
+          "baseline_brier": 0.13385179456814109,
+          "brier_skill": 0.010003813335006217,
+          "roc_auc": 0.468975468975469,
+          "average_precision": 0.18474406209257282,
+          "precision": 0.2777777777777778,
+          "recall": 0.45454545454545453,
+          "alert_rate": 0.24324324324324326,
+          "alerts": 18,
+          "mean_probability": 0.07113992174085407,
+          "log_loss": 0.4637358632690744,
+          "calibration_bias": -0.07750872690779459,
+          "ece_5_fixed_bins": 0.07750872690779459,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 74,
+              "mean_probability": 0.07113992174085407,
+              "event_rate": 0.14864864864864866
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.13385179456814109,
+          "skill_vs_current_state_baseline": 0.010003813335006217,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "raw": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 18,
+          "true_positives": 5,
+          "false_alarms": 13,
+          "precision": 0.2777777777777778,
+          "recall_all_origins": 0.45454545454545453,
+          "alert_rate_all_origins": 0.24324324324324326,
+          "false_alarms_per_observed_month": 1.8571428571428572,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time."
+        },
+        "operational": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 18,
+          "true_positives": 5,
+          "false_alarms": 13,
+          "precision": 0.2777777777777778,
+          "recall_all_origins": 0.45454545454545453,
+          "alert_rate_all_origins": 0.24324324324324326,
+          "false_alarms_per_observed_month": 1.8571428571428572,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time.",
+          "abstention_reasons": {},
+          "probability_metrics_when_available": {
+            "n": 74,
+            "positives": 11,
+            "prevalence": 0.14864864864864866,
+            "brier": 0.1325127662007258,
+            "baseline_brier": 0.13385179456814109,
+            "brier_skill": 0.010003813335006217,
+            "roc_auc": 0.468975468975469,
+            "average_precision": 0.18474406209257282,
+            "precision": 0.2777777777777778,
+            "recall": 0.45454545454545453,
+            "alert_rate": 0.24324324324324326,
+            "alerts": 18
+          }
+        },
+        "paired_brier_bootstrap": {
+          "n": 74,
+          "dates": 74,
+          "brier_delta": 0.0013390283674152847,
+          "brier_delta_ci95": [
+            -0.004912081687922156,
+            0.009334491949351514
+          ],
+          "skill": 0.010003813335006217,
+          "skill_ci95": [
+            -0.08441537437629627,
+            0.0591737586910689
+          ],
+          "repetitions": 500,
+          "block_observed_dates": 10,
+          "seed": 42,
+          "method": "paired circular moving blocks of global observed dates; all symbols retained together",
+          "limitations": "Conditional on fitted vintages; exploratory intervals, no multiplicity correction; not a formal claim of generalisation."
+        }
+      },
+      "2": {
+        "test": {
+          "n": 74,
+          "positives": 17,
+          "prevalence": 0.22972972972972974,
+          "brier": 0.18030372944492568,
+          "baseline_brier": 0.1902366773761643,
+          "brier_skill": 0.052213632345973426,
+          "roc_auc": 0.5128998968008256,
+          "average_precision": 0.3907386272639551,
+          "precision": 0.4444444444444444,
+          "recall": 0.47058823529411764,
+          "alert_rate": 0.24324324324324326,
+          "alerts": 18,
+          "mean_probability": 0.13211499450009195,
+          "log_loss": 0.5670987181305247,
+          "calibration_bias": -0.0976147352296378,
+          "ece_5_fixed_bins": 0.0976147352296378,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 65,
+              "mean_probability": 0.11492233197277817,
+              "event_rate": 0.18461538461538463
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 9,
+              "mean_probability": 0.2562842238640248,
+              "event_rate": 0.5555555555555556
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.1902366773761643,
+          "skill_vs_current_state_baseline": 0.052213632345973426,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "raw": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 18,
+          "true_positives": 8,
+          "false_alarms": 10,
+          "precision": 0.4444444444444444,
+          "recall_all_origins": 0.47058823529411764,
+          "alert_rate_all_origins": 0.24324324324324326,
+          "false_alarms_per_observed_month": 1.4285714285714286,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time."
+        },
+        "operational": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 18,
+          "true_positives": 8,
+          "false_alarms": 10,
+          "precision": 0.4444444444444444,
+          "recall_all_origins": 0.47058823529411764,
+          "alert_rate_all_origins": 0.24324324324324326,
+          "false_alarms_per_observed_month": 1.4285714285714286,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time.",
+          "abstention_reasons": {},
+          "probability_metrics_when_available": {
+            "n": 74,
+            "positives": 17,
+            "prevalence": 0.22972972972972974,
+            "brier": 0.18030372944492568,
+            "baseline_brier": 0.1902366773761643,
+            "brier_skill": 0.052213632345973426,
+            "roc_auc": 0.5128998968008256,
+            "average_precision": 0.3907386272639551,
+            "precision": 0.4444444444444444,
+            "recall": 0.47058823529411764,
+            "alert_rate": 0.24324324324324326,
+            "alerts": 18
+          }
+        },
+        "paired_brier_bootstrap": {
+          "n": 74,
+          "dates": 74,
+          "brier_delta": 0.009932947931238612,
+          "brier_delta_ci95": [
+            -0.011829087387271038,
+            0.04280724927649132
+          ],
+          "skill": 0.052213632345973426,
+          "skill_ci95": [
+            -0.17740771172203532,
+            0.1662510357622163
+          ],
+          "repetitions": 500,
+          "block_observed_dates": 10,
+          "seed": 42,
+          "method": "paired circular moving blocks of global observed dates; all symbols retained together",
+          "limitations": "Conditional on fitted vintages; exploratory intervals, no multiplicity correction; not a formal claim of generalisation."
+        }
+      },
+      "3": {
+        "test": {
+          "n": 74,
+          "positives": 20,
+          "prevalence": 0.2702702702702703,
+          "brier": 0.19797203648267547,
+          "baseline_brier": 0.2094404103810407,
+          "brier_skill": 0.054757216515669005,
+          "roc_auc": 0.5120370370370371,
+          "average_precision": 0.4114048031504255,
+          "precision": 0.42857142857142855,
+          "recall": 0.45,
+          "alert_rate": 0.28378378378378377,
+          "alerts": 21,
+          "mean_probability": 0.18627732488695145,
+          "log_loss": 0.5996511375267387,
+          "calibration_bias": -0.08399294538331883,
+          "ece_5_fixed_bins": 0.08399294538331885,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 53,
+              "mean_probability": 0.14282098847580696,
+              "event_rate": 0.20754716981132076
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 19,
+              "mean_probability": 0.28274916108020615,
+              "event_rate": 0.42105263157894735
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 2,
+              "mean_probability": 0.42138779594636006,
+              "event_rate": 0.5
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.2094404103810407,
+          "skill_vs_current_state_baseline": 0.054757216515669005,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "raw": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 21,
+          "true_positives": 9,
+          "false_alarms": 12,
+          "precision": 0.42857142857142855,
+          "recall_all_origins": 0.45,
+          "alert_rate_all_origins": 0.28378378378378377,
+          "false_alarms_per_observed_month": 1.7142857142857142,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time."
+        },
+        "operational": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 21,
+          "true_positives": 9,
+          "false_alarms": 12,
+          "precision": 0.42857142857142855,
+          "recall_all_origins": 0.45,
+          "alert_rate_all_origins": 0.28378378378378377,
+          "false_alarms_per_observed_month": 1.7142857142857142,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time.",
+          "abstention_reasons": {},
+          "probability_metrics_when_available": {
+            "n": 74,
+            "positives": 20,
+            "prevalence": 0.2702702702702703,
+            "brier": 0.19797203648267547,
+            "baseline_brier": 0.2094404103810407,
+            "brier_skill": 0.054757216515669005,
+            "roc_auc": 0.5120370370370371,
+            "average_precision": 0.4114048031504255,
+            "precision": 0.42857142857142855,
+            "recall": 0.45,
+            "alert_rate": 0.28378378378378377,
+            "alerts": 21
+          }
+        },
+        "paired_brier_bootstrap": {
+          "n": 74,
+          "dates": 74,
+          "brier_delta": 0.01146837389836522,
+          "brier_delta_ci95": [
+            -0.022155857593165927,
+            0.05822535649363314
+          ],
+          "skill": 0.054757216515669005,
+          "skill_ci95": [
+            -0.24638742992941642,
+            0.20227787000790326
+          ],
+          "repetitions": 500,
+          "block_observed_dates": 10,
+          "seed": 42,
+          "method": "paired circular moving blocks of global observed dates; all symbols retained together",
+          "limitations": "Conditional on fitted vintages; exploratory intervals, no multiplicity correction; not a formal claim of generalisation."
+        }
+      },
+      "4": {
+        "test": {
+          "n": 74,
+          "positives": 23,
+          "prevalence": 0.3108108108108108,
+          "brier": 0.2119538990708841,
+          "baseline_brier": 0.22730219625403802,
+          "brier_skill": 0.06752375223862916,
+          "roc_auc": 0.5021312872975278,
+          "average_precision": 0.48704488533777346,
+          "precision": 0.43478260869565216,
+          "recall": 0.43478260869565216,
+          "alert_rate": 0.3108108108108108,
+          "alerts": 23,
+          "mean_probability": 0.23315972495212015,
+          "log_loss": 0.6292323909402056,
+          "calibration_bias": -0.07765108585869068,
+          "ece_5_fixed_bins": 0.10958077599204764,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 37,
+              "mean_probability": 0.16048350962892613,
+              "event_rate": 0.32432432432432434
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 30,
+              "mean_probability": 0.2727132844978069,
+              "event_rate": 0.23333333333333334
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 7,
+              "mean_probability": 0.44779017932177345,
+              "event_rate": 0.5714285714285714
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.22730219625403802,
+          "skill_vs_current_state_baseline": 0.06752375223862916,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "raw": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 23,
+          "true_positives": 10,
+          "false_alarms": 13,
+          "precision": 0.43478260869565216,
+          "recall_all_origins": 0.43478260869565216,
+          "alert_rate_all_origins": 0.3108108108108108,
+          "false_alarms_per_observed_month": 1.8571428571428572,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time."
+        },
+        "operational": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 23,
+          "true_positives": 10,
+          "false_alarms": 13,
+          "precision": 0.43478260869565216,
+          "recall_all_origins": 0.43478260869565216,
+          "alert_rate_all_origins": 0.3108108108108108,
+          "false_alarms_per_observed_month": 1.8571428571428572,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time.",
+          "abstention_reasons": {},
+          "probability_metrics_when_available": {
+            "n": 74,
+            "positives": 23,
+            "prevalence": 0.3108108108108108,
+            "brier": 0.2119538990708841,
+            "baseline_brier": 0.22730219625403802,
+            "brier_skill": 0.06752375223862916,
+            "roc_auc": 0.5021312872975278,
+            "average_precision": 0.48704488533777346,
+            "precision": 0.43478260869565216,
+            "recall": 0.43478260869565216,
+            "alert_rate": 0.3108108108108108,
+            "alerts": 23
+          }
+        },
+        "paired_brier_bootstrap": {
+          "n": 74,
+          "dates": 74,
+          "brier_delta": 0.01534829718315392,
+          "brier_delta_ci95": [
+            -0.033849010882704894,
+            0.08467211535638336
+          ],
+          "skill": 0.06752375223862916,
+          "skill_ci95": [
+            -0.31630236443842125,
+            0.2684049331274601
+          ],
+          "repetitions": 500,
+          "block_observed_dates": 10,
+          "seed": 42,
+          "method": "paired circular moving blocks of global observed dates; all symbols retained together",
+          "limitations": "Conditional on fitted vintages; exploratory intervals, no multiplicity correction; not a formal claim of generalisation."
+        }
+      },
+      "5": {
+        "test": {
+          "n": 74,
+          "positives": 24,
+          "prevalence": 0.32432432432432434,
+          "brier": 0.21649742235718597,
+          "baseline_brier": 0.22805048164828318,
+          "brier_skill": 0.05066009599100607,
+          "roc_auc": 0.4866666666666667,
+          "average_precision": 0.4835385433979927,
+          "precision": 0.43478260869565216,
+          "recall": 0.4166666666666667,
+          "alert_rate": 0.3108108108108108,
+          "alerts": 23,
+          "mean_probability": 0.2757144659311825,
+          "log_loss": 0.6359410767376185,
+          "calibration_bias": -0.04860985839314178,
+          "ece_5_fixed_bins": 0.17162370950759143,
+          "reliability_bins": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 26,
+              "mean_probability": 0.179641927126396,
+              "event_rate": 0.4230769230769231
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 35,
+              "mean_probability": 0.2729003568924182,
+              "event_rate": 0.14285714285714285
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 12,
+              "mean_probability": 0.4639842811911277,
+              "event_rate": 0.5833333333333334
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 1,
+              "mean_probability": 0.6128565080930435,
+              "event_rate": 1.0
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "event_rate": null
+            }
+          ],
+          "current_state_baseline_brier": 0.22805048164828318,
+          "skill_vs_current_state_baseline": 0.05066009599100607,
+          "baseline_definition": "same-task symbol/step conditional hazard with identical independent affine and shrunk symbol calibration"
+        },
+        "raw": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 23,
+          "true_positives": 10,
+          "false_alarms": 13,
+          "precision": 0.43478260869565216,
+          "recall_all_origins": 0.4166666666666667,
+          "alert_rate_all_origins": 0.3108108108108108,
+          "false_alarms_per_observed_month": 1.8571428571428572,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time."
+        },
+        "operational": {
+          "n_total": 74,
+          "n_available": 74,
+          "abstentions": 0,
+          "probability_coverage": 1.0,
+          "alerts": 23,
+          "true_positives": 10,
+          "false_alarms": 13,
+          "precision": 0.43478260869565216,
+          "recall_all_origins": 0.4166666666666667,
+          "alert_rate_all_origins": 0.3108108108108108,
+          "false_alarms_per_observed_month": 1.8571428571428572,
+          "observed_months": 7,
+          "abstentions_count_as_non_alerts": true,
+          "baseline_rate_origins": 0,
+          "predictive_signal_origins": 74,
+          "predictive_signal_coverage": 1.0,
+          "positive_origin_episodes": 11,
+          "episodes_with_alert": 5,
+          "positive_origin_episode_recall": 0.45454545454545453,
+          "median_first_alert_position_within_captured_episode": 0.0,
+          "episode_definition": "Consecutive eligible positive-label forecast origins per symbol/horizon, interrupted by a negative label or missing observed-calendar index. A subset may further split a run. These are proxy-origin episodes, NOT deduplicated realised market events; alert position is not event lead time.",
+          "abstention_reasons": {},
+          "probability_metrics_when_available": {
+            "n": 74,
+            "positives": 24,
+            "prevalence": 0.32432432432432434,
+            "brier": 0.21649742235718597,
+            "baseline_brier": 0.22805048164828318,
+            "brier_skill": 0.05066009599100607,
+            "roc_auc": 0.4866666666666667,
+            "average_precision": 0.4835385433979927,
+            "precision": 0.43478260869565216,
+            "recall": 0.4166666666666667,
+            "alert_rate": 0.3108108108108108,
+            "alerts": 23
+          }
+        },
+        "paired_brier_bootstrap": {
+          "n": 74,
+          "dates": 74,
+          "brier_delta": 0.011553059291097206,
+          "brier_delta_ci95": [
+            -0.04699672471283781,
+            0.0881023764187438
+          ],
+          "skill": 0.05066009599100607,
+          "skill_ci95": [
+            -0.39082989338296675,
+            0.2875730662852613
+          ],
+          "repetitions": 500,
+          "block_observed_dates": 10,
+          "seed": 42,
+          "method": "paired circular moving blocks of global observed dates; all symbols retained together",
+          "limitations": "Conditional on fitted vintages; exploratory intervals, no multiplicity correction; not a formal claim of generalisation."
+        }
+      }
+    },
+    "model_context": {
+      "selected_candidate": "joint_logistic",
+      "feature_hazard_weight": 0.5,
+      "statistical_hazard_weight": 0.5,
+      "calibration_slope": 1.0,
+      "symbol_calibration_offset": 0.04635668081249601,
+      "selection_scope": "pooled per task; prior validation only",
+      "explanation": "风险率层融合后合成累计概率，权重不是单项特征贡献。未提供累计概率可加的线性解释。"
+    }
+  },
+  "assistant": {
+    "text": "当前使用本地证据解读，未调用大模型。\n\n- 品种：sc [symbol]\n- 数据时点：2026-04-14T23:59:59 [as_of]\n- 实际数据截止：2026-04-14T15:00:00 [data_timestamp]\n- 预测版本：v3 [model_version]\n- 本次预测任务：正常状态下的新异常出现 [prediction_task]\n- 预测视窗（交易日）：3 [horizon_trading_days]\n- 任务定义：当前两项曲面代理均未超阈值，预测未来窗口内首次出现超阈值。 [prediction_task_definition]\n- 评估时间口径：完整测试期的事后统计；不是历史观察日当时已知的输入，未用于拟合预测或选择阈值。 [evaluation_context]\n- 评估对照基线：同任务、同校准处理的条件风险率统计基准 [evaluation_baseline]\n- 保护前研究 · 测试样本数：74 [evaluation.n]\n- 保护前研究 · 测试事件率：27.03% [evaluation.prevalence]\n- 保护前研究 · 测试平均预测概率：18.63% [evaluation.mean_probability]\n- 保护前研究 · 平均概率减事件率：-0.0839929 [evaluation.calibration_bias]\n- 保护前研究 · 对数损失：0.599651 [evaluation.log_loss]\n- 保护前研究 · 固定五档校准误差（描述性）：0.0839929 [evaluation.ece_5_fixed_bins]\n- 保护前研究 · Brier 分数：0.197972 [evaluation.brier]\n- 保护前研究 · Brier 技巧分数：0.0547572 [evaluation.brier_skill]\n- 保护前研究 · 测试样本数：53 [evaluation.reliability_bins.0.n]\n- 状态：degraded [data_quality.status]\n- data_quality.warnings.0：部分观测超出训练期99%范围，请结合数据质量解读。 [data_quality.warnings.0]\n- data_quality.age_minutes：539.983 [data_quality.age_minutes]\n\nBrier 分数越低越好；应与同一测试集的基线比较。ROC AUC 衡量排序，不能单独证明概率可靠；精确率和召回率取决于阈值及测试事件数量。未提供的指标不能推断。\n“保护前研究”是运行保护前的原始预测统计；“运行保护后”统计保留全部预测原点，区别于仅在概率可用样本上计算的表现。\n运行召回率把弃权视为未发出预警，弃权原点仍计入事件分母。[operational_evaluation.abstentions_count_as_non_alerts]",
+    "mode": "local",
+    "provider": "local",
+    "model": "",
+    "cited_fields": [
+      "symbol",
+      "as_of",
+      "data_timestamp",
+      "model_version",
+      "prediction_task",
+      "horizon_trading_days",
+      "prediction_task_definition",
+      "evaluation_context",
+      "evaluation_baseline",
+      "evaluation.n",
+      "evaluation.prevalence",
+      "evaluation.mean_probability",
+      "evaluation.calibration_bias",
+      "evaluation.log_loss",
+      "evaluation.ece_5_fixed_bins",
+      "evaluation.brier",
+      "evaluation.brier_skill",
+      "evaluation.reliability_bins.0.n",
+      "data_quality.status",
+      "data_quality.warnings.0",
+      "data_quality.age_minutes",
+      "operational_evaluation.abstentions_count_as_non_alerts"
+    ],
+    "history": [
+      {
+        "role": "user",
+        "content": "概率校准有偏差吗？"
+      },
+      {
+        "role": "assistant",
+        "content": "当前使用本地证据解读，未调用大模型。\n\n- 品种：sc [symbol]\n- 数据时点：2026-04-14T23:59:59 [as_of]\n- 实际数据截止：2026-04-14T15:00:00 [data_timestamp]\n- 预测版本：v3 [model_version]\n- 本次预测任务：正常状态下的新异常出现 [prediction_task]\n- 预测视窗（交易日）：3 [horizon_trading_days]\n- 任务定义：当前两项曲面代理均未超阈值，预测未来窗口内首次出现超阈值。 [prediction_task_definition]\n- 评估时间口径：完整测试期的事后统计；不是历史观察日当时已知的输入，未用于拟合预测或选择阈值。 [evaluation_context]\n- 评估对照基线：同任务、同校准处理的条件风险率统计基准 [evaluation_baseline]\n- 保护前研究 · 测试样本数：74 [evaluation.n]\n- 保护前研究 · 测试事件率：27.03% [evaluation.prevalence]\n- 保护前研究 · 测试平均预测概率：18.63% [evaluation.mean_probability]\n- 保护前研究 · 平均概率减事件率：-0.0839929 [evaluation.calibration_bias]\n- 保护前研究 · 对数损失：0.599651 [evaluation.log_loss]\n- 保护前研究 · 固定五档校准误差（描述性）：0.0839929 [evaluation.ece_5_fixed_bins]\n- 保护前研究 · Brier 分数：0.197972 [evaluation.brier]\n- 保护前研究 · Brier 技巧分数：0.0547572 [evaluation.brier_skill]\n- 保护前研究 · 测试样本数：53 [evaluation.reliability_bins.0.n]\n- 状态：degraded [data_quality.status]\n- data_quality.warnings.0：部分观测超出训练期99%范围，请结合数据质量解读。 [data_quality.warnings.0]\n- data_quality.age_minutes：539.983 [data_quality.age_minutes]\n\nBrier 分数越低越好；应与同一测试集的基线比较。ROC AUC 衡量排序，不能单独证明概率可靠；精确率和召回率取决于阈值及测试事件数量。未提供的指标不能推断。\n“保护前研究”是运行保护前的原始预测统计；“运行保护后”统计保留全部预测原点，区别于仅在概率可用样本上计算的表现。\n运行召回率把弃权视为未发出预警，弃权原点仍计入事件分母。[operational_evaluation.abstentions_count_as_non_alerts]"
+      }
+    ],
+    "warning": null
+  }
+}

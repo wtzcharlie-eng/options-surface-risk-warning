@@ -1,4 +1,5 @@
 import sys
+import json
 from pathlib import Path
 import os
 os.environ["RISK_LLM_PROVIDER"] = "local"
@@ -8,8 +9,8 @@ sys.path.insert(0,str(root))
 at=AppTest.from_file(str(root/'dashboard/predictive_app.py'), default_timeout=90).run()
 assert not at.exception, [x.message for x in at.exception]
 assert len(at.metric)==3, [(m.label,m.value) for m in at.metric]
-if (root/'data_out/predictive_v2/model.json').exists():
-    assert at.sidebar.radio[0].value == 'v2'
+expected_version = 'v3' if (root/'data_out/predictive_v3/model.json').exists() else 'v2' if (root/'data_out/predictive_v2/model.json').exists() else 'v1'
+assert at.sidebar.radio[0].value == expected_version
 print('metrics',[(m.label,m.value) for m in at.metric])
 at.button[0].click().run()
 assert not at.exception, [x.message for x in at.exception]
@@ -43,3 +44,20 @@ if (root/'data_out/predictive_v2/model.json').exists():
     assert at.session_state['risk_chat_history'] == []
     assert any('联合模型共享一条' in c.value for c in at.caption)
     print('V2/V1 version switching and evidence context reset verified')
+
+if expected_version == 'v3':
+    at.sidebar.radio[0].set_value('v3').run()
+    assert not at.exception, [x.message for x in at.exception]
+    assert at.session_state['risk_chat_history'] == []
+    shown=json.loads(at.json[0].value)
+    assert shown['model_version']=='v3'
+    if shown.get('model_context'):
+        assert any('V3 在独立历史段' in c.value for c in at.caption)
+    else:
+        assert shown['status'] in {'unavailable','out_of_distribution','stale'}
+    at.chat_input[0].set_value('概率可用率和运行召回率是多少？').run()
+    assert not at.exception, [x.message for x in at.exception]
+    reply=at.session_state['risk_chat_history'][-1]['content']
+    assert '[operational_evaluation.probability_coverage]' in reply
+    assert '[operational_evaluation.recall_all_origins]' in reply
+    print('V3 version switching and operational-evidence conversation verified')

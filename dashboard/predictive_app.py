@@ -63,13 +63,13 @@ st.title('看见风险，再追问原因')
 st.markdown('<p class="subtle">未来 1、3、5 个交易日的曲面风险预测 · 有限视窗评估 · 可追溯的对话解读</p>', unsafe_allow_html=True)
 st.info('当前为历史数据回放。尚未连接实时行情；预测对象是曲面风险代理事件，未包含账户持仓和组合损益。', icon='🕘')
 
-available_versions = ['v2', 'v1'] if (ROOT / 'data_out' / 'predictive_v2' / 'model.json').exists() else ['v1']
+available_versions = [v for v, folder in [('v3','predictive_v3'), ('v2','predictive_v2'), ('v1','predictive')] if (ROOT / 'data_out' / folder / 'model.json').exists()] or ['v3']
 with st.sidebar:
-    selected_version = st.radio('预测版本', available_versions, format_func=lambda v: {'v2':'联合时序版 V2', 'v1':'独立期限版 V1（对照）'}[v])
+    selected_version = st.radio('预测版本', available_versions, format_func=lambda v: {'v3':'稳健融合版 V3（研究）', 'v2':'联合时序版 V2（对照）', 'v1':'独立期限版 V1（对照）'}[v])
 MODEL_DIR = default_model_dir(selected_version)
 model_path = MODEL_DIR / 'model.json'
 if not model_path.exists():
-    st.warning('预测模型尚未生成。请先在项目目录运行：python scripts/train_predictive.py')
+    st.warning('预测模型尚未生成。请先在项目目录运行：python scripts/train_predictive_v3.py')
     st.stop()
 try:
     files = tuple(sorted((str(p), p.stat().st_mtime_ns) for p in ANCHOR_DIR.glob('*/*/features.parquet')))
@@ -118,7 +118,7 @@ with st.sidebar:
 
 as_of = pd.Timestamp(replay_date) + pd.Timedelta(hours=23, minutes=59, seconds=59)
 try:
-    algorithm_signature = tuple((name, (ROOT / 'vol_surface' / name).stat().st_mtime_ns) for name in ['predictive.py', 'predictive_service.py', 'predictive_v2.py'] if (ROOT / 'vol_surface' / name).exists())
+    algorithm_signature = tuple((name, (ROOT / 'vol_surface' / name).stat().st_mtime_ns) for name in ['predictive.py', 'predictive_service.py', 'predictive_v2.py', 'predictive_v3.py'] if (ROOT / 'vol_surface' / name).exists())
     snapshot = predict_cached(artifact, history, symbol, as_of.isoformat(), model_path.stat().st_mtime_ns, files, algorithm_signature)
 except (ValueError, KeyError) as exc:
     st.error(f'此时点无法预测（{type(exc).__name__}）。请检查输入数据是否完整。')
@@ -135,8 +135,11 @@ if 'currently_exceeding' in snapshot.get('signals', {}):
     st.caption(f'当前曲面状态：{current_state}。本次预测任务：{task_name}。')
     if snapshot.get('prediction_task_definition'):
         st.caption(snapshot['prediction_task_definition'])
-if snapshot.get('model_version') == 'v2':
+if snapshot.get('model_version') in {'v2', 'v3'}:
     st.caption('联合模型共享一条累计风险曲线；1–5 日概率在结构上保持一致。')
+if snapshot.get('model_version') == 'v3' and snapshot.get('model_context'):
+    context = snapshot['model_context']
+    st.caption(f"V3 在独立历史段进行品种收缩校准；特征风险率权重 {num(context['feature_hazard_weight'])}，统计基准权重 {num(context['statistical_hazard_weight'])}。该权重作用于各日风险率，不是累计概率或单项特征贡献。")
 quality_warnings = [str(w) for w in snapshot.get('warnings', []) if '保留测试段' not in str(w)]
 evaluation_warnings = [str(w) for w in snapshot.get('warnings', []) if '保留测试段' in str(w)]
 if quality_warnings:
@@ -167,7 +170,7 @@ for col, item in zip(st.columns(3), [h for h in horizons if horizon_days(h) in (
             st.caption('简单统计模型 · 按品种和当前异常状态估计，不代表复杂模型带来增量。')
         elif model_status == 'hazard_baseline':
             st.caption('条件风险率基准 · 与当前任务一致的历史统计，不宣称复杂模型增量。')
-        baseline_label = '已校准条件基准' if snapshot.get('model_version') == 'v2' else '历史基线'
+        baseline_label = '已校准条件基准' if snapshot.get('model_version') in {'v2', 'v3'} else '历史基线'
         threshold_label = '' if model_status in {'baseline_only', 'hazard_baseline'} else f"阈值 {num(item.get('threshold'))} · "
         st.caption(f"{threshold_label}{baseline_label} {num(item.get('baseline_probability'))}")
 
@@ -223,11 +226,13 @@ with tab_model:
     if contributions:
         st.caption('V2 贡献解释对应条件风险率的指定步骤，不是累计概率的直接加总；V1 对应其逻辑回归对数几率。贡献不代表因果关系。')
         st.dataframe(pd.DataFrame(contributions), hide_index=True, width='stretch')
+    elif snapshot.get('model_version') == 'v3':
+        st.caption('V3 融合风险率后生成累计概率，不提供线性相加的特征归因。可核对本次任务、融合权重与原始观测信号。')
     else:
         st.caption('当前结果未提供特征贡献。统计基准使用训练期条件发生率；任务定义、模型状态与输入证据可在快照中核对。')
     st.markdown('#### 时间外验证')
     st.caption('训练、概率校准、阈值选择和测试按时间分开；标签跨越边界的样本会被剔除。Brier 越低越好，技巧分数大于零才优于报告所用基准。当前属于已查看历史上的开发评估。')
-    if snapshot.get('model_version') == 'v2':
+    if snapshot.get('model_version') in {'v2', 'v3'}:
         ev = snapshot.get('evaluation', {}).get(str(days), {})
         op = snapshot.get('evaluation_details', {}).get(str(days), {}).get('operational', {})
         if ev:
@@ -237,7 +242,7 @@ with tab_model:
                 '条件基准 Brier':ev.get('baseline_brier'),
                 '相对基准技巧':num(ev.get('brier_skill')),
                 '概率可用率（含统计基准）':num(op.get('probability_coverage')),
-                '增量模型覆盖率':num(op.get('predictive_signal_coverage')),
+                '特征模型信号覆盖率':num(op.get('predictive_signal_coverage')),
                 '运行误报数':op.get('false_alarms'),
                 '运行召回率（含弃权）':num(op.get('recall_all_origins')),
             }]), hide_index=True, width='stretch')

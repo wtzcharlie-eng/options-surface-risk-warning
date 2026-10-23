@@ -19,7 +19,7 @@ def main():
     parser.add_argument('--days', type=int, choices=[1, 2, 3, 4, 5], default=3)
     parser.add_argument('--anchor-dir', type=Path, default=ROOT / 'data_out' / 'anchor')
     parser.add_argument('--model-dir', type=Path, help='Explicit artifact directory; otherwise select the requested version')
-    parser.add_argument('--version', choices=['auto', 'v1', 'v2'], default='auto')
+    parser.add_argument('--version', choices=['auto', 'v1', 'v2', 'v3'], default='auto')
     parser.add_argument('--question', help='Optional risk question; remote provider requires environment settings')
     parser.add_argument('--out', type=Path)
     args = parser.parse_args()

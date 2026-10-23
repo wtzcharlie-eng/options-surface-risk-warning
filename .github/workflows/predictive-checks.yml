@@ -34,7 +34,7 @@ jobs:
       - name: Install tested dependencies
         run: python -m pip install -r requirements-predictive.lock.txt
       - name: Test predictive causality and grounded assistant
-        run: python -m pytest tests/test_predictive*.py tests/test_risk_assistant.py tests/test_v2_assistant_evidence.py -q
+        run: python -m pytest tests/test_predictive*.py tests/test_risk_assistant.py tests/test_v2_assistant_evidence.py tests/test_v3_assistant_evidence.py -q
       - name: Verify model and algorithm provenance
         run: |
           python - <<'PY'
@@ -51,7 +51,16 @@ jobs:
           for name, expected in report_v2['algorithm_source_sha256'].items():
               assert hashlib.sha256((root / 'vol_surface' / name).read_bytes()).hexdigest() == expected, name
           assert hashlib.sha256((root / 'scripts/train_predictive_v2.py').read_bytes()).hexdigest() == report_v2['training_script_sha256']
-          print('Frozen V1 and current V2 model/source checksums verified')
+          report_v3 = json.loads((root / 'data_out/predictive_v3/report.json').read_text())
+          assert hashlib.sha256((root / 'data_out/predictive_v3/model.json').read_bytes()).hexdigest() == report_v3['model_sha256']
+          for name, expected in report_v3['algorithm_source_sha256'].items():
+              assert hashlib.sha256((root / 'vol_surface' / name).read_bytes()).hexdigest() == expected, name
+          assert hashlib.sha256((root / 'scripts/train_predictive_v3.py').read_bytes()).hexdigest() == report_v3['training_script_sha256']
+          assert hashlib.sha256((root / 'docs/V3实验设计.md').read_bytes()).hexdigest() == report_v3['design_sha256']
+          assert hashlib.sha256((root / 'data_out/predictive_v2/test_predictions.parquet').read_bytes()).hexdigest() == report_v3['comparison_v2']['v2_predictions_sha256']
+          print('Frozen V1/V2 and V3 model, source, design and comparison checksums verified')
           PY
       - name: Smoke test interactive dashboard
         run: python scripts/smoke_dashboard.py
+      - name: Recompute published V3 scores and final-vintage predictions
+        run: python scripts/audit_predictive_v3.py

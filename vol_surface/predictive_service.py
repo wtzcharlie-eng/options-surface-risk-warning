@@ -10,8 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def default_model_dir(version: str = 'auto') -> Path:
-    if version not in {'auto', 'v1', 'v2'}:
+    if version not in {'auto', 'v1', 'v2', 'v3'}:
         raise ValueError('Unsupported predictive model version')
+    if version == 'v3' or (version == 'auto' and (ROOT / 'data_out' / 'predictive_v3' / 'model.json').exists()):
+        return ROOT / 'data_out' / 'predictive_v3'
     if version == 'v2' or (version == 'auto' and (ROOT / 'data_out' / 'predictive_v2' / 'model.json').exists()):
         return ROOT / 'data_out' / 'predictive_v2'
     return ROOT / 'data_out' / 'predictive'
@@ -29,6 +31,8 @@ def load_model_artifact(path: str | Path) -> dict:
         from .predictive import load_artifact
     elif version == 2:
         from .predictive_v2 import load_artifact
+    elif version == 3:
+        from .predictive_v3 import load_artifact
     else:
         raise ValueError('Unsupported predictive artifact schema')
     return load_artifact(path)
@@ -40,6 +44,8 @@ def forecast_model(artifact: dict, history, symbol: str, as_of=None, **kwargs) -
         from .predictive import forecast_latest
     elif version == 2:
         from .predictive_v2 import forecast_latest
+    elif version == 3:
+        from .predictive_v3 import forecast_latest
     else:
         raise ValueError('Unsupported predictive artifact schema')
     return forecast_latest(artifact, history, symbol, as_of=as_of, **kwargs)
@@ -76,7 +82,8 @@ def build_evidence(snapshot: dict, selected_days: int, report: dict | None = Non
         },
         'observed_signals': snapshot.get('signals', {}),
         'evaluation': snapshot.get('evaluation', {}).get(str(selected_days), selected.get('evaluation', {})),
-        'evaluation_baseline': ('同任务、同校准处理的条件风险率统计基准' if snapshot.get('model_version') == 'v2' else '报告中的品种基础率和当前状态基线'),
+        'evaluation_baseline': ('同任务、同校准处理的条件风险率统计基准' if snapshot.get('model_version') in {'v2', 'v3'} else '报告中的品种基础率和当前状态基线'),
+        'model_context': snapshot.get('model_context', {}),
         'operational_evaluation': snapshot.get('evaluation_details', {}).get(str(selected_days), {}).get('operational', {}),
         'evaluation_uncertainty': snapshot.get('evaluation_details', {}).get(str(selected_days), {}).get('paired_brier_bootstrap', {}),
         'evaluation_context': '完整测试期的事后统计；不是历史观察日当时已知的输入，未用于拟合预测或选择阈值。',
