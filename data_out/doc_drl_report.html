@@ -84,7 +84,7 @@ td code,th code{font-size:12.5px}
   <span class="sub">基线对照、各 seed、收敛曲线、奖励消融。全部数字由 report_drl.py 从 JSON 读出。</span>
 </div></div>
 <div class="shell">
-  <main><h1 id="问题3-基于深度强化学习的自适应预警策略-离线回测报告">问题3：基于深度强化学习的自适应预警策略 —— 离线回测报告</h1>
+  <main><blockquote><strong>历史技术报告</strong>：保留原实验的配置、口径与结论。当前赛题对照和复核状态见 <a href="doc_requirements.html">比赛要求与验收证据</a>。历史报告的“全达标”、自评和 CVaR 不能替代当前验收。</blockquote><h1 id="问题3-基于深度强化学习的自适应预警策略-离线回测报告">问题3：基于深度强化学习的自适应预警策略 —— 离线回测报告</h1>
 <blockquote><p>本报告由 <code>scripts/report_drl.py</code> 生成。<strong>全部实验结果数字</strong>（累计奖励、精确率、 召回率、提前时间、判别力、标准差、消融、验证门结论）均从 <code>data_out/drl</code> 下的 <code>results.json</code> / <code>ablation_reward.json</code> / <code>gates.json</code> / <code>sweep.json</code> / <code>history_seed*.csv</code> 读出后格式化，重跑训练后重新执行本脚本即可整体刷新。 文中的<strong>口径常量</strong>（120 分钟窗口、状态维度、赛题目标阈值等）属固定描述，写在正文里。</p></blockquote>
 <h2 id="1-任务与评测口径">1. 任务与评测口径</h2>
 <p>赛题问题3 要求：以曲面风险特征为状态、预警等级为动作、以历史预警正确/虚假/漏报的累积奖励为优化目标，训练 DRL 智能体动态调整预警策略，并在离线回测中与固定阈值方法对比。加分门槛为<strong>累计奖励或 CVaR 改善率相对固定规则提升 ≥10%</strong>。</p>

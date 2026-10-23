@@ -336,7 +336,7 @@ def main():
                     st.dataframe(g.style.format({"delta": "{:.4f}", "gamma": "{:.5f}",
                         "vega": "{:.3f}", "theta": "{:.3f}"}), use_container_width=True)
         else:
-            st.info("该截面原始数据加载中或无数据")
+            st.info("当前精简包未提供该截面的原始合约 Greeks；请查阅历史静态预览。重建完整曲线需要原始合约数据。")
 
     # 预警时间轴 + 表
     st.plotly_chart(alert_timeline(alerts, events, symbol), use_container_width=True)

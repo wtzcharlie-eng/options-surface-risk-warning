@@ -34,7 +34,12 @@ jobs:
       - name: Install tested dependencies
         run: python -m pip install -r requirements-predictive.lock.txt
       - name: Test predictive causality and grounded assistant
-        run: python -m pytest tests/test_predictive*.py tests/test_risk_assistant.py tests/test_v2_assistant_evidence.py tests/test_v3_assistant_evidence.py -q
+        run: python -m pytest tests/ -q
+      - name: Verify competition delivery and legacy runtime
+        run: |
+          python scripts/build_submission.py --check
+          python -W ignore -m drl.tests --underlying
+          python -W ignore -m kg.tests
       - name: Verify model and algorithm provenance
         run: |
           python - <<'PY'
@@ -61,6 +66,8 @@ jobs:
           print('Frozen V1/V2 and V3 model, source, design and comparison checksums verified')
           PY
       - name: Smoke test interactive dashboard
-        run: python scripts/smoke_dashboard.py
+        run: |
+          python scripts/smoke_dashboard.py
+          python scripts/smoke_competition.py
       - name: Recompute published V3 scores and final-vintage predictions
         run: python scripts/audit_predictive_v3.py

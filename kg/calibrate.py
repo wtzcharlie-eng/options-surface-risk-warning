@@ -33,6 +33,7 @@ from dataclasses import asdict, dataclass
 
 import numpy as np
 import pandas as pd
+from vol_surface.time_utils import epoch_minutes
 
 from vol_surface.alert_rules import evaluate_rules
 
@@ -346,8 +347,7 @@ def _alert_minutes(episodes, feature_names: list, min_level: int = ANOM_MIN_LEVE
     seen = {}
     for e in episodes:
         A = anom_matrix(e.X, feature_names, min_level)
-        mins = (pd.to_datetime(pd.Series(e.ts), format="%Y%m%d%H%M%S")
-                .astype("int64").to_numpy() // 60_000_000_000)
+        mins = epoch_minutes(e.ts)
         seen.setdefault(e.symbol, []).append(mins)
         for j, a in enumerate(ANOMS):
             if A[:, j].any():

@@ -6,6 +6,12 @@
 
 GitHub 仓库：[wtzcharlie-eng/options-surface-risk-warning](https://github.com/wtzcharlie-eng/options-surface-risk-warning)。克隆后进入项目目录即可按下方步骤启动。每次推送到 `main` 或提交 Pull Request，GitHub Actions 会运行新增预测/LLM 测试、模型校验和检查及交互页面测试；自动测试仅使用本地或模拟 LLM，不需要 API Key。
 
+## 比赛原交付审阅版
+
+本次已按原赛题重新整理 [交付入口](index.html)、[方法与结果](方法与结果.md)、[交付包说明](PACKAGE.md) 与 [比赛要求对照](docs/比赛要求对照.md)。分钟级固定配置的闭区间成绩可复现，但严格提前的两小时参考下召回仍不足；赛题核心 CVaR 的真实开盘资料和可核验人工评分尚待补充，不能称全部比赛指标达标。原下载文件保留，V1/V2/V3 模型与结果未改。
+
+复核材料和运行：`python scripts/preflight.py`。完整过程、修复和原件指纹见 [交付修订说明](docs/交付审阅与修订.md)。当前生成和检查入口均指向新版材料，旧构建代码作为 `scripts/*_legacy.py` 留档。
+
 ## 启动
 
 macOS 双击 `启动系统.command`，首次启动会安装依赖。推荐 Python 3.12；浏览器入口为 <http://127.0.0.1:8502>。

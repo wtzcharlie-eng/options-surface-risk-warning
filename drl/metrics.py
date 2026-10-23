@@ -1,4 +1,7 @@
-"""drl.metrics — 赛题口径的精确率 / 召回率 / 平均提前时间。
+"""drl.metrics — 历史闭区间实现的精确率 / 召回率 / 平均提前时间。
+
+该实现保留同刻检测，不能将其召回直接解释为赛题要求的严格提前。
+当前严格早于的补充复核见 vol_surface.submission_metrics；两者并列保留。
 
 本模块是 `vol_surface/quant_metrics.evaluate_quant` 的独立实现（纯 numpy/pandas，
 不引入 scipy 依赖链），判定逻辑逐条对齐：
@@ -20,14 +23,14 @@ from dataclasses import dataclass, asdict
 
 import numpy as np
 import pandas as pd
+from vol_surface.time_utils import epoch_seconds
 
 LEAD_WINDOW_MIN = 120.0
 ALERT_LEVEL = 2
 
 
 def _epoch(ts: list) -> np.ndarray:
-    return (pd.to_datetime(pd.Series(list(ts)), format="%Y%m%d%H%M%S")
-            .astype("int64").to_numpy() // 10**9)
+    return epoch_seconds(ts)
 
 
 @dataclass

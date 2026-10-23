@@ -1,0 +1,9 @@
+{
+  "source_joblib_sha256": "0c37e4381c4b76de6cf6ce96c645aacc85c7f7dc9cb6c91135cbe60f304323d9",
+  "source_sklearn": "1.7.2",
+  "portable_sha256": "7292e0933c95fc84074eb71fdc05776b01a979b9c03db59f3d276c7d52253660",
+  "n_compared_rows": 138794,
+  "max_probability_error": 0.0,
+  "training_performed": false,
+  "passed": true
+}

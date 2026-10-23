@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>原交付审阅与修订 · 期权波动率曲面风控预警系统</title>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0e1621; --panel:#151f2b; --rule:#22303f;
+  --fg:#e3eaf1; --fg2:#8fa0b2; --fg3:#5d6f82;
+  --calm:#4fb79c; --stress:#e8695e; --caveat:#d8a24a;
+  /* 与 index.html 完全一致：西文族在前走 Times，汉字回退到黑体 */
+  --sans:"Times New Roman",Times,"PingFang SC","Hiragino Sans GB",
+         "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --mono:"Times New Roman",Times,ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--calm);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--calm);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:9;background:rgba(14,22,33,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;
+  align-items:baseline;gap:16px}
+.bar .home{color:var(--fg2);font-size:13px}
+.bar h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.01em}
+.bar .sub{color:var(--fg3);font-size:12.5px;margin-left:auto}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;
+  grid-template-columns:1fr 236px;gap:44px;align-items:start}
+main{min-width:0;padding:34px 0 96px}
+
+nav.toc{position:sticky;top:66px;padding:34px 0;max-height:calc(100vh - 76px);
+  overflow:auto}
+nav.toc .h{font-size:11px;letter-spacing:.14em;color:var(--fg3);
+  margin-bottom:10px;font-family:var(--mono)}
+nav.toc a{display:block;color:var(--fg2);font-size:12.5px;line-height:1.55;
+  padding:3px 0 3px 10px;border-left:1px solid var(--rule);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--calm)}
+nav.toc a.l3{padding-left:22px;color:var(--fg3);font-size:12px}
+
+h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.35;letter-spacing:.01em}
+main h1{font-size:27px;margin:6px 0 22px}
+main h2{font-size:21px;margin:44px 0 14px;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+main h3{font-size:17px;margin:30px 0 10px;color:#f0f5fa}
+main h4{font-size:15px;margin:22px 0 8px;color:var(--fg2)}
+p{margin:13px 0}
+strong{color:#f4f8fc;font-weight:700}
+code{font-family:var(--mono);font-size:13.5px;background:#1b2735;
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:#cfe0ee}
+pre{background:var(--panel);border:1px solid var(--rule);padding:15px 17px;
+  overflow:auto;margin:16px 0}
+pre code{background:none;border:0;padding:0;font-size:13px;line-height:1.65;
+  color:#cfe0ee}
+blockquote{margin:16px 0;padding:2px 18px;border-left:3px solid var(--caveat);
+  background:#141d29;color:var(--fg2)}
+blockquote strong{color:var(--caveat)}
+blockquote p{margin:10px 0}
+ul,ol{margin:13px 0;padding-left:24px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:34px 0}
+.tw{overflow-x:auto;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--rule);padding:8px 11px;text-align:left;
+  vertical-align:top}
+th{background:#1a2532;color:var(--fg);font-weight:700;white-space:nowrap}
+td{color:var(--fg2)}
+tbody tr:nth-child(even) td{background:#121b26}
+td code,th code{font-size:12.5px}
+
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--fg3);line-height:1.9}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:0 0 20px}
+}
+</style></head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="../index.html">← 交付入口</a>
+  <h1>原交付审阅与修订</h1>
+  <span class="sub">原件追溯、真实修复、口径差异及下一步工作。</span>
+</div></div>
+<div class="shell">
+  <main><h1 id="原交付审阅与修订">原交付审阅与修订</h1>
+<p>本次按用户提供的赛题 DOCX、原 PACKAGE、方法结果和 HTML 入口审阅。下载目录中的原件没有修改；项目内的三份逐字节快照位于 <code>legacy_delivery/</code>，校验和见 <code>competition_requirements.json</code>。</p>
+<div class='tw'><table><thead><tr><th>原交付问题</th><th>本版修订</th><th>验证依据</th></tr></thead><tbody><tr><td>无上限召回和上千分钟提前量作为封面主成绩</td><td>正文分列三种口径；分钟级参考和 V3 多日预测分开</td><td><code>../data_out/submission/audit.json</code></td></tr><tr><td>把后续答复当作原赛题确定条款</td><td>明示本次缺少答复原件，历史口径保留待核验</td><td>赛题 SHA 与要求摘录</td></tr><tr><td>宏平均窗口分数配总预警数做 z 检验</td><td>撤下统计显著性结论，保留描述性比较</td><td>新方法报告“历史成绩”节</td></tr><tr><td>“测试只评一次”和大量开发实验并存</td><td>统一写成已查看历史上的开发复核</td><td>新方法报告与冻结参数</td></tr><tr><td>滚动 5 日恢复 CVaR 与赛题永久半仓混用</td><td>分开标注，补首次预警永久半仓工具；真实开盘证据未齐</td><td>新 CVaR 单元验证</td></tr><tr><td>当前环境 DRL 仅 9/15</td><td>显式时间单位换算，恢复 DRL 15/15；KG 11/11；不调参数</td><td>验证日志与时间回归测试</td></tr><tr><td>Q1 旧 pickle 私有模块无法加载</td><td>在原 1.7.2 环境导出数值树，当前只读 JSON</td><td>全量 138,794 行、概率误差 0</td></tr><tr><td>系统总览路径指向 dashboard/data_out，页面静默无数据；DRL 页面漏读 6 项标的特征</td><td>修正根目录并展示当前审计；DRL 改用完整 32 维锚点、明确单截面上下文</td><td>页面内容断言与烟测</td></tr><tr><td>新 README 与旧构建器/验收器路径脱节</td><td>新统一生成器，旧入口转接；旧脚本留档</td><td><code>build_submission.py --check</code></td></tr><tr><td>打包漏设计文档、锁定依赖和新入口</td><td>扩展收录清单、包内逐文件 SHA、解压副本复核</td><td><code>make_package.py --verify-only</code></td></tr><tr><td>文件存在被当作功能和指标通过</td><td>分开报告已实现、已复核、待证据</td><td>比赛要求对照</td></tr></tbody></table></div>
+<h2 id="未改变与未完成">未改变与未完成</h2>
+<p>V1/V2/V3 算法、检查点及预测评估产物保留原样。DRL 数值检查点、奖励参数和工作点保留原样。修复影响的是旧分钟级运行对时间单位的解释，以及旧 Q1 模型在新环境的读取方式。</p>
+<p>尚未获得真实交易日开盘与连续合约资料、后续口径答复原件、完整可核验人工评分和新的外部盲测。没有填造这些证据，也没有改称全指标达标。建议优先补核心业务 CVaR 的输入证据，再做锁定新时间段测试。</p>
+    <p class="foot">源文件 <code>docs/交付审阅与修订.md</code>　·
+      本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
+      正本仍是那份 Markdown。</p>
+  </main>
+  <nav class="toc"><div class="h">目录</div><a href="#未改变与未完成" class="l2">未改变与未完成</a></nav>
+</div></body></html>

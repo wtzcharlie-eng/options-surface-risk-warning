@@ -25,6 +25,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
+from vol_surface.time_utils import epoch_seconds
 
 # 与 scripts/build_anchor_dataset.NUM_FEATURES 保持一致，顺序即状态向量顺序
 FEATURES = [
@@ -117,8 +118,7 @@ def session_dead_zone(ts: list, k_bars: int = DEAD_ZONE_BARS,
     n = len(ts)
     if n == 0:
         return np.zeros(0, dtype=bool)
-    t = (pd.to_datetime(pd.Series(ts), format="%Y%m%d%H%M%S")
-         .astype("int64").to_numpy() // 10 ** 9)
+    t = epoch_seconds(ts)
     # 非升序输入会让 `t[1:]-t[:-1]` 出现负值，从而**静默返回全 False**——
     # 即「过滤看起来生效了、其实一根都没标」。这类失败没有任何下游断言能发现，
     # 故在此显式拦下。（当前 `load_episode` 一律排序，本断言是第二道保险。）
@@ -214,15 +214,16 @@ def _lead_minutes(dt: pd.Series, risk_idx: list) -> np.ndarray:
 
     「含自身」很关键：赛题精确率判定是「预警后 2h 内存在风险区间」，窗口为
     **闭区间** [a, a+120min]；召回判定窗口同样是闭区间 [rs−120min, rs]。因此恰好
-    在风险起点当根 K 线发出的预警，赛题算命中、也算召回。若这里用严格大于，
-    环境会把这类预警同时记成「误报」和「漏报」，与评分口径相悖。
+    在风险起点当根 K 线发出的预警，历史闭区间实现算命中、也算召回。
+    本函数保留旧奖励会计；赛题文本的严格提前另由 submission_metrics 复核，
+    不能把本函数的零分钟提前当作已满足严格提前召回。
     """
     n = len(dt)
     out = np.full(n, np.inf)
     if not risk_idx:
         return out
     rs = sorted(risk_idx)
-    secs = dt.astype("int64").to_numpy() / 1e9
+    secs = dt.to_numpy(dtype="datetime64[s]").astype(np.int64)
     ptr = 0
     for i in range(n):
         while ptr < len(rs) and rs[ptr] < i:

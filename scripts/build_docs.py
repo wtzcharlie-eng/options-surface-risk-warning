@@ -45,8 +45,12 @@ DOCS = [
      "问题2 · 知识图谱报告",
      "边权标定、解释样本、验证门与自评记录。由 report_kg.py 生成。"),
     (os.path.join(ROOT, "README.md"), "doc_readme.html",
-     "完整工程记录（附录）",
-     "逐轮修订：每一次改动的动机、对照与结论——包括推翻自己的那些。"),
+     "V3 预测与交互系统运行说明",
+     "1–5 个交易日预测、证据问答、运行及模型限制。"),
+    (os.path.join(ROOT, "docs/比赛要求对照.md"), "doc_requirements.html",
+     "比赛要求与验收证据", "区分功能实现、指标复核与尚待补充的业务证据。"),
+    (os.path.join(ROOT, "docs/交付审阅与修订.md"), "doc_delivery_review.html",
+     "原交付审阅与修订", "原件追溯、真实修复、口径差异及下一步工作。"),
     (os.path.join(ROOT, "kg", "schema.md"), "doc_kg_schema.html",
      "问题2 · 知识图谱 Schema",
      "节点类型（曲面特征 / Greeks / 标的）、边语义与标定口径。赛题要求的 Schema 文档。"),
@@ -293,6 +297,28 @@ def page(title: str, sub: str, body: str, toc: list, src: str) -> str:
 </div></body></html>"""
 
 
+def render_doc(src, title, sub, markdown):
+    """Resolve source-relative Markdown links from their rendered data_out page."""
+    from pathlib import Path
+    from urllib.parse import unquote, quote
+    body, toc = md_to_html(markdown)
+    def resolve(match):
+        href = _html.unescape(match.group(1))
+        if href.startswith(("#", "http:", "https:", "mailto:", "data:")):
+            return match.group(0)
+        path, sep, anchor = href.partition("#")
+        target = (Path(src).parent / unquote(path)).resolve()
+        rel = os.path.relpath(target, DATA)
+        return 'href="' + quote(rel, safe="/.-_") + (sep + anchor if sep else "") + '"'
+    body = re.sub(r'href="([^"]+)"', resolve, body)
+    rel_src = os.path.relpath(src, ROOT)
+    if rel_src in ("data_out/drl_report.md", "data_out/kg_report.md"):
+        body = ('<blockquote><strong>历史技术报告</strong>：保留原实验的配置、口径与结论。'
+                '当前赛题对照和复核状态见 <a href="doc_requirements.html">比赛要求与验收证据</a>。'
+                '历史报告的“全达标”、自评和 CVaR 不能替代当前验收。</blockquote>') + body
+    return page(title, sub, body, toc, rel_src)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out-dir", default=DATA)
@@ -302,13 +328,12 @@ def main() -> None:
         if not os.path.exists(src):
             print(f"  · 跳过（缺）{os.path.relpath(src, ROOT)}")
             continue
-        body, toc = md_to_html(open(src, encoding="utf-8").read())
-        html = page(title, sub, body, toc, os.path.relpath(src, ROOT))
+        html = render_doc(src, title, sub, open(src, encoding="utf-8").read())
         p = os.path.join(a.out_dir, name)
         with open(p, "w", encoding="utf-8") as f:
             f.write(html)
         print(f"  → {os.path.relpath(p, ROOT)}  "
-              f"({len(html.encode('utf-8')):,} 字节，目录 {len(toc)} 条)")
+              f"({len(html.encode('utf-8')):,} 字节)")
         n += 1
     if not n:
         raise SystemExit("一份文档都没渲染出来——检查源文件路径")

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>比赛要求与验收证据 · 期权波动率曲面风控预警系统</title>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0e1621; --panel:#151f2b; --rule:#22303f;
+  --fg:#e3eaf1; --fg2:#8fa0b2; --fg3:#5d6f82;
+  --calm:#4fb79c; --stress:#e8695e; --caveat:#d8a24a;
+  /* 与 index.html 完全一致：西文族在前走 Times，汉字回退到黑体 */
+  --sans:"Times New Roman",Times,"PingFang SC","Hiragino Sans GB",
+         "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --mono:"Times New Roman",Times,ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--calm);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--calm);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:9;background:rgba(14,22,33,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;
+  align-items:baseline;gap:16px}
+.bar .home{color:var(--fg2);font-size:13px}
+.bar h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.01em}
+.bar .sub{color:var(--fg3);font-size:12.5px;margin-left:auto}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;
+  grid-template-columns:1fr 236px;gap:44px;align-items:start}
+main{min-width:0;padding:34px 0 96px}
+
+nav.toc{position:sticky;top:66px;padding:34px 0;max-height:calc(100vh - 76px);
+  overflow:auto}
+nav.toc .h{font-size:11px;letter-spacing:.14em;color:var(--fg3);
+  margin-bottom:10px;font-family:var(--mono)}
+nav.toc a{display:block;color:var(--fg2);font-size:12.5px;line-height:1.55;
+  padding:3px 0 3px 10px;border-left:1px solid var(--rule);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--calm)}
+nav.toc a.l3{padding-left:22px;color:var(--fg3);font-size:12px}
+
+h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.35;letter-spacing:.01em}
+main h1{font-size:27px;margin:6px 0 22px}
+main h2{font-size:21px;margin:44px 0 14px;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+main h3{font-size:17px;margin:30px 0 10px;color:#f0f5fa}
+main h4{font-size:15px;margin:22px 0 8px;color:var(--fg2)}
+p{margin:13px 0}
+strong{color:#f4f8fc;font-weight:700}
+code{font-family:var(--mono);font-size:13.5px;background:#1b2735;
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:#cfe0ee}
+pre{background:var(--panel);border:1px solid var(--rule);padding:15px 17px;
+  overflow:auto;margin:16px 0}
+pre code{background:none;border:0;padding:0;font-size:13px;line-height:1.65;
+  color:#cfe0ee}
+blockquote{margin:16px 0;padding:2px 18px;border-left:3px solid var(--caveat);
+  background:#141d29;color:var(--fg2)}
+blockquote strong{color:var(--caveat)}
+blockquote p{margin:10px 0}
+ul,ol{margin:13px 0;padding-left:24px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:34px 0}
+.tw{overflow-x:auto;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--rule);padding:8px 11px;text-align:left;
+  vertical-align:top}
+th{background:#1a2532;color:var(--fg);font-weight:700;white-space:nowrap}
+td{color:var(--fg2)}
+tbody tr:nth-child(even) td{background:#121b26}
+td code,th code{font-size:12.5px}
+
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--fg3);line-height:1.9}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:0 0 20px}
+}
+</style></head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="../index.html">← 交付入口</a>
+  <h1>比赛要求与验收证据</h1>
+  <span class="sub">区分功能实现、指标复核与尚待补充的业务证据。</span>
+</div></div>
+<div class="shell">
+  <main><h1 id="比赛要求与验收证据">比赛要求与验收证据</h1>
+<p>审阅日期：2026-10-23。依据为用户提供的原始赛题说明。源文件 SHA-256：<code>9d22cb2daaa5ea3ae84acdb045958e2d3353d8ce14c09810562cad0fa819037a</code>。仅记录任务要求及文件指纹，公开包不含原 DOCX 或联系信息。</p>
+<h2 id="任务与成果形式">任务与成果形式</h2>
+<div class='tw'><table><thead><tr><th>要求</th><th>本项目证据</th><th>当前状态</th></tr></thead><tbody><tr><td>Q1 必选：清洗、插值、无套利、曲面/Greeks 风险特征</td><td><code>vol_surface/cleaning.py</code>、<code>interpolation.py</code>、<code>arbitrage.py</code>、<code>features.py</code></td><td>算法库与锚点数据已提供；原始行情未随包提供</td></tr><tr><td>Q1 四级预警及原因</td><td><code>vol_surface/alert_engine.py</code>、<code>alert_rules.py</code></td><td>已实现；否决模型成绩须使用指定配置</td></tr><tr><td>曲面热力图、Greeks、预警时间轴</td><td><code>dashboard/app.py</code>、<code>data_out/doc_dashboard.html</code></td><td>交互与静态预览已提供；精简包缺完整原始合约 Greeks，交互页明确提示</td></tr><tr><td>可分析历史数据、Web/Jupyter</td><td>两套 Streamlit 工作台与离线入口</td><td>已实现；原文不强制实时接入</td></tr><tr><td>Q2 可选：Schema、图谱查询和路径</td><td><code>kg/schema.md</code>、<code>kg/</code>、<code>data_out/kg/kg_viz.html</code></td><td>代码与界面已提供，机器检查 11/11</td></tr><tr><td>Q2 人工平均评分 ≥4/5</td><td>历史自评记录、<code>人工解释评分表.csv</code></td><td>待补可核验人工记录，不以机器检查替代</td></tr><tr><td>Q3 可选：状态/动作/奖励、训练记录、基线和推理 API</td><td><code>drl/</code>、<code>data_out/drl/results.json</code>、<code>drl/api.py</code></td><td>已实现，当前机器检查 15/15</td></tr><tr><td>Q3 相对固定规则累计奖励或 CVaR 改善 ≥10%</td><td>历史奖励及 CVaR 实验</td><td>不直接认定通过：负奖励分母与 CVaR 协议差异需说明</td></tr><tr><td>主指标：P≥50%、R≥60%、平均提前≥30min</td><td><code>../方法与结果.md</code>、<code>../data_out/submission/audit.json</code></td><td>三种声明口径并列；严格有限窗为稳健性参考</td></tr><tr><td>核心业务：多空 CVaR95 改善、首次预警下个交易日开盘减半不恢复</td><td><code>../vol_surface/submission_metrics.py</code>、<code>../scripts/evaluate_submission_cvar.py</code></td><td>计算规则已补；真实开盘/交易日/连续合约数据证据未齐，当前未核验</td></tr><tr><td>源码、依赖、部署指南</td><td><code>../README.md</code>、<code>../PACKAGE.md</code>、锁定依赖与启动脚本</td><td>当前包收录并有 SHA-256 清单</td></tr><tr><td>离线比较、关键指标、典型案例</td><td><code>../方法与结果.md</code>、审计 JSON、历史图谱与仪表板案例</td><td>已提供；开发验证，不是盲测</td></tr><tr><td>1–5 日预测及 LLM 交互</td><td><code>../dashboard/predictive_app.py</code>、V3 报告</td><td>额外扩展，不替代比赛主指标</td></tr></tbody></table></div>
+<h2 id="对口径歧义的处理">对口径歧义的处理</h2>
+<p>原赛题明确精确率在预警后两小时内检查风险，召回要求预警早于风险起点，但没有写清召回上限、告警合并和所有区间重叠细节。原交付声称后续答复采用事件合并及召回无上限；答复原件此次未提供，所以保留历史结果并单列，不能将其描述为附带赛题已明确的条款。</p>
+<p>本版另算严格早于且限制两小时的稳健性参考，使用风险起点匹配。它不是自行修改官方评分标准，最终口径需由比赛评审确认。长达数千分钟的无上限提前量不代表已经具有数日预测能力。</p>
+<h2 id="仍需补齐的证据">仍需补齐的证据</h2>
+<ol>
+<li>真实交易日开盘、收盘、夜盘归属和连续合约处理，覆盖不少于 3 个月且无缺失交易日；按首次预警永久减半协议复算多空 CVaR。</li>
+<li>如提交后续口径成绩，补充原答复的可核验记录，注明适用范围和版本。</li>
+<li>补充解释文本人工评分与评语，并给出样本选择和评分者信息；不虚构分数。</li>
+<li>锁定之后的新时间段盲测；在线休市过滤改用官方交易日历。</li>
+</ol>
+<p>这些是证据或数据缺口，不应通过改写说明为“全达标”消除。完整机器协议、当前得分与历史对照见根目录方法报告。</p>
+    <p class="foot">源文件 <code>docs/比赛要求对照.md</code>　·
+      本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
+      正本仍是那份 Markdown。</p>
+  </main>
+  <nav class="toc"><div class="h">目录</div><a href="#任务与成果形式" class="l2">任务与成果形式</a><a href="#对口径歧义的处理" class="l2">对口径歧义的处理</a><a href="#仍需补齐的证据" class="l2">仍需补齐的证据</a></nav>
+</div></body></html>

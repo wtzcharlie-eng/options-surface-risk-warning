@@ -642,7 +642,7 @@ def test_dead_zone_threshold(eps) -> str:
     gaps = []
     for e in eps:
         t = (pd.to_datetime(pd.Series(e.ts), format="%Y%m%d%H%M%S")
-             .astype("int64").to_numpy() // 10 ** 9)
+             .to_numpy(dtype="datetime64[s]").astype(np.int64))
         g = (t[1:] - t[:-1]) / 60.0
         gaps.extend(g[g > BAR].tolist())
     assert gaps, "样本里找不到任何休市间隔，无法校准阈值"
@@ -668,7 +668,7 @@ def test_dead_zone_threshold(eps) -> str:
     n_below = n_above = 0
     for e in eps:
         t = (pd.to_datetime(pd.Series(e.ts), format="%Y%m%d%H%M%S")
-             .astype("int64").to_numpy() // 10 ** 9)
+             .to_numpy(dtype="datetime64[s]").astype(np.int64))
         g = (t[1:] - t[:-1]) / 60.0
         dead = session_dead_zone(e.ts, DEAD_ZONE_BARS, DEAD_ZONE_BREAK_MIN)
         for i in _np.flatnonzero((g > BAR) & (g < DEAD_ZONE_BREAK_MIN)):

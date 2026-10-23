@@ -1,77 +1,16 @@
-"""make_package — 生成交付包，并**断言包内含有验证门所需的全部文件**。
-
-为什么要写成脚本而不是手敲 tar
-------------------------------
-上一版包是手敲命令打的，实测漏了：
-
-- **全部 `*.joblib`**（当时 `PACKAGE.md` 把它们整类排除，理由写的是
-  「早期 sklearn 路线，不被任何交付结论引用」）。这条理由**后来失效了**：
-  `rule_ml_model.joblib` 是问题1 连续口径达标（53.86%）的依据、且有专门的门
-  要求它存在且指纹匹配；`model_*.joblib` 是仪表板 ML 层、被 `G14` 逐个检查。
-  按那条规则重打，解压后 `G14` 与指纹门**当场失败**。
-- `alert_engine_golden.json`（`G13` 的外部参照，缺了该门直接报错）
-- `rule_ml.json` / `q1_window_zmult.json` / `ml_score_defect.json` 等本轮产物
-
-**根因是「排除规则用通配符，而通配符的语义随时间漂移」**——
-`*.joblib` 当初确实只匹配到废弃模型，后来新增的交付模型也落进了同一个模式。
-
-故本脚本改为：**显式列出必须存在的文件**，打包后逐个断言，缺一即失败。
-这样「包里少了个东西」会在打包时就暴露，而不是等评委解压后才发现。
-
-用法::
-
-    python scripts/make_package.py                 # 打包 + 自检
-    python scripts/make_package.py --verify-only   # 只检查现有包
-"""
-
-from __future__ import annotations
-
+"""Build and verify a portable zip, including hashes and checks in the extracted copy."""
+from pathlib import Path, PurePosixPath
 import argparse
-import fnmatch
-import os
+import hashlib
+import json
 import subprocess
 import sys
-import tarfile
-
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-NAME = "期权曲面风控预警系统"
-
-# ---- 收录的顶层目录/文件
-INCLUDE_DIRS = ["vol_surface", "kg", "drl", "scripts", "dashboard", "tests",
-                "data_out", ".streamlit"]
-# ⚠ `extreme_event.csv` 必须在这里。它被 `dashboard/app.py` 在 `main()` 里**无条件**
-# 调用（`load_events()`，不在 try 里），也被 `validate.py` / `generate_report.py` 依赖。
-# 上一版包漏了它 → `streamlit run dashboard/app.py` 首屏就抛 FileNotFoundError，
-# 而打包自检照样打「✓ 包内容完整」——因为那份 REQUIRED 清单也是手写的、同样漏了它。
-# **这正是本脚本文档字符串里说要根治的那类失败，换了个形态复发**：
-# 把通配符换成显式清单，但清单本身仍靠人记得写。故 REQUIRED 里也补上，双保险。
-INCLUDE_FILES = ["README.md", "PACKAGE.md", "requirements.txt",
-                 "extreme_event.csv", "index.html", "方法与结果.md"]
-
-# ---- 排除（相对包根的 glob）。**每条都要写明理由**，否则下一个人不知道能不能删。
-EXCLUDE = [
-    ("**/__pycache__/**", "字节码"),
-    ("**/*.pyc", "字节码"),
-    ("**/.DS_Store", "系统文件"),
-    ("**/.ipynb_checkpoints/**", "编辑器残留"),
-    ("dashboard/app_home.py", "已废弃：内容已移至 pages/3_系统总览.py，当前环境不允许删除故留空"),
-    # 加速缓存：只加速、不影响结果；且体积大
-    ("data_out/.bf_cache/**", "载入/特征缓存，删掉不影响任何结果"),
-    ("**/_wip_*.pkl", "训练中间断点，含整个回放池"),
-    # 已证伪路径的实验归档：结论已落盘在顶层 JSON 里，归档本体不影响复现
-    ("data_out/drl_more/**", "已证伪路径的实验归档（结论见 ensemble_scaling.json）"),
-    ("data_out/drl_legacy_monthly/**", "旧标签口径的归档（结论见 README §7.10）"),
-    ("data_out/drl_evrew/**", "事件型奖励实验归档（结论见 event_reward_preregistration.md）"),
-    ("data_out/drl_ctrl_old/**", "旧对照组归档"),
-    ("data_out/roll/**", "滚动重训归档（结论见 roll_retrain.json）"),
-    ("data_out/drl_c26/**", "26 维对照归档"),
-    ("data_out/drl_5seed_archive/**", "旧交付版备份（数字见 README 正文）"),
-    ("data_out/anchor_model.joblib", "早期 anchor 预测器：训练区间覆盖测试期（泄漏），"
-                                     "已被 rule_ml_model.joblib 取代，不被任何结论引用"),
-]
-
-# ---- **必须存在**的文件：验证门与交付结论直接依赖它们，缺一即包不可用。
-# 这份清单就是「上一版包漏了什么」的直接回应，不要用通配符简写。
+import tempfile
+import zipfile
+ROOT=Path(__file__).resolve().parents[1]
+NAME="期权曲面风控预警系统"
+INCLUDE_DIRS=["vol_surface","kg","drl","scripts","dashboard","tests","data_out","docs",".streamlit",".github"]
+INCLUDE_FILES=["README.md","README.legacy.md","PACKAGE.md","requirements.txt","requirements-predictive.lock.txt","extreme_event.csv","index.html","方法与结果.md","升级说明.md","启动系统.command",".env.example"]
 REQUIRED = [
     # 门与结论依赖的模型 —— 上一版包整类漏掉了
     ("data_out/rule_ml_model.joblib", "问题1 融合达标配置的模型；check_doc_numbers 校验其指纹"),
@@ -133,139 +72,85 @@ REQUIRED = [
     ("data_out/platform.html", "总览平台（评委入口）"),
     ("data_out/backtest_report.md", "历史快照（须自带声明，见 check_doc_numbers）"),
 ]
+REQUIRED += [(p,"当前交付及 V3 扩展依赖") for p in [
+    "docs/competition_requirements.json","docs/比赛要求对照.md","docs/交付审阅与修订.md",
+    "docs/V2实验设计.md","docs/V3实验设计.md","README.legacy.md","requirements-predictive.lock.txt",
+    "启动系统.command",".env.example","data_out/submission/audit.json",
+    "data_out/rule_ml_portable.json","data_out/rule_ml_portable.validation.json",
+    "scripts/build_submission.py","scripts/audit_submission.py","scripts/evaluate_submission_cvar.py",
+    "vol_surface/time_utils.py","vol_surface/submission_metrics.py","vol_surface/portable_rule_ml.py",
+    "dashboard/predictive_app.py","data_out/predictive/model.json","data_out/predictive_v2/model.json",
+    "data_out/predictive_v3/model.json","data_out/predictive_v3/report.json",
+    "data_out/predictive_v3/test_predictions.parquet",
+    "docs/人工解释评分表.csv","docs/cvar_prices.schema.csv","docs/cvar_alerts.schema.csv",
+    "scripts/smoke_competition.py","scripts/smoke_dashboard.py"]]
 
 
-def _excluded(rel: str) -> str | None:
-    # 与 `check_doc_numbers.py` 的缓存门保持**同一套判据**：
-    # data_out 下的**隐藏目录**一律视为本地产物，不进包。
-    # 注意只排**目录**——隐藏**文件**（`.q1_*_cache.json` 等）要留，
-    # 它们让 `eval_q1_windows.py` 在无原始数据的包里也能跑通。
-    # ⚠ 不能用 glob `data_out/.*/**` 来表达这条：`fnmatch` 的 `*` **跨 `/` 匹配**，
-    # 那个模式会把隐藏文件一起排掉（实测三个 cache JSON 全被剔除）。
-    parts = rel.split(os.sep)
-    if len(parts) > 2 and any(p.startswith(".") for p in parts[1:-1]):
-        return "data_out 下的隐藏目录（本地产物）"
-    for pat, why in EXCLUDE:
-        if fnmatch.fnmatch(rel, pat) or fnmatch.fnmatch(rel, pat.replace("/**", "")):
-            return why
-    return None
+def _excluded(rel):
+    parts=PurePosixPath(rel).parts
+    if any(x in {".git","__pycache__",".pytest_cache",".venv","node_modules",".DS_Store"} for x in parts): return True
+    name=parts[-1]
+    if name.startswith(".env") and name!=".env.example":return True
+    if name in {"secrets.toml",".DS_Store"} or name.endswith((".pyc",".pyo",".log",".pem",".key")):return True
+    if len(parts)>2 and parts[0]=="data_out" and any(x.startswith('.') for x in parts[1:-1]):return True
+    return any(rel.startswith("data_out/"+x+"/") for x in ["drl_more","drl_legacy_monthly","drl_evrew","drl_ctrl_old","roll","drl_c26","drl_5seed_archive"])
 
 
-def build(out: str) -> None:
-    n, skipped = 0, {}
-    # 用 tar 而非混用 cp —— 时间戳口径必须统一。
-    # 实测教训：上一版混用 `cp`（取当前时钟）与 `tar`（保留原时间戳），
-    # 而挂载目录的时间比 VM 时钟快 2h41m，于是解压后
-    # 「报告不得早于其数据源」那道门当场失败，而源目录里是绿的。
-    with tarfile.open(out, "w:gz") as tf:
-        for top in INCLUDE_DIRS:
-            for r, ds, fs in os.walk(os.path.join(ROOT, top)):
-                ds[:] = [d for d in ds if d != "__pycache__"]
-                for f in sorted(fs):
-                    full = os.path.join(r, f)
-                    rel = os.path.relpath(full, ROOT)
-                    why = _excluded(rel)
-                    if why:
-                        skipped[why] = skipped.get(why, 0) + 1
-                        continue
-                    tf.add(full, arcname=os.path.join(NAME, rel))
-                    n += 1
-        for f in INCLUDE_FILES:
-            p = os.path.join(ROOT, f)
-            if os.path.exists(p):
-                tf.add(p, arcname=os.path.join(NAME, f))
-                n += 1
-    print(f"  收录 {n} 个文件 → {os.path.basename(out)} "
-          f"（{os.path.getsize(out) / 2 ** 20:,.1f} MB）")
-    for why, c in sorted(skipped.items(), key=lambda x: -x[1]):
-        print(f"    排除 {c:>5} 个：{why}")
+def files_to_include():
+    files=set()
+    for folder in INCLUDE_DIRS:
+        files.update(p.relative_to(ROOT).as_posix() for p in (ROOT/folder).rglob('*') if p.is_file())
+    files.update(p for p in INCLUDE_FILES if (ROOT/p).is_file())
+    result=sorted(p for p in files if not _excluded(p))
+    for name in result:
+        if (ROOT/name).is_symlink() or not (ROOT/name).resolve().is_relative_to(ROOT):
+            raise ValueError('refuse symlink or external file: '+name)
+    missing=[p for p,_ in REQUIRED if p not in result]
+    if missing:raise ValueError('package dependencies missing: '+str(missing))
+    return result
 
 
-def _import_closure() -> set:
-    """静态扫出「被任何交付脚本 import 的本仓库模块」+「被字面量引用的数据文件」。
-
-    为什么要有它
-    ------------
-    上面的 `REQUIRED` 是**手写**清单，而手写清单会漏——实测就漏了
-    `extreme_event.csv`（`dashboard/app.py` 无条件读它，缺了首屏即崩），
-    而自检照样打「✓ 完整」。**把通配符换成显式清单，只是把「漏」从一种形态换成另一种。**
-    故再加一道**从代码里推**的检查：凡是源码里以字面量出现的
-    `*.csv / *.json / *.joblib / *.parquet` 顶层文件名，都必须在包里。
-    """
-    import ast
-    lits = set()
-    for top in INCLUDE_DIRS:
-        for r, ds, fs in os.walk(os.path.join(ROOT, top)):
-            ds[:] = [d for d in ds if d != "__pycache__"]
-            for f in fs:
-                if not f.endswith(".py"):
-                    continue
-                try:
-                    t = ast.parse(open(os.path.join(r, f), encoding="utf-8").read())
-                except SyntaxError:
-                    continue
-                for n in ast.walk(t):
-                    if isinstance(n, ast.Constant) and isinstance(n.value, str):
-                        v = n.value
-                        if (v.endswith((".csv", ".joblib")) and "/" not in v
-                                and os.path.exists(os.path.join(ROOT, v))):
-                            lits.add(v)
-    return lits
+def build(out):
+    files=files_to_include()
+    manifest={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in files}
+    out=Path(out);out.parent.mkdir(parents=True,exist_ok=True)
+    with zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+        for p in files:z.write(ROOT/p,NAME+'/'+p)
+        z.writestr(NAME+'/MANIFEST.sha256.json',json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+    print(f'已收录 {len(files)} 个文件，{out.stat().st_size/2**20:.1f} MB；清单 {len(REQUIRED)} 个必要依赖。')
 
 
-def verify(out: str) -> int:
-    with tarfile.open(out, "r:gz") as tf:
-        members = {m.name for m in tf.getmembers()}
-    missing = [(p, why) for p, why in REQUIRED
-               if os.path.join(NAME, p) not in members]
-    print(f"\n  包内 {len(members)} 个条目；必须存在的 {len(REQUIRED)} 项中"
-          f"缺 {len(missing)} 项")
-    for p, why in missing:
-        print(f"    ✗ 缺 {p} —— {why}")
-    # 反向：包里不该有的
-    strays = [m for m in members
-              if _excluded(os.path.relpath(m, NAME)) and not m.endswith("/")]
-    for m in strays[:5]:
-        print(f"    ✗ 不该收录 {m}")
-    # 从代码里推出来的依赖（补手写清单的漏）
-    lit_missing = sorted(v for v in _import_closure()
-                         if os.path.join(NAME, v) not in members)
-    for v in lit_missing:
-        print(f"    ✗ 源码里字面引用了顶层文件 {v}，但包里没有")
-    ok = not missing and not strays and not lit_missing
-    print("  ✓ 包内容完整" if ok else "  ✗ 包内容不完整")
-    return 0 if ok else 1
+def verify(out):
+    with zipfile.ZipFile(out) as z, tempfile.TemporaryDirectory(prefix='risk-delivery-') as temp:
+        names=z.namelist()
+        if len(names)!=len(set(names)):raise ValueError('duplicate archive members')
+        for name in names:
+            p=PurePosixPath(name)
+            if p.is_absolute() or '..' in p.parts or not name.startswith(NAME+'/') or name.endswith('/'):
+                raise ValueError('unsafe archive member: '+name)
+        manifest=json.loads(z.read(NAME+'/MANIFEST.sha256.json'))
+        wanted={NAME+'/'+p for p in manifest}|{NAME+'/MANIFEST.sha256.json'}
+        if set(names)!=wanted:raise ValueError('archive and manifest disagree')
+        missing=[p for p,_ in REQUIRED if p not in manifest]
+        if missing:raise ValueError('missing required files: '+str(missing))
+        for p,expected in manifest.items():
+            if _excluded(p):raise ValueError('local/secret file in archive: '+p)
+            if hashlib.sha256(z.read(NAME+'/'+p)).hexdigest()!=expected:raise ValueError('corrupt archive file: '+p)
+        z.extractall(temp)
+        extracted=Path(temp)/NAME
+        run=subprocess.run([sys.executable,'scripts/build_submission.py','--check'],cwd=extracted,
+                           capture_output=True,text=True,timeout=300)
+        if run.returncode:raise ValueError('extracted package check failed: '+run.stdout+run.stderr)
+        print(f'解压副本逐文件 SHA-256 与当前材料复核通过（{len(manifest)} 个文件）。')
+    return 0
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=None,
-                    help="包路径。缺省时：源目录下用 <名称>.tar.gz；"
-                         "**若当前就在解压出来的包里**，则自动去父目录找")
-    ap.add_argument("--verify-only", action="store_true")
-    a = ap.parse_args()
-
-    out = a.out
-    if out is None:
-        out = os.path.join(ROOT, f"{NAME}.tar.gz")
-        # 在**解压出来的包内部**跑 `--verify-only` 时，默认路径会指向包自己里面的
-        # tar.gz（不存在）→ 裸 FileNotFoundError。而 PACKAGE.md 把这条命令写给了评委。
-        # 故往父目录找一次；再找不到就给出可操作的报错，不要抛 traceback。
-        if a.verify_only and not os.path.exists(out):
-            alt = os.path.join(os.path.dirname(ROOT), f"{NAME}.tar.gz")
-            if os.path.exists(alt):
-                out = alt
-                print(f"  （当前在解压目录内，改用父目录的包：{alt}）")
-            else:
-                raise SystemExit(
-                    f"找不到交付包。已试过：\n  {out}\n  {alt}\n"
-                    f"请用 --out <包路径> 显式指定。")
-    if not a.verify_only:
-        print("=== 打包 ===")
-        build(out)
-    print("=== 自检 ===")
-    sys.exit(verify(out))
+def main():
+    ap=argparse.ArgumentParser();ap.add_argument('--out',type=Path,default=ROOT.parent/'期权曲面预测风控系统.zip');ap.add_argument('--verify-only',action='store_true')
+    a=ap.parse_args()
+    if a.out.suffix.lower()!='.zip':raise SystemExit('当前打包器输出 .zip；旧 tar 打包器保存在 make_package_legacy.py。')
+    if not a.verify_only:build(a.out)
+    verify(a.out)
 
 
-if __name__ == "__main__":
-    main()
+if __name__=='__main__':main()

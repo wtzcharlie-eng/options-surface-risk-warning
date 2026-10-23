@@ -84,7 +84,7 @@ td code,th code{font-size:12.5px}
   <span class="sub">边权标定、解释样本、验证门与自评记录。由 report_kg.py 生成。</span>
 </div></div>
 <div class="shell">
-  <main><h1 id="问题2-基于知识图谱的风险传导路径推理与可解释性-技术报告">问题2：基于知识图谱的风险传导路径推理与可解释性 —— 技术报告</h1>
+  <main><blockquote><strong>历史技术报告</strong>：保留原实验的配置、口径与结论。当前赛题对照和复核状态见 <a href="doc_requirements.html">比赛要求与验收证据</a>。历史报告的“全达标”、自评和 CVaR 不能替代当前验收。</blockquote><h1 id="问题2-基于知识图谱的风险传导路径推理与可解释性-技术报告">问题2：基于知识图谱的风险传导路径推理与可解释性 —— 技术报告</h1>
 <blockquote><p>由 <code>scripts/report_kg.py</code> 生成。全部统计数字来自 <code>data_out/kg/</code> 下的 <code>kg_edges.json</code> / <code>kg_cross.json</code> / <code>gates.json</code>，重跑 <code>scripts/build_kg.py</code> 后 重新执行本脚本即可刷新。</p></blockquote>
 <h2 id="1-这版要解决的核心问题">1. 这版要解决的核心问题</h2>
 <p>知识图谱最容易滑向的失败模式，是把作者拍脑袋写的因果关系包装成「推理」。本项目的 v1 骨架（已归档到 <code>kg/_legacy/</code>）正落在这里：主推理骨架 AMPLIFIES 的边权是「启发式 0.6–0.8」的先验，跨品种回退权重直接写死 <code>1.0</code>（等于断言「同板块必然传导」），其 schema 文档自己也注明「后续可用 anchor 数据估计」——而这一步一直没做。</p>

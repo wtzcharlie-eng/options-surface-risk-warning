@@ -1,0 +1,76 @@
+{
+  "source": {
+    "description": "用户提供的第五届中国研究生金融科技创新大赛宁证期货赛题说明（DOCX）",
+    "sha256": "9d22cb2daaa5ea3ae84acdb045958e2d3353d8ce14c09810562cad0fa819037a",
+    "raw_document_included": false
+  },
+  "review_date": "2026-10-23",
+  "primary_alert_targets": {
+    "precision_min": 0.5,
+    "recall_min": 0.6,
+    "avg_lead_min": 30,
+    "precision_window_minutes": 120,
+    "recall_strictly_before": true,
+    "recall_max_lead_in_brief": "未明确"
+  },
+  "risk_event": {
+    "future_bars": 5,
+    "bar_minutes": 15,
+    "quantile": 0.95,
+    "lookback_trading_days_example": 20,
+    "team_may_define_thresholds_with_rationale": true
+  },
+  "business_cvar": {
+    "minimum_continuous_months": 3,
+    "positions": [
+      "long_one_lot",
+      "short_one_lot"
+    ],
+    "action": "首次 level≥2 预警后的下一个交易日开盘减半，此后不恢复、不重复减仓",
+    "alpha": 0.95,
+    "aggregate": "多空相对改善率算术平均",
+    "significant_effective_reference": 0.1
+  },
+  "kg": {
+    "optional": true,
+    "human_score_out_of": 5,
+    "mean_min": 4
+  },
+  "drl": {
+    "optional": true,
+    "relative_reward_or_cvar_improvement_min": 0.1,
+    "baseline": "固定阈值规则型智能体"
+  },
+  "runtime": {
+    "historical_analysis_sufficient": true,
+    "web_or_notebook_required": true,
+    "live_feed_mandatory": false,
+    "trade_execution": false
+  },
+  "deliverables": [
+    "源码及依赖",
+    "部署运行文档",
+    "含基线与典型案例的离线回测报告",
+    "预警可视化界面",
+    "适用的知识图谱与DRL技术设计"
+  ],
+  "original_delivery_files": {
+    "PACKAGE.md": {
+      "sha256": "f01eda1e3c42d9ff095452c8ff9b89cdd1c850ab17127e84e0a324b127c1d96a",
+      "origin": "用户提供的下载目录原交付文件；只读复制"
+    },
+    "方法与结果.md": {
+      "sha256": "4bd4610a58cdad9cd80ca5d9a684ae7252d74224a17f6716d4b2ea2ba2f9c262",
+      "origin": "用户提供的下载目录原交付文件；只读复制"
+    },
+    "index.html": {
+      "sha256": "2284e48db3e37a125e3612b48de73928d2485f36d5a5e7cfacb616374be55af3",
+      "origin": "用户提供的下载目录原交付文件；只读复制"
+    }
+  },
+  "clarification_evidence": {
+    "original_material_claim": "原材料记载后续命题方口径答复",
+    "original_reply_provided": false,
+    "policy": "作为历史实验假设单列，不称附带赛题原文或已核实的正式答复"
+  }
+}

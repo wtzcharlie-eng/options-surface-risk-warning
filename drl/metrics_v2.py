@@ -38,6 +38,7 @@ from dataclasses import asdict, dataclass
 
 import numpy as np
 import pandas as pd
+from vol_surface.time_utils import epoch_seconds
 
 ALERT_LEVEL = 2
 HIT_WINDOW_MIN = 120.0     # 精确率：预警后 2 小时内出现风险起点即命中（原文明确）
@@ -45,8 +46,7 @@ MERGE_GAP_MIN = 120.0      # 合并连续预警的间隔阈值（间隔 ≤ 此�
 
 
 def _epoch(ts) -> np.ndarray:
-    return (pd.to_datetime(pd.Series(list(ts)), format="%Y%m%d%H%M%S")
-            .astype("int64").to_numpy() // 10 ** 9)
+    return epoch_seconds(ts)
 
 
 def merge_alerts(a_ep: np.ndarray, gap_min: float = MERGE_GAP_MIN) -> list:

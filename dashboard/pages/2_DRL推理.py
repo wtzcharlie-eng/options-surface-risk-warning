@@ -17,6 +17,8 @@
 from __future__ import annotations
 
 import os
+import json
+from pathlib import Path
 import sys
 
 import pandas as pd
@@ -29,7 +31,7 @@ DATA = os.path.join(ROOT, "data_out")
 st.set_page_config(page_title="DRL 推理", layout="wide")
 st.title("DRL 自适应预警 · 推理接口")
 st.caption("加载交付的智能体集成，对真实截面调用 `AlertAgentAPI.predict()`。"
-           "本页不复制任何决策逻辑——看到的就是线上行为。")
+           "本页不复制任何决策逻辑——使用完整锚点特征进行单截面假设推演。")
 
 try:
     from drl.api import AlertAgentAPI
@@ -53,8 +55,17 @@ def _api():
 
 @st.cache_data
 def _load(sym: str) -> pd.DataFrame:
-    p = os.path.join(DATA, f"alerts_{sym}.parquet")
-    return pd.read_parquet(p) if os.path.exists(p) else pd.DataFrame()
+    frames=[]
+    for path in sorted(Path(DATA, 'anchor', sym).glob('*/features.parquet')):
+        f=pd.read_parquet(path).sort_values('_timestamp').reset_index(drop=True)
+        u=pd.read_parquet(path.with_name('underlying.parquet')).sort_values('_timestamp').reset_index(drop=True)
+        if f['_timestamp'].astype(str).tolist()!=u['_timestamp'].astype(str).tolist():
+            raise ValueError('曲面与标的特征时间不对齐')
+        from drl.dataset import UNDERLYING
+        f=pd.concat([f, u[UNDERLYING]],axis=1)
+        f['timestamp']=f['_timestamp'].astype(str)
+        frames.append(f)
+    return pd.concat(frames,ignore_index=True) if frames else pd.DataFrame()
 
 
 api = _api()
@@ -62,8 +73,7 @@ if api is None:
     st.error("缺 `data_out/drl/agent_seed*.npz` —— 交付包内应当自带，请检查完整性")
     st.stop()
 
-syms = sorted(f[len("alerts_"):-len(".parquet")] for f in os.listdir(DATA)
-              if f.startswith("alerts_") and f.endswith(".parquet"))
+syms = sorted(p.name for p in Path(DATA,'anchor').iterdir() if p.is_dir())
 
 left, right = st.columns([1, 2])
 
@@ -74,30 +84,35 @@ with left:
     if df.empty:
         st.error(f"{sym} 数据为空")
         st.stop()
-    only_alert = st.checkbox("只看规则层有触发的截面", value=True)
-    d = df[df["n_triggers"] > 0] if only_alert else df
+    d = df
     if d.empty:
         st.warning("无符合条件的截面，取消勾选可看全部")
         st.stop()
     d = d.sort_values("timestamp")
-    labels = [f"{r.timestamp} · 规则{int(r.rule_level)}级 · 触发{int(r.n_triggers)}项"
-              for r in d.head(300).itertuples()]
+    d = d.tail(300).reset_index(drop=True)
+    labels = [str(r.timestamp) for r in d.itertuples()]
     idx = st.selectbox("截面", range(len(labels)), format_func=lambda i: labels[i])
-    row = d.head(300).iloc[idx]
+    row = d.iloc[idx]
 
     st.divider()
-    lean = st.slider("置信度阈值 lean", -2.0, 8.0, 0.0, 0.1,
-                     help="提高则更保守（少报），降低则更激进（多报）。"
+    lean = st.slider("预警 Q 值差阈值 lean", 0.0, 8.0, 0.3, 0.1,
+                     help="提高则更保守（少报），降至 0 时使用原贪心策略。"
                           "交付工作点由验证集选出，见 workpoint.json。")
     api.set_confidence_threshold(lean)
 
 with right:
     feats = {c: (0.0 if pd.isna(row[c]) else float(row[c]))
-             for c in FEATURE_COLUMNS if c in row.index}
+             for c in api.features if c in row.index}
+    missing=set(api.features)-set(feats)
+    if missing:
+        st.error('缺少必需特征：'+', '.join(sorted(missing)));st.stop()
+    from vol_surface.alert_engine import evaluate as evaluate_rule
+    rule_level=evaluate_rule(feats, model=None, state=None)['level']
+    st.caption('完整 32 维输入；当前为单截面推演，上下文重置为无近期预警，未加序列回测的休市过滤。结果不能直接解释为回测工作点成绩。')
     # update_state=False：本页是逐截面的假设推演，不该让上一次查询污染
     # 「距上次预警多久」这个上下文维度。
     r = api.predict(feats, timestamp=str(row["timestamp"]),
-                    update_state=False, explain=True)
+                    context=(1.0,0.0), update_state=False, explain=True)
 
     COLORS = {0: "#4fb79c", 1: "#d8a24a", 2: "#d8874f", 3: "#e8695e"}
     c = COLORS.get(r["level"], "#8fa0b2")
@@ -107,8 +122,8 @@ with right:
         f"<div style='font-size:30px;font-weight:700;color:{c};margin:6px 0'>"
         f"{r['level']} 级 · {r['level_name']}</div>"
         f"<div style='font-size:13px;color:#c2d0dd'>"
-        f"规则层给出 {int(row['rule_level'])} 级"
-        f"{'（一致）' if int(row['rule_level']) == r['level'] else '（<b>不一致</b>）'}"
+        f"默认固定规则参照为 {int(rule_level)} 级"
+        f"{'（一致）' if int(rule_level) == r['level'] else '（<b>不一致</b>）'}"
         f"</div></div>", unsafe_allow_html=True)
 
     a, b = st.columns(2)
