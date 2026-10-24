@@ -1,0 +1,34 @@
+{
+  "checked_at": "2026-10-25T05:02:44.812945+08:00",
+  "passed": true,
+  "real_model": true,
+  "model": "qwen3.8-27b-vllm",
+  "business_flow": [
+    "historical_forecast",
+    "default_risk_question",
+    "evaluation_followup",
+    "evidence_references"
+  ],
+  "n_chat_messages": 4,
+  "credential_inputs_visible": 0,
+  "test_kind": "Streamlit AppTest with real platform model; Linux browser check is separate",
+  "client_sha256": "f8ecb0d780a1e3e0848cf4c147f284ebc2bf6378148850075369d6b19a11189e",
+  "turns": [
+    {
+      "question": "解读当前风险",
+      "passed": true,
+      "warnings": [
+        "部分观测超出训练期99%范围，请结合数据质量解读。"
+      ],
+      "reply": "截至 2026-04-14 收盘，sc 品种曲面风险代理未超历史阈值，预测未来 3 个交易日内发生异常事件的累计概率约为 8.33%，因低于 20.43% 的预警阈值而未触发预警 [symbol] [as_of] [forecast.probability] [forecast.threshold] [forecast.alert]。本次预测为历史数据回放模式，部分特征超出训练期 99% 范围，且曲面异常代理不等同于组合亏损或 VaR，需结合数据质量谨慎解读 [mode] [risk_scope] [data_quality.warnings.0]。"
+    },
+    {
+      "question": "预测效果可靠吗？",
+      "passed": true,
+      "warnings": [
+        "部分观测超出训练期99%范围，请结合数据质量解读。"
+      ],
+      "reply": "该预测在完整测试期内优于统计基准，Brier技巧分数为正。[evaluation.brier] [evaluation.baseline_brier] [evaluation.brier_skill] 但模型当前状态为degraded，且部分特征超出训练期99%范围，需结合数据质量谨慎解读。[data_quality.status] [data_quality.warnings.0] 此外，本次为历史回放模式，统计结果为事后评估，不能直接作为未来实时表现的保证。[mode] [evaluation_context]"
+    }
+  ]
+}
