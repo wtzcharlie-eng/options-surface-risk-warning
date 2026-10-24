@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>决赛平台部署说明 · 期权波动率曲面风控预警系统</title>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0e1621; --panel:#151f2b; --rule:#22303f;
+  --fg:#e3eaf1; --fg2:#8fa0b2; --fg3:#5d6f82;
+  --calm:#4fb79c; --stress:#e8695e; --caveat:#d8a24a;
+  /* 与 index.html 完全一致：西文族在前走 Times，汉字回退到黑体 */
+  --sans:"Times New Roman",Times,"PingFang SC","Hiragino Sans GB",
+         "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  --mono:"Times New Roman",Times,ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--sans);
+  font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--calm);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--calm);outline-offset:2px}
+
+.bar{position:sticky;top:0;z-index:9;background:rgba(14,22,33,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;
+  align-items:baseline;gap:16px}
+.bar .home{color:var(--fg2);font-size:13px}
+.bar h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.01em}
+.bar .sub{color:var(--fg3);font-size:12.5px;margin-left:auto}
+
+.shell{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;
+  grid-template-columns:1fr 236px;gap:44px;align-items:start}
+main{min-width:0;padding:34px 0 96px}
+
+nav.toc{position:sticky;top:66px;padding:34px 0;max-height:calc(100vh - 76px);
+  overflow:auto}
+nav.toc .h{font-size:11px;letter-spacing:.14em;color:var(--fg3);
+  margin-bottom:10px;font-family:var(--mono)}
+nav.toc a{display:block;color:var(--fg2);font-size:12.5px;line-height:1.55;
+  padding:3px 0 3px 10px;border-left:1px solid var(--rule);text-decoration:none}
+nav.toc a:hover{color:var(--fg);border-left-color:var(--calm)}
+nav.toc a.l3{padding-left:22px;color:var(--fg3);font-size:12px}
+
+h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.35;letter-spacing:.01em}
+main h1{font-size:27px;margin:6px 0 22px}
+main h2{font-size:21px;margin:44px 0 14px;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+main h3{font-size:17px;margin:30px 0 10px;color:#f0f5fa}
+main h4{font-size:15px;margin:22px 0 8px;color:var(--fg2)}
+p{margin:13px 0}
+strong{color:#f4f8fc;font-weight:700}
+code{font-family:var(--mono);font-size:13.5px;background:#1b2735;
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:#cfe0ee}
+pre{background:var(--panel);border:1px solid var(--rule);padding:15px 17px;
+  overflow:auto;margin:16px 0}
+pre code{background:none;border:0;padding:0;font-size:13px;line-height:1.65;
+  color:#cfe0ee}
+blockquote{margin:16px 0;padding:2px 18px;border-left:3px solid var(--caveat);
+  background:#141d29;color:var(--fg2)}
+blockquote strong{color:var(--caveat)}
+blockquote p{margin:10px 0}
+ul,ol{margin:13px 0;padding-left:24px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--rule);margin:34px 0}
+.tw{overflow-x:auto;margin:17px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--rule);padding:8px 11px;text-align:left;
+  vertical-align:top}
+th{background:#1a2532;color:var(--fg);font-weight:700;white-space:nowrap}
+td{color:var(--fg2)}
+tbody tr:nth-child(even) td{background:#121b26}
+td code,th code{font-size:12.5px}
+
+.foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--fg3);line-height:1.9}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:0 0 20px}
+}
+</style></head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="../index.html">← 交付入口</a>
+  <h1>决赛平台部署说明</h1>
+  <span class="sub">附件5适配：Linux、根目录环境变量、单端口、平台 Qwen 与部署后验收。</span>
+</div></div>
+<div class="shell">
+  <main><h1 id="期权曲面预测风控系统部署说明">期权曲面预测风控系统部署说明</h1>
+<p>版本：2026.10.24 · 目标平台：Linux / amd64 · 作品：基于期权波动率曲面与智能体的量化风控预警系统。</p>
+<p>本说明对应决赛项目包，供承办方部署。完整源代码、冻结模型和必要历史特征均随包提供。默认以一个服务提供全部页面，不需启动多个端口。预测是历史回放，不执行交易。</p>
+<h2 id="1-运行环境与资源">1. 运行环境与资源</h2>
+<div class='tw'><table><thead><tr><th>项目</th><th>配置</th></tr></thead><tbody><tr><td>系统与架构</td><td>Linux，x86_64 / amd64</td></tr><tr><td>Python</td><td>3.12；锁定依赖见 requirements-predictive.lock.txt</td></tr><tr><td>建议资源</td><td>2 vCPU、4 GiB 内存、至少 3 GiB 可用磁盘，实际空间随容器层/缓存变化</td></tr><tr><td>GPU</td><td>本作品服务不需要 GPU；Qwen 由平台独立模型服务提供</td></tr><tr><td>模型权重</td><td>15 个 DQN 检查点、Q1 数值树与原模型、冻结 V1/V2/V3 JSON，均在 data_out 下</td></tr><tr><td>数据</td><td>随包的 7 品种历史特征；原始大体积行情不随包提供</td></tr><tr><td>服务端口</td><td>SERVICE_PORT，默认 8000</td></tr><tr><td>镜像标签</td><td>options-risk-submission:2026.10.24</td></tr><tr><td>镜像架构</td><td>linux/amd64；构建与运行均需指定该架构</td></tr><tr><td>网络</td><td>安装依赖或构建镜像需要软件源网络；模型调用需要访问平台提供的 HTTPS 接口</td></tr></tbody></table></div>
+<p>建议资源不是所有负载下的最低承诺。启动、历史回放和交互无需重新训练，也不会自动下载或重训任何本地大模型。</p>
+<h2 id="2-根目录环境变量">2. 根目录环境变量</h2>
+<p>项目包根目录包含 <code>.env</code>，运行参数从此文件读取，系统环境变量优先。Docker 构建不复制 <code>.env</code>，运行时通过 <code>--env-file</code> 注入。公开源码中的模板为 <code>deployment/competition.env</code>，没有真实密钥。</p>
+<div class='tw'><table><thead><tr><th>变量</th><th>作用 / 当前约定</th></tr></thead><tbody><tr><td>MODEL_PROVIDER</td><td>platform-qwen；如改用国产兼容服务则为 domestic-compatible</td></tr><tr><td>MODEL_API_KEY</td><td>平台提供的模型 Key；通过 .env 注入，不写代码或公开说明</td></tr><tr><td>MODEL_BASE_URL</td><td>https://fintechpf.yunzhengdata.com:8443/model-api/qwen3.8-27b-vllm/v1</td></tr><tr><td>MODEL_NAME</td><td>qwen3.8-27b-vllm</td></tr><tr><td>MODEL_ENABLE_THINKING</td><td>false，按平台示例发送 chat_template_kwargs.enable_thinking=false</td></tr><tr><td>MODEL_TIMEOUT_SECONDS</td><td>90；允许 1–120 秒</td></tr><tr><td>MODEL_MAX_TOKENS</td><td>1400；限制响应长度，允许 64–4096</td></tr><tr><td>EMBEDDING_API_KEY</td><td>留空；本项目不依赖 Embedding 服务</td></tr><tr><td>SERVICE_HOST</td><td>0.0.0.0，允许部署环境访问</td></tr><tr><td>SERVICE_PORT</td><td>8000，可覆盖</td></tr><tr><td>SERVICE_BASE_PATH</td><td>默认留空；反向代理要求子路径时填写，例如 options-risk</td></tr><tr><td>RISK_DEPLOYMENT_PROFILE</td><td>competition，启用平台/国产模型配置与固定部署侧配置</td></tr></tbody></table></div>
+<p>平台适配会发送紧凑风险证据，并对短暂的 502/503/504 在同一超时预算内最多重试一次。若模型只在 cited_fields 声明字段而未在正文内嵌引用，页面会明确标成“参考字段（模型声明）”；这不代表逐句事实经过独立验证，数值、单位和字段存在性仍会校验。</p>
+<p>兼容协议不代表调用 OpenAI 服务；本比赛配置连接的是上述平台 Qwen。比赛页面不提供境外模型选项，不允许访问者在页面填写或查看服务端 Key。API Key 未配置时页面可提供明确标记的本地证据解读，这不算真实模型功能验收通过。</p>
+<p>私有比赛包可能包含团队提供的平台 Key，以包内 <code>PACKAGE_PROFILE.json</code> 的 <code>contains_model_key</code> 为准。此类包仅上传比赛平台；无密钥公开包由承办方填写 Key 后再验收。不要把含密钥的 <code>.env</code> 或私有包放入公开仓库。</p>
+<h2 id="3-推荐方式-linux-源码部署">3. 推荐方式：Linux 源码部署</h2>
+<p>将 ZIP 解压，进入其中唯一项目目录。在该目录运行：</p>
+<pre><code>python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements-predictive.lock.txt
+.venv/bin/python scripts/serve_submission.py --check --require-model
+.venv/bin/python scripts/serve_submission.py</code></pre>
+<p><code>--check</code> 检查模型、数据及配置，不联网；<code>--require-model</code> 在配置缺失时返回 2，不能用它替代实际模型请求。启动入口不依赖开发电脑的路径，使用项目相对路径和当前 Python。建议在进程管理器中配置 <code>WorkingDirectory</code> 为解压根目录、启动命令为上述最后一行。</p>
+<p>访问根路径 <code>/</code>。同一服务提供：预测与问答、曲面预警、图谱解释、DRL 推演、比赛对照。健康检查为 <code>/_stcore/health</code>，成功返回 <code>ok</code>；它只证明服务活着，不证明模型或业务指标通过。</p>
+<h2 id="4-可选方式-docker-compose">4. 可选方式：Docker / Compose</h2>
+<p>在项目根目录构建并运行：</p>
+<pre><code>docker buildx build --platform linux/amd64 --load -t options-risk-submission:2026.10.24 .
+docker run -d --name options-risk --platform linux/amd64 --env-file .env -p 8000:8000 --cpus 2 --memory 4g options-risk-submission:2026.10.24</code></pre>
+<p>服务由非 root 用户运行。Dockerfile 不含真实 Key，也不会把根目录 <code>.env</code> 写进镜像。如果平台要求不同端口，先将 <code>.env</code> 的 SERVICE_PORT 改为对应值，并同时修改 <code>-p</code> 两侧的端口。</p>
+<p>已有 Docker Compose 时：</p>
+<pre><code>docker compose up -d --build
+docker compose ps
+docker compose logs --tail 100</code></pre>
+<p>Compose 已声明 <code>platform: linux/amd64</code>。本项目提供 Dockerfile 和源码，不要求把本机 Apple Silicon 构建的 ARM 镜像提交给承办方。提交已构建镜像时必须另行核对实际架构和上述镜像标签。</p>
+<h2 id="5-代理路径与静态资源">5. 代理路径与静态资源</h2>
+<p>默认让平台代理转发到容器的 8000 端口，访问路径为 <code>/</code>。代理必须支持 WebSocket Upgrade，并将请求路径、Host 和转发协议正确传给应用。</p>
+<p>如果平台为作品分配 <code>/options-risk/</code> 前缀，设置 <code>SERVICE_BASE_PATH=options-risk</code> 并重启；首页、页面路由、静态资源、WebSocket 和健康检查均位于该前缀下。相应健康检查为 <code>/options-risk/_stcore/health</code>。不要只修改浏览器地址而遗漏应用的 base path，也不要在代理与应用两侧重复拼接前缀。</p>
+<p>无独立 CDN、外部字体或数据库依赖。曲面和图谱页面读取包内数据；原始合约 Greeks 不在精简包内时，页面会提示并提供历史静态材料作对照，不把缺失数据伪装为已加载。</p>
+<h2 id="6-部署后验收步骤">6. 部署后验收步骤</h2>
+<ol>
+<li>打开首页，确认无白屏、404、502、504，三个期限卡片和顶部五个页面入口正常显示。</li>
+<li>切换品种和预测周期，确认预测快照跟随变化；页面必须注明历史回放。</li>
+<li>在风险助手中提问“解读当前风险”，检查回答标为 <code>LLM · qwen3.8-27b-vllm</code>，带有可核对的字段引用；本地降级不能替代模型验收。</li>
+<li>继续追问“模型是否可靠”，确认上下文连续、没有模型离线、Key 缺失或超时提示。</li>
+<li>下载预测快照与对话证据，确认 JSON 可打开、品种/日期/期限一致且无凭据。</li>
+<li>依次访问曲面、图谱、DRL 与比赛对照，确认图表、路径和完整 32 维输入的推演可用。</li>
+<li>在真实平台分配的访问地址上重复以上操作，核对静态 JS/CSS 和 WebSocket 均成功，再认定平台侧验收完成。</li>
+</ol>
+<p>命令行可执行：</p>
+<pre><code>.venv/bin/python scripts/healthcheck.py
+.venv/bin/python scripts/preflight.py
+.venv/bin/python scripts/check_platform_model.py --out platform-model-check.json</code></pre>
+<p>最后一条会真实调用平台模型两次，验证当前冻结 V3 风险证据的多轮问答，并保存无密钥结果；可用于承办方诊断。真实接口当次通过不保证以后配额、网络或服务状态始终正常。</p>
+<h2 id="7-故障处理与结果边界">7. 故障处理与结果边界</h2>
+<div class='tw'><table><thead><tr><th>表现</th><th>优先核对</th></tr></thead><tbody><tr><td>白屏 / 404</td><td>启动目录、SERVICE_PORT、SERVICE_BASE_PATH、代理 WebSocket 与静态资源路径</td></tr><tr><td>502 / 504</td><td>服务进程、容器日志、8000 端口映射、冷启动和代理超时</td></tr><tr><td>Key 缺失 / 401 / 403</td><td>.env 中平台 Key 是否由承办方正确注入；不要把 Key 写进截图或公开日志</td></tr><tr><td>模型超时</td><td>平台模型服务状态、请求长度、MODEL_TIMEOUT_SECONDS；失败时会明确降级</td></tr><tr><td>JSON / 引用校验失败</td><td>模型回答格式及引用字段，查看无凭据诊断结果；不能将降级伪装为 LLM 成功</td></tr><tr><td>模型 / 数据文件缺失</td><td>重新解压完整项目包并核对 MANIFEST.sha256.json；不要在部署时自动重训</td></tr></tbody></table></div>
+<p>若平台侧仍有异常，保留访问地址、操作步骤、错误信息和已遮盖敏感信息的截图，与平台管理员核对。</p>
+<p>当前预测和分钟级预警仍属已查看历史上的开发验证。严格提前参考下的召回不足、原赛题 CVaR 输入证据及人工评分缺口在方法报告中保留。部署验收通过不等于这些比赛科学或业务指标已经达标。</p>
+    <p class="foot">源文件 <code>部署说明.md</code>　·
+      本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
+      正本仍是那份 Markdown。</p>
+  </main>
+  <nav class="toc"><div class="h">目录</div><a href="#1-运行环境与资源" class="l2">1. 运行环境与资源</a><a href="#2-根目录环境变量" class="l2">2. 根目录环境变量</a><a href="#3-推荐方式-linux-源码部署" class="l2">3. 推荐方式：Linux 源码部署</a><a href="#4-可选方式-docker-compose" class="l2">4. 可选方式：Docker / Compose</a><a href="#5-代理路径与静态资源" class="l2">5. 代理路径与静态资源</a><a href="#6-部署后验收步骤" class="l2">6. 部署后验收步骤</a><a href="#7-故障处理与结果边界" class="l2">7. 故障处理与结果边界</a></nav>
+</div></body></html>

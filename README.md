@@ -12,6 +12,14 @@ GitHub 仓库：[wtzcharlie-eng/options-surface-risk-warning](https://github.com
 
 复核材料和运行：`python scripts/preflight.py`。完整过程、修复和原件指纹见 [交付修订说明](docs/交付审阅与修订.md)。当前生成和检查入口均指向新版材料，旧构建代码作为 `scripts/*_legacy.py` 留档。
 
+## 决赛平台提交部署 · 2026-10-24
+
+按附件5新增 [独立部署说明](部署说明.md)、Linux 单端口入口 `python scripts/serve_submission.py`、Dockerfile 和 amd64 Compose。默认端口 8000，可由 SERVICE_PORT 覆盖；顶部导航连接预测问答、曲面、图谱、DRL 与比赛对照。比赛环境使用 MODEL_* 变量和平台 Qwen `qwen3.8-27b-vllm`，客户端发送 `enable_thinking=false`，不使用 OpenAI 境外服务。
+
+当前平台模型的真实双轮调用和引用校验结果见 [平台模型检查](data_out/deployment/platform_model_check.json)。公开模板 `deployment/competition.env` 不含密钥；最终比赛私有包可显式带入团队的 Key，根目录 .env 注入，禁止公开分发。容器构建始终排除 .env。上传后的平台部署与实际访问验收尚需在比赛平台完成，不能以本机或 CI 运行代替。
+
+以下 8502 端口方式保留为独立本机研究入口；最终部署采用上述统一入口与独立说明。
+
 ## 启动
 
 macOS 双击 `启动系统.command`，首次启动会安装依赖。推荐 Python 3.12；浏览器入口为 <http://127.0.0.1:8502>。
@@ -40,7 +48,7 @@ RISK_LLM_API_KEY=在本机填写真实密钥
 
 Base URL 是否包含 `/v1` 以服务商文档为准；系统自动追加 `/chat/completions`。本机服务选择 `local-openai`，使用回环地址（例如 `http://127.0.0.1:11434/v1`）及已经安装的模型 ID。本地服务允许显式不填 Key。
 
-默认 `local` 模式不联网，也不会假装调用大模型。远程 API 的问题会包含当前风险快照和近期对话；Key 不写入报告、预测文件或聊天记录。本次已验证本地功能与模拟 API 请求，真实服务需用用户自己的配置联通。
+默认 `local` 模式不联网，也不会假装调用大模型。远程 API 的问题会包含当前风险快照和近期对话；Key 不写入报告、预测文件或聊天记录。V3 模型迭代时验证了本地功能与模拟 API；2026-10-24 后另按平台配置验证真实 Qwen，结果见上方平台检查记录。
 
 助手回答附 `[forecast.probability]` 等字段引用，可在“查阅回答引用的字段”中核对。未知引用或缺乏证据的数字会触发本地解读回退。字段校验并不能保证所有自然语言解释绝对正确，风险结论仍应核对原始快照与评估。
 

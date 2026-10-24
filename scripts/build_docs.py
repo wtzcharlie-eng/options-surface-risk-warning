@@ -35,6 +35,8 @@ DATA = os.path.join(ROOT, "data_out")
 
 # (源文件, 输出名, 页面标题, 一句话说明)
 DOCS = [
+    (os.path.join(ROOT, "部署说明.md"), "doc_deployment.html",
+     "决赛平台部署说明", "附件5适配：Linux、根目录环境变量、单端口、平台 Qwen 与部署后验收。"),
     (os.path.join(ROOT, "方法与结果.md"), "doc_paper.html",
      "方法与结果",
      "学术结构正文：摘要 / 数据与口径 / 方法 / 实验与结果 / 验证与可复现 / 局限与讨论。"),

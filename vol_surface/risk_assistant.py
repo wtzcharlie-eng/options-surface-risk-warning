@@ -17,6 +17,7 @@ import math
 import os
 import re
 import socket
+import time
 from typing import Any, Mapping, Sequence
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
@@ -45,6 +46,9 @@ class LLMConfig:
     base_url: str = "https://api.openai.com/v1"
     api_key: str = field(default="", repr=False)
     timeout_seconds: float = 30.0
+    enable_thinking: bool | None = None
+    max_tokens: int | None = None
+    compact_evidence: bool = False
 
     def __post_init__(self) -> None:
         if not all(isinstance(value, str) for value in (self.provider, self.model, self.base_url, self.api_key)):
@@ -62,15 +66,34 @@ class LLMConfig:
             timeout = float(env.get("RISK_LLM_TIMEOUT_SECONDS", "30"))
         except (TypeError, ValueError):
             raise AssistantConfigError("LLM 超时配置必须为数字。") from None
+        thinking = env.get("RISK_LLM_ENABLE_THINKING")
+        if thinking is not None and thinking.strip().lower() not in {"true", "false"}:
+            raise AssistantConfigError("LLM 思考模式配置仅支持 true 或 false。")
+        try:
+            max_tokens = int(env["RISK_LLM_MAX_TOKENS"]) if "RISK_LLM_MAX_TOKENS" in env else None
+        except (ValueError, TypeError):
+            raise AssistantConfigError("LLM 输出长度配置必须为整数。") from None
+        compact = env.get("RISK_LLM_COMPACT_EVIDENCE", "false").strip().lower()
+        if compact not in {"true", "false"}:
+            raise AssistantConfigError("LLM 证据摘要配置仅支持 true 或 false。")
         return cls(
             provider=env.get("RISK_LLM_PROVIDER", "local").strip().lower(),
             model=env.get("RISK_LLM_MODEL", env.get("OPENAI_MODEL", "")).strip(),
             base_url=env.get("RISK_LLM_BASE_URL", env.get("OPENAI_BASE_URL", "https://api.openai.com/v1")).strip(),
             api_key=env.get("RISK_LLM_API_KEY", env.get("OPENAI_API_KEY", "")).strip(),
             timeout_seconds=timeout,
+            enable_thinking=None if thinking is None else thinking.strip().lower() == "true",
+            max_tokens=max_tokens,
+            compact_evidence=compact == "true",
         )
 
     def validate(self) -> None:
+        if self.enable_thinking is not None and not isinstance(self.enable_thinking, bool):
+            raise AssistantConfigError("LLM 思考模式配置必须为布尔值。")
+        if self.max_tokens is not None and (type(self.max_tokens) is not int or not 64 <= self.max_tokens <= 4096):
+            raise AssistantConfigError("LLM 输出长度必须为 64–4096 的整数。")
+        if not isinstance(self.compact_evidence, bool):
+            raise AssistantConfigError("LLM 证据摘要配置必须为布尔值。")
         if self.provider not in _PROVIDERS:
             raise AssistantConfigError("LLM 服务类型无效。")
         if self.provider == "local":
@@ -421,7 +444,10 @@ evaluation 是运行保护前的研究统计；operational_evaluation 是运行�
 测试 Brier 技巧分数不为正时，须说明该测试未支持超越基线的增量预测能力。
 给出简洁有用的风险排查建议，不能建议具体买卖、数量、杠杆或执行交易。不要输出凭据。
 严格输出 JSON 对象，只有 answer（中文字符串）和 cited_fields（字段ID字符串数组）两个键。
-answer 中的事实须与 cited_fields 一致；没有可用证据时说明无法判断。不要使用 Markdown 代码围栏。"""
+answer 中的事实须与 cited_fields 一致；没有可用证据时说明无法判断。不要使用 Markdown 代码围栏。
+格式自检：answer 正文的每条事实后必须出现带方括号的具体引用，例如 [mode]；不能只在 cited_fields 数组中列字段而省略正文引用。
+正文中出现的引用集合必须与 cited_fields 数组完全一致。合法形式示例：{"answer":"当前为历史回放。[mode]","cited_fields":["mode"]}。
+回答最多三句话、约250个汉字，只选回答问题所需的证据，不逐项复述整个快照。"""
 
 
 class _NoRedirect(HTTPRedirectHandler):
@@ -439,14 +465,66 @@ def _request_completion(config: LLMConfig, messages: list[dict[str, str]]) -> st
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     if config.api_key:
         headers["Authorization"] = f"Bearer {config.api_key}"
-    payload = json.dumps({"model": config.model, "messages": messages}, ensure_ascii=False).encode("utf-8")
+    body = {"model": config.model, "messages": messages}
+    if config.enable_thinking is not None:
+        body["chat_template_kwargs"] = {"enable_thinking": config.enable_thinking}
+    if config.max_tokens is not None:
+        body["max_tokens"] = config.max_tokens
+    payload = json.dumps(body, ensure_ascii=False).encode("utf-8")
     request = Request(endpoint, data=payload, headers=headers, method="POST")
-    with build_opener(_NoRedirect()).open(request, timeout=float(config.timeout_seconds)) as response:
-        raw = response.read(1000001)
-        if len(raw) > 1000000:
-            raise ValueError("oversized response")
-        data = json.loads(raw.decode("utf-8"))
+    deadline = time.monotonic() + float(config.timeout_seconds)
+    attempts = 2 if config.compact_evidence else 1
+    for attempt in range(attempts):
+        try:
+            timeout = float(config.timeout_seconds) if attempt == 0 else max(.1, deadline-time.monotonic())
+            with build_opener(_NoRedirect()).open(request, timeout=timeout) as response:
+                raw = response.read(1000001)
+                if len(raw) > 1000000:
+                    raise ValueError("oversized response")
+                data = json.loads(raw.decode("utf-8"))
+            break
+        except HTTPError as error:
+            if error.code not in {502, 503, 504} or attempt == attempts-1 or deadline-time.monotonic() <= 2:
+                raise
+            error.close()
+            time.sleep(1.)
     return data["choices"][0]["message"]["content"]
+
+
+def _compact_fields(fields: dict[str, Any]) -> dict[str, Any]:
+    """Keep task, quality and all main research/operational statistics together.
+
+    Duplicated forecast.evaluation tables and secondary diagnostics remain in
+    local evidence/downloads, rather than inflating every platform request.
+    """
+    roots = {"symbol", "as_of", "data_timestamp", "model_version", "mode", "risk_scope",
+             "prediction_task", "prediction_task_definition", "horizon_days", "horizon_trading_days",
+             "target_definition", "evaluation_context", "evaluation_baseline"}
+    forecast = {"days", "horizon_days", "probability", "threshold", "alert", "model_status",
+                "baseline_probability", "interpretation", "alert_suppressed_reason"}
+    return {k:v for k,v in fields.items() if k in roots or
+            k.startswith(("evaluation.", "operational_evaluation.", "model_context.", "data_quality.")) or
+            k.startswith("forecast.") and k.split(".")[1] in forecast or
+            k in {"observed_signals.currently_exceeding", "observed_signals.atm_iv", "observed_signals.convexity_violation"}}
+
+
+def _declared_reference_block(raw: str, fields: dict[str, Any]) -> str:
+    """Render a platform's explicit citation array without inventing attribution.
+
+    Only a valid two-key object with nonempty, known field IDs is normalized.
+    The block says these are model-declared references, not sentence-level
+    independently verified facts. All ordinary numeric/secret/schema checks run
+    afterwards. Partial, conflicting or unknown inline references still fail.
+    """
+    data = json.loads(raw)
+    if not isinstance(data, dict) or set(data) != {"answer", "cited_fields"}:
+        return raw
+    text, cited = data["answer"], data["cited_fields"]
+    if (isinstance(text, str) and not _CITATION.findall(text) and isinstance(cited, list)
+            and cited and all(isinstance(k, str) and k in fields for k in cited)):
+        data["answer"] = text + "\n\n参考字段（模型声明）：" + " ".join(f"[{k}]" for k in dict.fromkeys(cited))
+        return json.dumps(data, ensure_ascii=False)
+    return raw
 
 
 def _number_values(value: Any, path: str) -> set[float]:
@@ -458,6 +536,37 @@ def _number_values(value: Any, path: str) -> set[float]:
             values.add(float(value) * 100)
         return values
     return {float(match.group().rstrip("%")) for match in _NUMBER.finditer(str(value))}
+
+
+def _supported_number(token: str, value: Any, path: str) -> bool:
+    """Check units before allowing rounding to the response's stated precision.
+
+    8.32699% may truthfully be written as 8.33%; the raw fraction 0.0832699
+    must never be used to justify 0%. Counts do not become percentages.
+    """
+    if value is None or isinstance(value, bool):
+        return False
+    percent = token.endswith("%")
+    plain = token.rstrip("%")
+    number = float(plain)
+    candidates = []
+    if isinstance(value, (int, float)):
+        ratio = any(word in path.lower() for word in
+                    ("probability", "precision", "recall", "rate", "threshold", "coverage", "brier_skill", "calibration_bias"))
+        if not percent:
+            candidates = [float(value)]
+        elif ratio:
+            candidates = [float(value) * 100.]
+    else:
+        candidates = [float(m.group().rstrip("%")) for m in _NUMBER.finditer(str(value))
+                      if m.group().endswith("%") == percent]
+    if "e" in plain.lower():
+        return any(math.isclose(number, x, rel_tol=1e-9, abs_tol=1e-12) for x in candidates)
+    digits = len(plain.split(".", 1)[1]) if "." in plain else 0
+    tolerance = .5 * 10. ** (-digits) + 1e-12
+    return any(abs(number - x) <= tolerance and
+               not (not percent and digits == 0 and number in (0, 1) and 0 < x < 1 and number != x)
+               for x in candidates)
 
 
 def _validate_completion(raw: str, fields: dict[str, Any], secret: str) -> tuple[str, list[str]]:
@@ -476,13 +585,9 @@ def _validate_completion(raw: str, fields: dict[str, Any], secret: str) -> tuple
         raise ValueError("invalid evidence citation")
     # Numerical grounding is intentionally conservative: unsupported numerical
     # prose is rejected and the UI receives the deterministic evidence summary.
-    supported: set[float] = set()
-    for path in cited:
-        supported.update(_number_values(fields[path], path))
     prose = _CITATION.sub("", text)
     for match in _NUMBER.finditer(prose):
-        number = float(match.group().rstrip("%"))
-        if not any(math.isclose(number, value, rel_tol=0.0002, abs_tol=0.00005) for value in supported):
+        if not any(_supported_number(match.group(), fields[path], path) for path in cited):
             raise ValueError("unsupported numerical claim")
     redacted = _redact(text.strip(), secret)
     if redacted != text.strip():
@@ -519,13 +624,17 @@ def answer(question: str, evidence: Mapping[str, Any], history: Sequence[Mapping
     try:
         cfg.validate()
         if cfg.provider != "local":
-            encoded_evidence = json.dumps(fields, ensure_ascii=False, allow_nan=False)
+            remote_fields = _compact_fields(fields) if cfg.compact_evidence else fields
+            encoded_evidence = json.dumps(remote_fields, ensure_ascii=False, allow_nan=False)
             if len(encoded_evidence) > _MAX_EVIDENCE_CHARS:
                 raise AssistantConfigError("证据快照过大，请缩小到当前品种与预测视窗。")
             messages = [{"role": "system", "content": _SYSTEM_PROMPT}]
             messages.extend(safe_history)
-            messages.append({"role": "user", "content": json.dumps({"question": safe_question, "evidence_fields": fields}, ensure_ascii=False, allow_nan=False)})
-            text, citations = _validate_completion(_request_completion(cfg, messages), fields, cfg.api_key)
+            messages.append({"role": "user", "content": json.dumps({"question": safe_question, "evidence_fields": remote_fields}, ensure_ascii=False, allow_nan=False)})
+            raw = _request_completion(cfg, messages)
+            if cfg.compact_evidence:
+                raw = _declared_reference_block(raw, remote_fields)
+            text, citations = _validate_completion(raw, fields, cfg.api_key)
             mode = "llm"
     except AssistantConfigError as error:
         warning = str(error) + " 已使用本地证据解读。"

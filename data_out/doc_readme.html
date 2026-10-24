@@ -91,6 +91,10 @@ td code,th code{font-size:12.5px}
 <h2 id="比赛原交付审阅版">比赛原交付审阅版</h2>
 <p>本次已按原赛题重新整理 <a href="../index.html">交付入口</a>、<a href="../%E6%96%B9%E6%B3%95%E4%B8%8E%E7%BB%93%E6%9E%9C.md">方法与结果</a>、<a href="../PACKAGE.md">交付包说明</a> 与 <a href="../docs/%E6%AF%94%E8%B5%9B%E8%A6%81%E6%B1%82%E5%AF%B9%E7%85%A7.md">比赛要求对照</a>。分钟级固定配置的闭区间成绩可复现，但严格提前的两小时参考下召回仍不足；赛题核心 CVaR 的真实开盘资料和可核验人工评分尚待补充，不能称全部比赛指标达标。原下载文件保留，V1/V2/V3 模型与结果未改。</p>
 <p>复核材料和运行：<code>python scripts/preflight.py</code>。完整过程、修复和原件指纹见 <a href="../docs/%E4%BA%A4%E4%BB%98%E5%AE%A1%E9%98%85%E4%B8%8E%E4%BF%AE%E8%AE%A2.md">交付修订说明</a>。当前生成和检查入口均指向新版材料，旧构建代码作为 <code>scripts/*_legacy.py</code> 留档。</p>
+<h2 id="决赛平台提交部署-2026-10-24">决赛平台提交部署 · 2026-10-24</h2>
+<p>按附件5新增 <a href="../%E9%83%A8%E7%BD%B2%E8%AF%B4%E6%98%8E.md">独立部署说明</a>、Linux 单端口入口 <code>python scripts/serve_submission.py</code>、Dockerfile 和 amd64 Compose。默认端口 8000，可由 SERVICE_PORT 覆盖；顶部导航连接预测问答、曲面、图谱、DRL 与比赛对照。比赛环境使用 MODEL_* 变量和平台 Qwen <code>qwen3.8-27b-vllm</code>，客户端发送 <code>enable_thinking=false</code>，不使用 OpenAI 境外服务。</p>
+<p>当前平台模型的真实双轮调用和引用校验结果见 <a href="deployment/platform_model_check.json">平台模型检查</a>。公开模板 <code>deployment/competition.env</code> 不含密钥；最终比赛私有包可显式带入团队的 Key，根目录 .env 注入，禁止公开分发。容器构建始终排除 .env。上传后的平台部署与实际访问验收尚需在比赛平台完成，不能以本机或 CI 运行代替。</p>
+<p>以下 8502 端口方式保留为独立本机研究入口；最终部署采用上述统一入口与独立说明。</p>
 <h2 id="启动">启动</h2>
 <p>macOS 双击 <code>启动系统.command</code>，首次启动会安装依赖。推荐 Python 3.12；浏览器入口为 &lt;http://127.0.0.1:8502&gt;。</p>
 <p>或在项目目录运行：</p>
@@ -106,7 +110,7 @@ RISK_LLM_BASE_URL=https://你的服务商提供的兼容地址/v1
 RISK_LLM_MODEL=服务商的模型ID
 RISK_LLM_API_KEY=在本机填写真实密钥</code></pre>
 <p>Base URL 是否包含 <code>/v1</code> 以服务商文档为准；系统自动追加 <code>/chat/completions</code>。本机服务选择 <code>local-openai</code>，使用回环地址（例如 <code>http://127.0.0.1:11434/v1</code>）及已经安装的模型 ID。本地服务允许显式不填 Key。</p>
-<p>默认 <code>local</code> 模式不联网，也不会假装调用大模型。远程 API 的问题会包含当前风险快照和近期对话；Key 不写入报告、预测文件或聊天记录。本次已验证本地功能与模拟 API 请求，真实服务需用用户自己的配置联通。</p>
+<p>默认 <code>local</code> 模式不联网，也不会假装调用大模型。远程 API 的问题会包含当前风险快照和近期对话；Key 不写入报告、预测文件或聊天记录。V3 模型迭代时验证了本地功能与模拟 API；2026-10-24 后另按平台配置验证真实 Qwen，结果见上方平台检查记录。</p>
 <p>助手回答附 <code>[forecast.probability]</code> 等字段引用，可在“查阅回答引用的字段”中核对。未知引用或缺乏证据的数字会触发本地解读回退。字段校验并不能保证所有自然语言解释绝对正确，风险结论仍应核对原始快照与评估。</p>
 <h2 id="预测目标与成绩">预测目标与成绩</h2>
 <p>预测事件是：在未来 H 个完整观测交易日中，任一天的 ATM 隐波或曲面凸性违反代理最大值，超过<strong>预测时点之前</strong>最近 60 个完整交易日（至少 20 日）的 95% 分位阈值。阈值在观察时点冻结。V2/V3 分开建模：当前正常时预测新增异常；当前已异常时预测未来窗口内再次超阈值。后一任务不代表连续异常时长或恢复时间。</p>
@@ -150,5 +154,5 @@ python scripts/audit_predictive_v3.py</code></pre>
       本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
       正本仍是那份 Markdown。</p>
   </main>
-  <nav class="toc"><div class="h">目录</div><a href="#比赛原交付审阅版" class="l2">比赛原交付审阅版</a><a href="#启动" class="l2">启动</a><a href="#配置大模型" class="l2">配置大模型</a><a href="#预测目标与成绩" class="l2">预测目标与成绩</a><a href="#训练与导出" class="l2">训练与导出</a><a href="#接入新数据" class="l2">接入新数据</a></nav>
+  <nav class="toc"><div class="h">目录</div><a href="#比赛原交付审阅版" class="l2">比赛原交付审阅版</a><a href="#决赛平台提交部署-2026-10-24" class="l2">决赛平台提交部署 · 2026-10-24</a><a href="#启动" class="l2">启动</a><a href="#配置大模型" class="l2">配置大模型</a><a href="#预测目标与成绩" class="l2">预测目标与成绩</a><a href="#训练与导出" class="l2">训练与导出</a><a href="#接入新数据" class="l2">接入新数据</a></nav>
 </div></body></html>

@@ -1,0 +1,69 @@
+{
+  "source_description": "附件5：决赛作品提交部署操作指南",
+  "source_sha256": "387af53687841d3830971abcc383d6de3456c658576e64747a6df1ecbaad1851",
+  "review_date": "2026-10-24",
+  "raw_pdf_included": false,
+  "requirements": [
+    {
+      "id": "D01",
+      "source_page": 3,
+      "requirement": "部署文档与完整项目包分别上传"
+    },
+    {
+      "id": "D02",
+      "source_page": 3,
+      "requirement": "源码、必要模型权重和根目录 .env 随包提供"
+    },
+    {
+      "id": "D03",
+      "source_page": 3,
+      "requirement": "部署文档明确依赖、启动命令、配置、资源"
+    },
+    {
+      "id": "D04",
+      "source_page": 4,
+      "requirement": "MODEL_API_KEY、MODEL_BASE_URL、MODEL_NAME、EMBEDDING_API_KEY、SERVICE_PORT 按需配置"
+    },
+    {
+      "id": "D05",
+      "source_page": 4,
+      "requirement": "选择平台本地模型或国产模型；未提供 Key 时可由承办方配置"
+    },
+    {
+      "id": "D06",
+      "source_page": 9,
+      "requirement": "Linux 部署；运行路径使用相对路径或环境变量"
+    },
+    {
+      "id": "D07",
+      "source_page": 9,
+      "requirement": "提供 Docker 镜像时使用 linux/amd64 并标明标签"
+    },
+    {
+      "id": "D08",
+      "source_page": 9,
+      "requirement": "密钥通过 .env 注入，不写入源码、Dockerfile或公开文档"
+    },
+    {
+      "id": "D09",
+      "source_page": 9,
+      "requirement": "提交前在干净环境完整启动和测试"
+    },
+    {
+      "id": "D10",
+      "source_page": 8,
+      "requirement": "首页、静态资源、交互和完整业务链路正常"
+    },
+    {
+      "id": "D11",
+      "source_page": 8,
+      "requirement": "接口与模型实际返回正常，不把缺 Key 或降级当作模型成功"
+    },
+    {
+      "id": "D12",
+      "source_page": 8,
+      "requirement": "部署完成后在平台分配的实际访问地址再次测试"
+    }
+  ],
+  "model_configuration_source": "用户提供的平台 AI 模型菜单调用示例，模型 qwen3.8-27b-vllm；不保存密钥到本文件。"
+}

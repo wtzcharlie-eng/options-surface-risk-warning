@@ -96,8 +96,12 @@ td code,th code{font-size:12.5px}
 <li><code>data_out/drl/agent_seed*.npz</code>：15 个冻结 DQN；<code>rule_ml_portable.json</code> 为 Q1 数值树，保留源 joblib 及迁移校验记录。</li>
 <li><code>data_out/predictive*</code>：冻结 V1/V2/V3 模型、报告与逐条预测；<code>docs/</code> 含相应实验设计与验收。</li>
 <li><code>README.legacy.md</code>、<code>docs/legacy_delivery/</code> 和 <code>scripts/*_legacy.py</code>：原工程记录、原交付快照和旧构建逻辑，仅用于历史追溯。</li>
-<li><code>requirements-predictive.lock.txt</code>、<code>.env.example</code>、<code>启动系统.command</code>：依赖、配置模板与本地启动。真实 Key、<code>.env</code>、Git 元数据、缓存及日志不收录。</li>
+<li><code>requirements-predictive.lock.txt</code>、<code>.env.example</code>、<code>启动系统.command</code>：依赖、配置模板与本地启动。开发用 <code>.env</code>、Git 元数据、缓存及日志不收录；比赛专用包另按显式选项生成根目录 <code>.env</code>，密钥包含情况见 PACKAGE_PROFILE.json。</li>
 </ul>
+<h2 id="决赛平台统一入口-2026-10-24">决赛平台统一入口 · 2026-10-24</h2>
+<p>面向附件5的最终部署材料以根目录 <code>部署说明.md</code> 为准。Linux 主入口为 <code>python scripts/serve_submission.py</code>，一个 SERVICE_PORT（默认 8000）提供全部五个页面，MODEL_* 参数从根目录 .env 读取。平台已指定的服务为 Qwen <code>qwen3.8-27b-vllm</code>，兼容协议不代表使用 OpenAI 境外服务。</p>
+<p>通用源码包不包含真实 Key。<code>make_package.py --competition</code> 生成无密钥的合规 .env；只有显式添加 <code>--include-model-key</code> 时才从受限本机配置生成比赛私有包，后者仅上传比赛平台，不得公开分发。Dockerfile 始终排除 .env，不将密钥写入镜像。实际平台侧部署和访问验收须在上传后另行完成。</p>
+<p>以下双端口启动方式作为独立本机研究入口保留，决赛部署使用上述统一入口。</p>
 <h2 id="安装与运行">安装与运行</h2>
 <p>建议 Python 3.12，在解压后的项目目录运行：</p>
 <pre><code>python3 -m venv .venv
@@ -133,5 +137,5 @@ python scripts/make_package.py --verify-only --out ../期权曲面预测风控�
       本页由 <code>scripts/build_docs.py</code> 渲染，<strong>不改内容</strong>；
       正本仍是那份 Markdown。</p>
   </main>
-  <nav class="toc"><div class="h">目录</div><a href="#内容与版本" class="l2">内容与版本</a><a href="#安装与运行" class="l2">安装与运行</a><a href="#复算和材料更新" class="l2">复算和材料更新</a><a href="#cvar-专用输入" class="l2">CVaR 专用输入</a><a href="#打包与接收方验收" class="l2">打包与接收方验收</a><a href="#必须随成绩一起说明" class="l2">必须随成绩一起说明</a></nav>
+  <nav class="toc"><div class="h">目录</div><a href="#内容与版本" class="l2">内容与版本</a><a href="#决赛平台统一入口-2026-10-24" class="l2">决赛平台统一入口 · 2026-10-24</a><a href="#安装与运行" class="l2">安装与运行</a><a href="#复算和材料更新" class="l2">复算和材料更新</a><a href="#cvar-专用输入" class="l2">CVaR 专用输入</a><a href="#打包与接收方验收" class="l2">打包与接收方验收</a><a href="#必须随成绩一起说明" class="l2">必须随成绩一起说明</a></nav>
 </div></body></html>

@@ -12,7 +12,15 @@
 - `data_out/drl/agent_seed*.npz`：15 个冻结 DQN；`rule_ml_portable.json` 为 Q1 数值树，保留源 joblib 及迁移校验记录。
 - `data_out/predictive*`：冻结 V1/V2/V3 模型、报告与逐条预测；`docs/` 含相应实验设计与验收。
 - `README.legacy.md`、`docs/legacy_delivery/` 和 `scripts/*_legacy.py`：原工程记录、原交付快照和旧构建逻辑，仅用于历史追溯。
-- `requirements-predictive.lock.txt`、`.env.example`、`启动系统.command`：依赖、配置模板与本地启动。真实 Key、`.env`、Git 元数据、缓存及日志不收录。
+- `requirements-predictive.lock.txt`、`.env.example`、`启动系统.command`：依赖、配置模板与本地启动。开发用 `.env`、Git 元数据、缓存及日志不收录；比赛专用包另按显式选项生成根目录 `.env`，密钥包含情况见 PACKAGE_PROFILE.json。
+
+## 决赛平台统一入口 · 2026-10-24
+
+面向附件5的最终部署材料以根目录 `部署说明.md` 为准。Linux 主入口为 `python scripts/serve_submission.py`，一个 SERVICE_PORT（默认 8000）提供全部五个页面，MODEL_* 参数从根目录 .env 读取。平台已指定的服务为 Qwen `qwen3.8-27b-vllm`，兼容协议不代表使用 OpenAI 境外服务。
+
+通用源码包不包含真实 Key。`make_package.py --competition` 生成无密钥的合规 .env；只有显式添加 `--include-model-key` 时才从受限本机配置生成比赛私有包，后者仅上传比赛平台，不得公开分发。Dockerfile 始终排除 .env，不将密钥写入镜像。实际平台侧部署和访问验收须在上传后另行完成。
+
+以下双端口启动方式作为独立本机研究入口保留，决赛部署使用上述统一入口。
 
 ## 安装与运行
 

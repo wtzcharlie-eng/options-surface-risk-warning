@@ -1,0 +1,141 @@
+"""Deterministic deployer-facing Markdown; submission workflow is kept separate."""
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+
+
+def documents():
+    return {'部署说明.md': '''# 期权曲面预测风控系统部署说明
+
+版本：2026.10.24 · 目标平台：Linux / amd64 · 作品：基于期权波动率曲面与智能体的量化风控预警系统。
+
+本说明对应决赛项目包，供承办方部署。完整源代码、冻结模型和必要历史特征均随包提供。默认以一个服务提供全部页面，不需启动多个端口。预测是历史回放，不执行交易。
+
+## 1. 运行环境与资源
+
+| 项目 | 配置 |
+|---|---|
+| 系统与架构 | Linux，x86_64 / amd64 |
+| Python | 3.12；锁定依赖见 requirements-predictive.lock.txt |
+| 建议资源 | 2 vCPU、4 GiB 内存、至少 3 GiB 可用磁盘，实际空间随容器层/缓存变化 |
+| GPU | 本作品服务不需要 GPU；Qwen 由平台独立模型服务提供 |
+| 模型权重 | 15 个 DQN 检查点、Q1 数值树与原模型、冻结 V1/V2/V3 JSON，均在 data_out 下 |
+| 数据 | 随包的 7 品种历史特征；原始大体积行情不随包提供 |
+| 服务端口 | SERVICE_PORT，默认 8000 |
+| 镜像标签 | options-risk-submission:2026.10.24 |
+| 镜像架构 | linux/amd64；构建与运行均需指定该架构 |
+| 网络 | 安装依赖或构建镜像需要软件源网络；模型调用需要访问平台提供的 HTTPS 接口 |
+
+建议资源不是所有负载下的最低承诺。启动、历史回放和交互无需重新训练，也不会自动下载或重训任何本地大模型。
+
+## 2. 根目录环境变量
+
+项目包根目录包含 `.env`，运行参数从此文件读取，系统环境变量优先。Docker 构建不复制 `.env`，运行时通过 `--env-file` 注入。公开源码中的模板为 `deployment/competition.env`，没有真实密钥。
+
+| 变量 | 作用 / 当前约定 |
+|---|---|
+| MODEL_PROVIDER | platform-qwen；如改用国产兼容服务则为 domestic-compatible |
+| MODEL_API_KEY | 平台提供的模型 Key；通过 .env 注入，不写代码或公开说明 |
+| MODEL_BASE_URL | https://fintechpf.yunzhengdata.com:8443/model-api/qwen3.8-27b-vllm/v1 |
+| MODEL_NAME | qwen3.8-27b-vllm |
+| MODEL_ENABLE_THINKING | false，按平台示例发送 chat_template_kwargs.enable_thinking=false |
+| MODEL_TIMEOUT_SECONDS | 90；允许 1–120 秒 |
+| MODEL_MAX_TOKENS | 1400；限制响应长度，允许 64–4096 |
+| EMBEDDING_API_KEY | 留空；本项目不依赖 Embedding 服务 |
+| SERVICE_HOST | 0.0.0.0，允许部署环境访问 |
+| SERVICE_PORT | 8000，可覆盖 |
+| SERVICE_BASE_PATH | 默认留空；反向代理要求子路径时填写，例如 options-risk |
+| RISK_DEPLOYMENT_PROFILE | competition，启用平台/国产模型配置与固定部署侧配置 |
+
+平台适配会发送紧凑风险证据，并对短暂的 502/503/504 在同一超时预算内最多重试一次。若模型只在 cited_fields 声明字段而未在正文内嵌引用，页面会明确标成“参考字段（模型声明）”；这不代表逐句事实经过独立验证，数值、单位和字段存在性仍会校验。
+
+兼容协议不代表调用 OpenAI 服务；本比赛配置连接的是上述平台 Qwen。比赛页面不提供境外模型选项，不允许访问者在页面填写或查看服务端 Key。API Key 未配置时页面可提供明确标记的本地证据解读，这不算真实模型功能验收通过。
+
+私有比赛包可能包含团队提供的平台 Key，以包内 `PACKAGE_PROFILE.json` 的 `contains_model_key` 为准。此类包仅上传比赛平台；无密钥公开包由承办方填写 Key 后再验收。不要把含密钥的 `.env` 或私有包放入公开仓库。
+
+## 3. 推荐方式：Linux 源码部署
+
+将 ZIP 解压，进入其中唯一项目目录。在该目录运行：
+
+```sh
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements-predictive.lock.txt
+.venv/bin/python scripts/serve_submission.py --check --require-model
+.venv/bin/python scripts/serve_submission.py
+```
+
+`--check` 检查模型、数据及配置，不联网；`--require-model` 在配置缺失时返回 2，不能用它替代实际模型请求。启动入口不依赖开发电脑的路径，使用项目相对路径和当前 Python。建议在进程管理器中配置 `WorkingDirectory` 为解压根目录、启动命令为上述最后一行。
+
+访问根路径 `/`。同一服务提供：预测与问答、曲面预警、图谱解释、DRL 推演、比赛对照。健康检查为 `/_stcore/health`，成功返回 `ok`；它只证明服务活着，不证明模型或业务指标通过。
+
+## 4. 可选方式：Docker / Compose
+
+在项目根目录构建并运行：
+
+```sh
+docker buildx build --platform linux/amd64 --load -t options-risk-submission:2026.10.24 .
+docker run -d --name options-risk --platform linux/amd64 --env-file .env -p 8000:8000 --cpus 2 --memory 4g options-risk-submission:2026.10.24
+```
+
+服务由非 root 用户运行。Dockerfile 不含真实 Key，也不会把根目录 `.env` 写进镜像。如果平台要求不同端口，先将 `.env` 的 SERVICE_PORT 改为对应值，并同时修改 `-p` 两侧的端口。
+
+已有 Docker Compose 时：
+
+```sh
+docker compose up -d --build
+docker compose ps
+docker compose logs --tail 100
+```
+
+Compose 已声明 `platform: linux/amd64`。本项目提供 Dockerfile 和源码，不要求把本机 Apple Silicon 构建的 ARM 镜像提交给承办方。提交已构建镜像时必须另行核对实际架构和上述镜像标签。
+
+## 5. 代理路径与静态资源
+
+默认让平台代理转发到容器的 8000 端口，访问路径为 `/`。代理必须支持 WebSocket Upgrade，并将请求路径、Host 和转发协议正确传给应用。
+
+如果平台为作品分配 `/options-risk/` 前缀，设置 `SERVICE_BASE_PATH=options-risk` 并重启；首页、页面路由、静态资源、WebSocket 和健康检查均位于该前缀下。相应健康检查为 `/options-risk/_stcore/health`。不要只修改浏览器地址而遗漏应用的 base path，也不要在代理与应用两侧重复拼接前缀。
+
+无独立 CDN、外部字体或数据库依赖。曲面和图谱页面读取包内数据；原始合约 Greeks 不在精简包内时，页面会提示并提供历史静态材料作对照，不把缺失数据伪装为已加载。
+
+## 6. 部署后验收步骤
+
+1. 打开首页，确认无白屏、404、502、504，三个期限卡片和顶部五个页面入口正常显示。
+2. 切换品种和预测周期，确认预测快照跟随变化；页面必须注明历史回放。
+3. 在风险助手中提问“解读当前风险”，检查回答标为 `LLM · qwen3.8-27b-vllm`，带有可核对的字段引用；本地降级不能替代模型验收。
+4. 继续追问“模型是否可靠”，确认上下文连续、没有模型离线、Key 缺失或超时提示。
+5. 下载预测快照与对话证据，确认 JSON 可打开、品种/日期/期限一致且无凭据。
+6. 依次访问曲面、图谱、DRL 与比赛对照，确认图表、路径和完整 32 维输入的推演可用。
+7. 在真实平台分配的访问地址上重复以上操作，核对静态 JS/CSS 和 WebSocket 均成功，再认定平台侧验收完成。
+
+命令行可执行：
+
+```sh
+.venv/bin/python scripts/healthcheck.py
+.venv/bin/python scripts/preflight.py
+.venv/bin/python scripts/check_platform_model.py --out platform-model-check.json
+```
+
+最后一条会真实调用平台模型两次，验证当前冻结 V3 风险证据的多轮问答，并保存无密钥结果；可用于承办方诊断。真实接口当次通过不保证以后配额、网络或服务状态始终正常。
+
+## 7. 故障处理与结果边界
+
+| 表现 | 优先核对 |
+|---|---|
+| 白屏 / 404 | 启动目录、SERVICE_PORT、SERVICE_BASE_PATH、代理 WebSocket 与静态资源路径 |
+| 502 / 504 | 服务进程、容器日志、8000 端口映射、冷启动和代理超时 |
+| Key 缺失 / 401 / 403 | .env 中平台 Key 是否由承办方正确注入；不要把 Key 写进截图或公开日志 |
+| 模型超时 | 平台模型服务状态、请求长度、MODEL_TIMEOUT_SECONDS；失败时会明确降级 |
+| JSON / 引用校验失败 | 模型回答格式及引用字段，查看无凭据诊断结果；不能将降级伪装为 LLM 成功 |
+| 模型 / 数据文件缺失 | 重新解压完整项目包并核对 MANIFEST.sha256.json；不要在部署时自动重训 |
+
+若平台侧仍有异常，保留访问地址、操作步骤、错误信息和已遮盖敏感信息的截图，与平台管理员核对。
+
+当前预测和分钟级预警仍属已查看历史上的开发验证。严格提前参考下的召回不足、原赛题 CVaR 输入证据及人工评分缺口在方法报告中保留。部署验收通过不等于这些比赛科学或业务指标已经达标。
+'''}
+
+
+def main():
+    for name,content in documents().items():(ROOT/name).write_text(content,encoding='utf-8')
+    print('部署说明已生成。')
+
+
+if __name__=='__main__':main()

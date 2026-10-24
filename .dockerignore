@@ -1,0 +1,15 @@
+.git
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+.venv*
+**/__pycache__
+**/*.pyc
+**/*.key
+**/*.pem
+**/*.log
+.pytest_cache
+*.zip
+*.tar.gz
+MANIFEST.sha256.json

@@ -15,6 +15,7 @@ from html.parser import HTMLParser
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.build_docs import DOCS, render_doc
+from scripts.build_deployment_docs import documents as deployment_documents
 
 
 def load(name):
@@ -115,7 +116,7 @@ KG 机器核验当前为 {next(c['n_passed'] for c in a['checks'] if c['name']==
 
 V3 输出未来 1–5 个交易日的曲面风险代理概率，沿用三轮时间隔离验证、校准和稳健风险率融合。最近一轮 528 个共同原点，1/2/3/4/5 日对 V2 的 Brier 降低约 2.9%/5.0%/6.6%/7.1%/7.7%；较早窗口部分期限变差，对自身强基准的 3–5 日技巧仍为负。它不是价格预测、账户损失概率或已验证的 CVaR 改善。
 
-LLM 通过 OpenAI 兼容接口配置，回答引用本地证据字段，无 Key 可用本地解读。真实云端 API 尚需用户配置验证。详见 `README.md` 与 `data_out/predictive_v3/report.md`；本次不改 V1/V2/V3 算法和产物。
+LLM 通过 OpenAI 兼容接口配置，回答引用本地证据字段，无 Key 可用本地解读。平台 Qwen 的真实双轮调用和证据引用已于 2026-10-24 验证，详见 `data_out/deployment/platform_model_check.json`；部署后的平台实际访问仍需另行验收。详见 `README.md` 与 `data_out/predictive_v3/report.md`；本次不改 V1/V2/V3 算法和产物。
 
 ## 运行修复与复现
 
@@ -273,7 +274,19 @@ V1/V2/V3 算法、检查点及预测评估产物保留原样。DRL 数值检查�
 
 尚未获得真实交易日开盘与连续合约资料、后续口径答复原件、完整可核验人工评分和新的外部盲测。没有填造这些证据，也没有改称全指标达标。建议优先补核心业务 CVaR 的输入证据，再做锁定新时间段测试。
 '''
-    files['index.html'] = portal(a, gate)
+    files['PACKAGE.md'] = files['PACKAGE.md'].replace('真实 Key、`.env`、Git 元数据、缓存及日志不收录。',
+        '开发用 `.env`、Git 元数据、缓存及日志不收录；比赛专用包另按显式选项生成根目录 `.env`，密钥包含情况见 PACKAGE_PROFILE.json。')
+    files['PACKAGE.md'] = files['PACKAGE.md'].replace('## 安装与运行', '''## 决赛平台统一入口 · 2026-10-24
+
+面向附件5的最终部署材料以根目录 `部署说明.md` 为准。Linux 主入口为 `python scripts/serve_submission.py`，一个 SERVICE_PORT（默认 8000）提供全部五个页面，MODEL_* 参数从根目录 .env 读取。平台已指定的服务为 Qwen `qwen3.8-27b-vllm`，兼容协议不代表使用 OpenAI 境外服务。
+
+通用源码包不包含真实 Key。`make_package.py --competition` 生成无密钥的合规 .env；只有显式添加 `--include-model-key` 时才从受限本机配置生成比赛私有包，后者仅上传比赛平台，不得公开分发。Dockerfile 始终排除 .env，不将密钥写入镜像。实际平台侧部署和访问验收须在上传后另行完成。
+
+以下双端口启动方式作为独立本机研究入口保留，决赛部署使用上述统一入口。
+
+## 安装与运行''')
+    files.update(deployment_documents())
+    files['index.html'] = portal(a, gate).replace('<nav>', '<nav><a href="data_out/doc_deployment.html">决赛部署</a>', 1)
     # Render current source prose; historical technical report pages carry a banner.
     for src, filename, title, sub in DOCS:
         rel = str(Path(src).relative_to(ROOT))
@@ -338,7 +351,7 @@ def main():
             path.parent.mkdir(parents=True, exist_ok=True); path.write_text(content, encoding='utf-8')
     # Validate the active entry and current authored prose; historical appendices
     # deliberately retain old research links and are clearly labelled.
-    for name in ['index.html','data_out/doc_paper.html','data_out/doc_package.html','data_out/doc_requirements.html','data_out/doc_delivery_review.html']:
+    for name in ['index.html','data_out/doc_paper.html','data_out/doc_package.html','data_out/doc_requirements.html','data_out/doc_delivery_review.html','data_out/doc_deployment.html']:
         failures.extend(f'{name}: 链接失效 {x}' for x in check_links(ROOT/name,files[name]))
     for name, expected in load('data_out/submission/audit.json')['source_sha256'].items():
         if not (ROOT/name).exists() or hashlib.sha256((ROOT/name).read_bytes()).hexdigest()!=expected:

@@ -123,7 +123,7 @@ td code,th code{font-size:12.5px}
 <p>典型历史曲面、预警时间轴和推理路径可在 <code>data_out/platform.html</code>、<code>data_out/doc_dashboard.html</code>、<code>data_out/kg/kg_viz.html</code> 及 <code>data_out/kg_report.md</code> 查阅。这些页面属于历史展示；其中旧成绩应结合本报告的口径限制阅读。</p>
 <h2 id="v3-扩展与证据问答">V3 扩展与证据问答</h2>
 <p>V3 输出未来 1–5 个交易日的曲面风险代理概率，沿用三轮时间隔离验证、校准和稳健风险率融合。最近一轮 528 个共同原点，1/2/3/4/5 日对 V2 的 Brier 降低约 2.9%/5.0%/6.6%/7.1%/7.7%；较早窗口部分期限变差，对自身强基准的 3–5 日技巧仍为负。它不是价格预测、账户损失概率或已验证的 CVaR 改善。</p>
-<p>LLM 通过 OpenAI 兼容接口配置，回答引用本地证据字段，无 Key 可用本地解读。真实云端 API 尚需用户配置验证。详见 <code>README.md</code> 与 <code>data_out/predictive_v3/report.md</code>；本次不改 V1/V2/V3 算法和产物。</p>
+<p>LLM 通过 OpenAI 兼容接口配置，回答引用本地证据字段，无 Key 可用本地解读。平台 Qwen 的真实双轮调用和证据引用已于 2026-10-24 验证，详见 <code>data_out/deployment/platform_model_check.json</code>；部署后的平台实际访问仍需另行验收。详见 <code>README.md</code> 与 <code>data_out/predictive_v3/report.md</code>；本次不改 V1/V2/V3 算法和产物。</p>
 <h2 id="运行修复与复现">运行修复与复现</h2>
 <p>时间戳转换现在显式转为秒，消除了 pandas 推断微秒后被当成纳秒的错误。修复前 DRL 9/15，修复后 DRL 15/15；KG 11/11；未修改奖励参数、阈值或检查点。问题 1 冻结模型在原 scikit-learn 1.7.2 环境离线导出数值树，逐条核对 138,794 行概率，最大误差 0，未训练；当前复算直接读取 JSON，避免旧 pickle 私有模块路径问题。</p>
 <pre><code>python -m pip install -r requirements-predictive.lock.txt

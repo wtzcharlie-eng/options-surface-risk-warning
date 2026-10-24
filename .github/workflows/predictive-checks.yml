@@ -69,5 +69,60 @@ jobs:
         run: |
           python scripts/smoke_dashboard.py
           python scripts/smoke_competition.py
+          python scripts/smoke_submission.py
       - name: Recompute published V3 scores and final-vintage predictions
         run: python scripts/audit_predictive_v3.py
+
+  submission-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      MODEL_API_KEY: ''
+      MODEL_BASE_URL: ''
+      RISK_LLM_PROVIDER: local
+      OPENAI_API_KEY: ''
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-predictive.lock.txt
+      - name: Install browser QA dependencies in a fresh Linux environment
+        run: |
+          python -m pip install -r requirements-predictive.lock.txt playwright==1.56.0
+          python -m playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+      - name: Build the actual amd64 deployment image without credentials
+        run: |
+          docker build --platform linux/amd64 -t options-risk-submission:2026.10.24 .
+          test "$(docker image inspect --format '{{.Architecture}}' options-risk-submission:2026.10.24)" = amd64
+          docker run --rm --entrypoint python options-risk-submission:2026.10.24 -c "from pathlib import Path; assert not Path('/app/.env').exists(); print('Image contains no private .env')"
+      - name: Start root and prefixed deployments with resource limits
+        run: |
+          docker run -d --name risk-root --cpus 2 --memory 4g -p 18080:8000 options-risk-submission:2026.10.24
+          docker run -d --name risk-prefix --cpus 2 --memory 4g -e SERVICE_PORT=8127 -e SERVICE_BASE_PATH=contest-risk -p 18081:8127 options-risk-submission:2026.10.24
+          curl --fail --retry 60 --retry-delay 2 --retry-connrefused http://127.0.0.1:18080/_stcore/health
+          curl --fail --retry 60 --retry-delay 2 --retry-connrefused http://127.0.0.1:18081/contest-risk/_stcore/health
+      - name: Verify browser navigation, chat, download, resources and proxy prefix
+        run: python scripts/smoke_submission_browser.py --url http://127.0.0.1:18080/ --prefix-url http://127.0.0.1:18081/contest-risk/ --out-dir /tmp/submission-browser
+      - name: Build and verify the public competition archive
+        run: |
+          python scripts/make_package.py --competition --out /tmp/competition-public.zip
+          docker stats --no-stream risk-root risk-prefix
+      - name: Save diagnostics and screenshots
+        if: always()
+        run: |
+          mkdir -p /tmp/submission-browser
+          docker logs risk-root > /tmp/submission-browser/root-service.log 2>&1 || true
+          docker logs risk-prefix > /tmp/submission-browser/prefix-service.log 2>&1 || true
+          docker image inspect options-risk-submission:2026.10.24 > /tmp/submission-browser/image.json || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linux-submission-browser
+          path: /tmp/submission-browser
+          retention-days: 7

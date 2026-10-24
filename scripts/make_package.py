@@ -8,9 +8,10 @@ import sys
 import tempfile
 import zipfile
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 NAME="期权曲面风控预警系统"
-INCLUDE_DIRS=["vol_surface","kg","drl","scripts","dashboard","tests","data_out","docs",".streamlit",".github"]
-INCLUDE_FILES=["README.md","README.legacy.md","PACKAGE.md","requirements.txt","requirements-predictive.lock.txt","extreme_event.csv","index.html","方法与结果.md","升级说明.md","启动系统.command",".env.example"]
+INCLUDE_DIRS=["vol_surface","kg","drl","scripts","dashboard","tests","data_out","docs","deployment",".streamlit",".github"]
+INCLUDE_FILES=["README.md","README.legacy.md","PACKAGE.md","requirements.txt","requirements-predictive.lock.txt","extreme_event.csv","index.html","方法与结果.md","升级说明.md","启动系统.command",".env.example","Dockerfile",".dockerignore","compose.yaml","部署说明.md"]
 REQUIRED = [
     # 门与结论依赖的模型 —— 上一版包整类漏掉了
     ("data_out/rule_ml_model.joblib", "问题1 融合达标配置的模型；check_doc_numbers 校验其指纹"),
@@ -83,7 +84,27 @@ REQUIRED += [(p,"当前交付及 V3 扩展依赖") for p in [
     "data_out/predictive_v3/model.json","data_out/predictive_v3/report.json",
     "data_out/predictive_v3/test_predictions.parquet",
     "docs/人工解释评分表.csv","docs/cvar_prices.schema.csv","docs/cvar_alerts.schema.csv",
-    "scripts/smoke_competition.py","scripts/smoke_dashboard.py"]]
+    "scripts/smoke_competition.py","scripts/smoke_dashboard.py",
+    "部署说明.md","Dockerfile",".dockerignore","compose.yaml","deployment/competition.env",
+    "deployment/runtime.py","dashboard/submission_app.py","scripts/serve_submission.py","scripts/healthcheck.py"]]
+
+
+def submission_env(include_model_key=False):
+    from dotenv import dotenv_values
+    template=dotenv_values(ROOT/'deployment/competition.env')
+    allowed=set(template)
+    if include_model_key:
+        from deployment.runtime import RuntimeSettings
+        private=dotenv_values(ROOT/'.env')
+        for name in allowed:
+            if name in private:template[name]=private[name]
+        settings=RuntimeSettings.from_env(template)
+        if not settings.model_ready:raise ValueError('private submission requires complete MODEL_* settings')
+    else:
+        template['MODEL_API_KEY']=''
+        template['EMBEDDING_API_KEY']=''
+    return '# Generated submission configuration; keep private if keys are present.\n'+''.join(
+        f'{name}={json.dumps(str(value or ""),ensure_ascii=False)}\n' for name,value in template.items())
 
 
 def _excluded(rel):
@@ -110,14 +131,27 @@ def files_to_include():
     return result
 
 
-def build(out):
+def build(out, competition=False, include_model_key=False):
+    if include_model_key and not competition:
+        raise ValueError('model keys may only be included in an explicit private competition package')
     files=files_to_include()
     manifest={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in files}
+    generated={}
+    if competition:
+        generated['.env']=submission_env(include_model_key)
+        generated['PACKAGE_PROFILE.json']=json.dumps(dict(profile='competition',contains_model_key=include_model_key,
+            architecture='linux/amd64',image_tag='options-risk-submission:2026.10.24',
+            note='仅用于比赛平台提交；含密钥的包禁止公开分发。' if include_model_key else '无真实密钥，由部署方配置。'),ensure_ascii=False,indent=2)+'\n'
+        manifest.update({p:hashlib.sha256(content.encode()).hexdigest() for p,content in generated.items()})
     out=Path(out);out.parent.mkdir(parents=True,exist_ok=True)
     with zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
         for p in files:z.write(ROOT/p,NAME+'/'+p)
+        for p,content in generated.items():z.writestr(NAME+'/'+p,content)
         z.writestr(NAME+'/MANIFEST.sha256.json',json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     print(f'已收录 {len(files)} 个文件，{out.stat().st_size/2**20:.1f} MB；清单 {len(REQUIRED)} 个必要依赖。')
+    if include_model_key:
+        out.chmod(0o600)
+        print('此比赛专用包包含平台模型凭据，仅提交比赛平台，不得上传公开仓库或公开网盘。')
 
 
 def verify(out):
@@ -129,15 +163,27 @@ def verify(out):
             if p.is_absolute() or '..' in p.parts or not name.startswith(NAME+'/') or name.endswith('/'):
                 raise ValueError('unsafe archive member: '+name)
         manifest=json.loads(z.read(NAME+'/MANIFEST.sha256.json'))
+        profile=json.loads(z.read(NAME+'/PACKAGE_PROFILE.json')) if NAME+'/PACKAGE_PROFILE.json' in names else None
+        if profile:
+            from dotenv import dotenv_values
+            from io import StringIO
+            from deployment.runtime import RuntimeSettings
+            config=dotenv_values(stream=StringIO(z.read(NAME+'/.env').decode()))
+            allowed=set(dotenv_values(ROOT/'deployment/competition.env'))
+            if set(config)!=allowed:raise ValueError('unexpected submission environment fields')
+            RuntimeSettings.from_env(config)
+            if bool(config.get('MODEL_API_KEY'))!=bool(profile['contains_model_key']):
+                raise ValueError('credential inclusion flag disagrees with private environment')
         wanted={NAME+'/'+p for p in manifest}|{NAME+'/MANIFEST.sha256.json'}
         if set(names)!=wanted:raise ValueError('archive and manifest disagree')
         missing=[p for p,_ in REQUIRED if p not in manifest]
         if missing:raise ValueError('missing required files: '+str(missing))
         for p,expected in manifest.items():
-            if _excluded(p):raise ValueError('local/secret file in archive: '+p)
+            if _excluded(p) and not (profile and p=='.env'):raise ValueError('local/secret file in archive: '+p)
             if hashlib.sha256(z.read(NAME+'/'+p)).hexdigest()!=expected:raise ValueError('corrupt archive file: '+p)
         z.extractall(temp)
         extracted=Path(temp)/NAME
+        if profile:(extracted/'.env').chmod(0o600)
         run=subprocess.run([sys.executable,'scripts/build_submission.py','--check'],cwd=extracted,
                            capture_output=True,text=True,timeout=300)
         if run.returncode:raise ValueError('extracted package check failed: '+run.stdout+run.stderr)
@@ -147,9 +193,10 @@ def verify(out):
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--out',type=Path,default=ROOT.parent/'期权曲面预测风控系统.zip');ap.add_argument('--verify-only',action='store_true')
+    ap.add_argument('--competition',action='store_true');ap.add_argument('--include-model-key',action='store_true')
     a=ap.parse_args()
     if a.out.suffix.lower()!='.zip':raise SystemExit('当前打包器输出 .zip；旧 tar 打包器保存在 make_package_legacy.py。')
-    if not a.verify_only:build(a.out)
+    if not a.verify_only:build(a.out,a.competition,a.include_model_key)
     verify(a.out)
 
 

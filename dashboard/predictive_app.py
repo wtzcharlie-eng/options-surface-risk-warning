@@ -98,16 +98,27 @@ with st.sidebar:
     except ValueError:
         env_config = LLMConfig()
         st.warning('环境中的 LLM 配置无效，请重新填写。')
-    providers = ['local', 'openai-compatible', 'local-openai', 'openai']
+    competition_mode = os.environ.get('RISK_DEPLOYMENT_PROFILE') == 'competition'
+    providers = ['local', 'openai-compatible'] if competition_mode else ['local', 'openai-compatible', 'local-openai', 'openai']
     provider_labels = {'local':'本地证据解读', 'openai-compatible':'OpenAI 兼容 API', 'local-openai':'本机大模型服务', 'openai':'OpenAI 官方 API'}
-    provider = st.selectbox('对话服务', providers, index=providers.index(env_config.provider) if env_config.provider in providers else 0, format_func=provider_labels.get)
+    provider = st.selectbox('对话服务', providers, index=providers.index(env_config.provider) if env_config.provider in providers else 0,
+                            format_func=lambda p: '平台 / 国产兼容模型' if competition_mode and p == 'openai-compatible' else provider_labels[p],
+                            disabled=competition_mode)
     model_name, base_url, api_key = env_config.model, env_config.base_url, env_config.api_key
-    if provider != 'local':
+    if competition_mode:
+        if provider != 'local':
+            st.caption('模型：' + env_config.public_settings()['model'])
+            st.caption('模型接口由部署环境配置，问答会发送当前风险证据与近期对话。')
+        else:
+            st.warning('平台模型配置尚未齐备，当前提供本地证据解读。')
+    elif provider != 'local':
         base_url = st.text_input('服务地址 / Base URL', value=('http://127.0.0.1:11434/v1' if provider == 'local-openai' and env_config.provider != provider else base_url), help='填写服务商提供的兼容接口地址，包含 /v1（若服务商要求）。')
         model_name = st.text_input('模型名称', value=model_name, placeholder='填写服务商的模型 ID')
         api_key = st.text_input('API Key', value=api_key, type='password', help='仅当前会话使用，不写入报告和聊天记录。')
         st.caption('发送问题时，会将当前风险快照和近期对话发送到所填服务地址。')
-    config = LLMConfig(provider=provider, model=model_name, base_url=base_url, api_key=api_key, timeout_seconds=env_config.timeout_seconds)
+    config = LLMConfig(provider=provider, model=model_name, base_url=base_url, api_key=api_key,
+                       timeout_seconds=env_config.timeout_seconds, enable_thinking=env_config.enable_thinking,
+                       max_tokens=env_config.max_tokens, compact_evidence=env_config.compact_evidence)
     if st.button('检查对话配置', width='stretch'):
         try:
             config.validate()
