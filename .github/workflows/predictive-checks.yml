@@ -74,7 +74,7 @@ jobs:
         run: python scripts/audit_predictive_v3.py
 
   submission-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       MODEL_API_KEY: ''

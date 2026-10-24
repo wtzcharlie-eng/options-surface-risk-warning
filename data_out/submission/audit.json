@@ -5202,7 +5202,7 @@
     "vol_surface/predictive_validation.py": "de3224b39fbe427004f3ca86a052f200966ad67a190056ec08c3d364031097a7",
     "vol_surface/quant_metrics.py": "b3117c8b03abcad7157968973790ddc5d1b96411178a733312646f747af18ab2",
     "vol_surface/replay.py": "fa634d106180e143774197cdf321e64356cff9636026bf671cdee62050d60154",
-    "vol_surface/risk_assistant.py": "52bc28249fca1c0877fed866950dbb8694831c5299434a9218d3fc3dfad3bc0f",
+    "vol_surface/risk_assistant.py": "f8ecb0d780a1e3e0848cf4c147f284ebc2bf6378148850075369d6b19a11189e",
     "vol_surface/submission_metrics.py": "d84aa7c18e1509536a9c7ca42e3e3604362d29a5466822fbcb0f7057d7b782e6",
     "vol_surface/time_utils.py": "706f489879de365a663b7bdca395642f05aff4470d805f65662103f5d2d5d3d3",
     "vol_surface/underlying.py": "f542df202e98172f69ae3a6fca0979d060fa2c8b5e86b9cb68593a305df1e221"

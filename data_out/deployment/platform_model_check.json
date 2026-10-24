@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-24T20:45:00.831339+08:00",
+  "checked_at": "2026-10-25T05:01:05.645625+08:00",
   "real_service": true,
   "model": "qwen3.8-27b-vllm",
   "model_provider": "platform-qwen",
@@ -15,32 +15,26 @@
       "mode": "llm",
       "passed": true,
       "cited_fields": [
+        "symbol",
         "prediction_task",
-        "model_version",
-        "forecast.model_status",
+        "prediction_task_definition",
         "mode",
         "risk_scope",
-        "forecast.contribution_scale",
-        "data_quality.warnings.0",
-        "data_quality.quality.ood_features.0"
+        "evaluation_context"
       ],
       "warning": null,
-      "response": "当前任务为预测曲面异常首次出现（onset），模型为v3版本的联合对数收缩模型（joint_logistic_shrunk）。[prediction_task][model_version][forecast.model_status] 主要限制包括：这是历史数据回放，未连接实时行情；预测的是曲面代理异常，不等同于组合亏损或VaR。[mode][risk_scope] 模型无法提供可相加的线性特征贡献，且部分特征（凸性违反、套利得分）超出训练范围。[forecast.contribution_scale][data_quality.warnings.0][data_quality.quality.ood_features.0]"
+      "response": "本次任务针对 sc 品种，在两项曲面代理均未超阈值时，预测未来窗口内首次超阈值的发生情况 [symbol][prediction_task][prediction_task_definition]。评估为完整测试期的事后统计，基于历史数据回放，且曲面风险代理事件不等同于组合亏损或 VaR [mode][risk_scope][evaluation_context]。"
     },
     {
       "mode": "llm",
       "passed": true,
       "cited_fields": [
         "risk_scope",
-        "forecast.evaluation.brier_skill",
-        "forecast.evaluation.roc_auc",
-        "forecast.evaluation.calibration_bias",
-        "operational_evaluation.false_alarms",
-        "operational_evaluation.true_positives",
-        "data_quality.status"
+        "data_quality.status",
+        "data_quality.warnings.0"
       ],
       "warning": null,
-      "response": "该预测不代表账户实际损失，因为模型仅预测曲面代理异常事件，并非组合亏损或VaR。[risk_scope] 关于可靠性，模型在测试集中Brier技巧分数为正，表明其预测优于同任务条件风险率统计基准，但AUC仅略高于随机排序水平，且校准偏差为负，显示存在系统性低估风险。[forecast.evaluation.brier_skill][forecast.evaluation.roc_auc][forecast.evaluation.calibration_bias] 此外，运行保护后误报数量高于真阳性，且部分特征处于训练范围外，需结合数据质量降级状态谨慎解读。[operational_evaluation.false_alarms][operational_evaluation.true_positives][data_quality.status]"
+      "response": "这些预测仅衡量曲面风险代理事件概率，明确不等同于组合亏损或VaR，无法代表账户实际损失 [risk_scope]。模型可靠性基于完整测试期的事后统计，而非历史当时的实时输入，且部分观测超出训练期范围，数据质量存在异常 [data_quality.status][data_quality.status][data_quality.warnings.0]。"
     }
   ],
   "note": "此记录证明当次平台真实调用、证据引用与多轮对话，不证明预测有效性、平台部署状态或未来配额。"

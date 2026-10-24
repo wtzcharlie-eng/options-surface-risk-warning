@@ -122,3 +122,13 @@ def test_platform_reference_array_is_explicitly_labelled_and_still_grounded():
     for bad in [good.replace('8.33','99'),good.replace('forecast.probability','invented.probability')]:
         with patch('vol_surface.risk_assistant._request_completion',return_value=bad):
             assert answer('风险？',evidence,config=cfg).mode=='local'
+
+
+def test_platform_citation_ids_map_exactly_and_unknown_ids_fail():
+    from vol_surface.risk_assistant import _canonical_platform_reply,_validate_completion
+    fields={'forecast.probability':.1,'mode':'history'};aliases={'E1':'forecast.probability','E2':'mode'}
+    raw=json.dumps({'answer':'概率10%。[E1] 回放。[E2]','cited_fields':['E1','E2']},ensure_ascii=False)
+    canonical=_canonical_platform_reply(raw,aliases)
+    assert '[forecast.probability]' in _validate_completion(canonical,fields,'')[0]
+    bad=raw.replace('E1','E999')
+    with pytest.raises(ValueError):_validate_completion(_canonical_platform_reply(bad,aliases),fields,'')
