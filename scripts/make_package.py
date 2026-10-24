@@ -103,8 +103,17 @@ def submission_env(include_model_key=False):
     else:
         template['MODEL_API_KEY']=''
         template['EMBEDDING_API_KEY']=''
-    return '# Generated submission configuration; keep private if keys are present.\n'+''.join(
-        f'{name}={json.dumps(str(value or ""),ensure_ascii=False)}\n' for name,value in template.items())
+    # Docker CLI --env-file preserves quotes, while python-dotenv removes them.
+    # Emit their common unquoted subset so source, Compose and Docker agree.
+    lines=[]
+    for name,raw in template.items():
+        value=str(raw or '')
+        if (value!=value.strip() or any(c in value for c in ('\r','\n','\0'))
+                or value.startswith(("'",'"')) or value.endswith(("'",'"'))
+                or ' #' in value or '${' in value):
+            raise ValueError('environment value cannot be represented consistently: '+name)
+        lines.append(f'{name}={value}\n')
+    return '# Generated submission configuration; keep private if keys are present.\n'+''.join(lines)
 
 
 def _excluded(rel):

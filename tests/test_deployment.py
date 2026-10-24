@@ -132,3 +132,18 @@ def test_platform_citation_ids_map_exactly_and_unknown_ids_fail():
     assert '[forecast.probability]' in _validate_completion(canonical,fields,'')[0]
     bad=raw.replace('E1','E999')
     with pytest.raises(ValueError):_validate_completion(_canonical_platform_reply(bad,aliases),fields,'')
+
+
+def test_generated_env_agrees_between_docker_cli_and_python_dotenv():
+    text=submission_env()
+    docker=dict(line.split('=',1) for line in text.splitlines() if line and not line.startswith('#'))
+    assert docker==dict(dotenv_values(stream=io.StringIO(text)))
+    assert RuntimeSettings.from_env(docker).model_name=='qwen3.8-27b-vllm'
+    assert docker['MODEL_API_KEY']==''
+
+
+@pytest.mark.parametrize('unsafe',[' leading','line\nbreak','${OTHER}'])
+def test_generated_env_rejects_ambiguous_values_without_printing_them(unsafe):
+    values=dict(dotenv_values(ROOT/'deployment/competition.env'));values['MODEL_NAME']=unsafe
+    with patch('dotenv.dotenv_values',return_value=values),pytest.raises(ValueError,match='MODEL_NAME'):
+        submission_env()
