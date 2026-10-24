@@ -61,6 +61,13 @@ def main():
             page.set_viewport_size({'width':1440,'height':1100})
             page.goto(args.prefix_url,wait_until='domcontentloaded')
             page.get_by_role('heading',name='看见风险，再追问原因',exact=True).wait_for()
+            expect(page.get_by_test_id('stMetric')).to_have_count(3)
+            page.get_by_role('link',name='图谱解释',exact=True).click()
+            page.get_by_role('heading',name='风险传导路径推理',exact=True).wait_for()
+            expect(page.get_by_test_id('stSelectbox')).to_have_count(2)
+            assert page.url.startswith(args.prefix_url) and page.url.endswith('/graph')
+            page.get_by_role('link',name='预测与问答',exact=True).click()
+            expect(page.get_by_test_id('stMetric')).to_have_count(3)
             page.screenshot(path=str(args.out_dir/'prefixed-desktop.png'),full_page=True)
             checks.append('proxy_prefix_and_custom_port')
         assert not errors,errors
