@@ -1,0 +1,67 @@
+{
+  "runtime_checks": "passed",
+  "scope": "full",
+  "checks": [
+    {
+      "name": "当前交付一致性",
+      "passed": true,
+      "returncode": 0
+    },
+    {
+      "name": "部署入口配置与文件",
+      "passed": true,
+      "returncode": 0
+    },
+    {
+      "name": "V3 分数与冻结来源",
+      "passed": true,
+      "returncode": 0
+    },
+    {
+      "name": "DRL 运行门",
+      "passed": true,
+      "returncode": 0
+    },
+    {
+      "name": "KG 运行门",
+      "passed": true,
+      "returncode": 0
+    },
+    {
+      "name": "比赛原型页面内容",
+      "passed": true,
+      "returncode": 0
+    },
+    {
+      "name": "统一部署入口与导航",
+      "passed": true,
+      "returncode": 0
+    },
+    {
+      "name": "V3 交互流程",
+      "passed": true,
+      "returncode": 0
+    }
+  ],
+  "skipped": [],
+  "finite_strict_reference_targets_met": {
+    "rule_ml": false,
+    "drl": false
+  },
+  "competition_business_evidence": "pending",
+  "pending": [
+    "原赛题 CVaR 真实开盘及交易日/合约证据",
+    "可核验人工评分",
+    "后续口径答复原件（若采用）"
+  ],
+  "note": "机器检查通过仅代表所执行范围内的运行与材料一致，不代表全部比赛指标达标。",
+  "recorded_at": "2026-10-25T05:25:33.828268+08:00",
+  "source_commit": "a51cffa312f3e26fddeca079a8d240dd17c2e2b1",
+  "unit_tests": {
+    "passed": 177,
+    "subtests_passed": 20,
+    "failed": 0,
+    "scope": "local tests/ after Docker/dotenv packaging fix; no predictive runtime changes"
+  },
+  "unit_test_source_commit": "04a696eef6760d001809cd627b89a4c34cd74b1b"
+}
