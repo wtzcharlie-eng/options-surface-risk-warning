@@ -18,6 +18,7 @@ def main():
         page.goto(args.url,wait_until='domcontentloaded')
         page.get_by_role('heading',name='看见风险，再追问原因',exact=True).wait_for()
         expect(page.get_by_test_id('stMetric')).to_have_count(3)
+        expect(page.get_by_role('button',name='Stop',exact=True)).not_to_be_visible()
         page.screenshot(path=str(args.out_dir/'predictive-desktop.png'),full_page=True)
         checks.append('homepage_and_prediction_cards')
         page.get_by_role('button',name='解读当前风险',exact=True).click()
@@ -48,6 +49,7 @@ def main():
             page.wait_for_timeout(500)
             assert page.get_by_test_id('stException').count()==0
             if minimum:expect(page.get_by_test_id('stMetric')).to_have_count(minimum)
+            expect(page.get_by_role('button',name='Stop',exact=True)).not_to_be_visible()
             page.screenshot(path=str(args.out_dir/(name+'-desktop.png')),full_page=True)
             checks.append('navigation_'+name)
         page.get_by_role('link',name='预测与问答',exact=True).click()
@@ -68,6 +70,7 @@ def main():
             assert page.url.startswith(args.prefix_url) and page.url.endswith('/graph')
             page.get_by_role('link',name='预测与问答',exact=True).click()
             expect(page.get_by_test_id('stMetric')).to_have_count(3)
+            expect(page.get_by_role('button',name='Stop',exact=True)).not_to_be_visible()
             page.screenshot(path=str(args.out_dir/'prefixed-desktop.png'),full_page=True)
             checks.append('proxy_prefix_and_custom_port')
         assert not errors,errors
