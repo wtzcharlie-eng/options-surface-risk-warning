@@ -1,0 +1,43 @@
+name: Publish public HTML
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/public-html.yml'
+      - 'scripts/export_public_site.py'
+      - 'scripts/build_docs.py'
+      - 'index.html'
+      - '*.md'
+      - 'docs/**'
+      - 'data_out/**'
+      - 'kg/schema.md'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Export only the public entry and linked reports
+        run: python3 scripts/export_public_site.py --source . --out _site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v5
